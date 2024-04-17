@@ -53,7 +53,7 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 }))
 
 app.get('/login', (req,res)=>{
-  res.render('login.ejs')
+  res.render('loginPage.ejs')
 })
 
 app.get('/list', (req,res)=>{
