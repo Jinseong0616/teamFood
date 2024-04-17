@@ -104,7 +104,7 @@ passport.deserializeUser(async(user, done) =>{
 
 
 app.get('/join', async function(req,res){
-  res.render('join.ejs')
+  res.render('joinPage.ejs')
 })
 
 
