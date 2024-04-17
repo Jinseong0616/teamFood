@@ -1,0 +1,74 @@
+*{margin: 0; padding: 0; box-sizing: border-box; }
+
+ul,li,a{text-decoration: none; list-style: none;}
+
+main{
+  padding: 0 0 30px 0;
+  background-color: #f0f0f0;
+}
+
+
+section{
+  margin: 0 0 20px 0;
+}
+
+.header{height: 74px;}
+.header ul{margin: 0;}
+.header .logo{margin: 0;}
+.header .search_box{
+  width: 80%; height: 40px;
+  padding: 20px; font-size: 14px;
+  background-color: rgb(245, 245, 245);
+  border-radius: 20px;
+  border: none;
+}
+
+.user li{padding: 0 10px;}
+
+
+
+
+
+.visual{width: 100%; height: 300px; background-color: yellow;}
+
+
+
+.main .category{
+  background-color: rgb(255, 255, 255);
+  padding: 20px 10px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 0px 6px 0px;
+  border-bottom: 0.3px solid #f0f0f0;
+}
+
+.main .category .title{
+  margin: 0 0 0 25px; font-size: 24px; font-weight: 600;
+}
+
+
+
+
+
+.main .category_box .restoraunt_list{
+  padding: 30px 20px 10px 20px;
+  background-color: rgb(255, 255, 255);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 0px 6px 0px;
+}
+
+.main .category_box .restoraunt_list .col{
+  /* height: 200px; */
+  /* background-color: aqua; */
+}
+
+.pic{width: 92%;}
+
+img{width: 100%; border-radius: 20px;}
+
+.restoraunt_title{
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
