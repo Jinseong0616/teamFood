@@ -1,13 +1,171 @@
-*{margin: 0; padding: 0; box-sizing: border-box;}
-ul,ol,li {list-style: none;}
-  a {text-decoration: none;}
+* { margin: 0; padding: 0; box-sizing: border-box; } 
+ul,ol,li { list-style: none; } 
+a { text-decoration: none; } 
 
-.form-box div{
-  display: flex;
+body {
+    width: 960px;
+    margin: 0 auto;
+    padding-bottom: 25px;
 }
 
-.form-box div label{
-  display: flex;
-  justify-content: start;
-  margin-right: 50px;
+body .mainPage{
+    width: 400px;
+    padding-left: 0;
+    margin-bottom: 60px;
+
+}
+.header {
+    padding: 20px 0 20px;
+    border-bottom: gray solid 1px;
+}
+.header img{
+    width: 150px;
+}
+
+.subtitle,
+.header,
+.title
+{
+text-align: center;
+
+}
+
+.title {
+padding: 50px 15px 25px;
+    border-bottom: gray solid 1px;
+
+}
+.title h2{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.subtitle{
+    padding: 24px;
+    white-space: nowrap;
+
+}
+.subtitle h2{
+    font-size: 15px;
+    font-weight: bold;
+
+}
+
+.loginForm{
+    text-align: center;
+}
+.loginForm input{
+    width: 400px;
+    height: 40px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.loginSet{
+    padding: 24px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.loginSet span{
+    text-align: left;
+}
+.loginSet a{
+    text-align: right;
+}
+
+.loginSet .btn{
+    width: 30px;
+    height: 30px;
+    padding: 2px 0px;
+    border-radius: 0;
+}
+
+.loginBtn .btn{
+    width: 400px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 0;
+}
+
+.andLine{
+    width: 400px;
+    margin: auto;
+    padding: 14px;
+}
+.andLine .and{
+    width: 40px;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-right: 8px;
+
+}
+.andLine .line{
+    border-bottom: gray solid  1px;
+    height: 7px;
+}
+
+.join{
+    border: gray 1px solid;
+    font-size: 15px;
+    text-align: center;
+    width: 400px;
+    height: 150px;
+    margin: 24px 0 100px;
+    padding: 24px;
+}
+
+.join .upWord{
+    font-size: 14px;
+    font-weight: bold;
+}
+.join .downWord{
+    font-size: 12px;
+    white-space: nowrap;
+
+}
+
+.join .btn{
+    width: 200px;
+    height: 40px;
+    border-radius: 0;
+    margin-top: 12px;
+    font-size: 13px;
+
+}
+
+footer {
+    white-space: nowrap;
+
+}
+
+footer li::after{
+    content: "  |";
+}
+
+.footerPage{
+    text-align: left;
+    font-size: 14px;
+}
+
+.footerPage ul{
+    padding: 0;
+}
+.footerPage .terms{
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+.footerPage .info{
+    margin-bottom: 9px;
+}
+
+.footerPage .info .mainName{
+    font-size: 15px;
+}
+.footerPage li{
+padding: 0 0 0 10px;
+}
+
+.footerPage p{
+    margin-bottom: 9px;
 }
