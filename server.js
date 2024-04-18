@@ -52,13 +52,19 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
-app.get('/login', (req,res)=>{
-  res.render('loginPage.ejs')
-})
-
 app.get('/', (req,res)=>{
   const userId = req.isAuthenticated() ? req.user.userId : false
   res.render('index.ejs', {userId})
+})
+
+app.get('/:region', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
+})
+
+
+app.get('/login', (req,res)=>{
+  res.render('loginPage.ejs')
 })
 
 app.post('/login',(req,res)=>{
