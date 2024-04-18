@@ -58,10 +58,10 @@ app.get('/', (req,res)=>{
   res.render('index.ejs', {userId})
 })
 
-app.get('/:region', (req,res)=>{
-  const userId = req.isAuthenticated() ? req.user.userId : false
-  res.render('index.ejs', {userId})
-})
+// app.get('/:region', (req,res)=>{
+//   const userId = req.isAuthenticated() ? req.user.userId : false
+//   res.render('index.ejs', {userId})
+// })
 
 
 app.get('/login', (req,res)=>{
@@ -116,27 +116,6 @@ app.get('/', (req,res)=>{
 })
 
 
-// 로그인 페이지
-app.get('/login', (req,res)=>{
-  res.render('loginPage.ejs')
-})
-
-app.post('/login',(req,res)=>{
-  passport.authenticate('local', (error, user, info)=>{
-      
-      console.log(error)
-      console.log(user)
-      console.log(info)
-      if(error) return res.status(500).json(error) // 인증 과정에서 오류
-      if(!user) return res.send('로그인 실패')
-
-      req.logIn(user, (err)=>{
-          if(err) return next(err)
-           req.session.userId = user.userId;
-           return res.redirect('/')   
-      })
-  })(req,res)
-})
 
 
 // 로그아웃
