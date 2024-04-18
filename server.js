@@ -53,6 +53,38 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
+app.get('/', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
+})
+
+app.get('/:region', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
+})
+
+
+app.get('/login', (req,res)=>{
+  res.render('loginPage.ejs')
+})
+
+app.post('/login',(req,res)=>{
+  passport.authenticate('local', (error, user, info)=>{
+      
+      console.log(error)
+      console.log(user)
+      console.log(info)
+      if(error) return res.status(500).json(error) // 인증 과정에서 오류
+      if(!user) return res.send('로그인 실패')
+
+      req.logIn(user, (err)=>{
+          if(err) return next(err)
+           req.session.userId = user.userId;
+           return res.redirect('/')   
+      })
+  })(req,res)
+})
+
 passport.serializeUser((user, done) =>{
   process.nextTick(()=>{
     // 세션 생성할 때 비밀번호가 들어가지 않음, user의  id와 이름만 알려주면 이 정보를 기록해주고
