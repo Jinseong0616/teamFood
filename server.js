@@ -56,9 +56,9 @@ app.get('/login', (req,res)=>{
   res.render('loginPage.ejs')
 })
 
-app.get('/list', (req,res)=>{
+app.get('/', (req,res)=>{
   const userId = req.isAuthenticated() ? req.user.userId : false
-  res.render('list.ejs', {userId})
+  res.render('index.ejs', {userId})
 })
 
 app.post('/login',(req,res)=>{
@@ -73,7 +73,7 @@ app.post('/login',(req,res)=>{
       req.logIn(user, (err)=>{
           if(err) return next(err)
            req.session.userId = user.userId;
-           return res.redirect('/list')   
+           return res.redirect('/')   
       })
   })(req,res)
 })
