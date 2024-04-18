@@ -18,9 +18,6 @@ module.exports = {
       content: {
         type: Sequelize.STRING
       },
-      regDate: {
-        type: Sequelize.DATE
-      },
       rating: {
         type: Sequelize.INTEGER
       },

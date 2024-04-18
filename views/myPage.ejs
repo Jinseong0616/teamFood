@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  마이페이지입니다.
+  <section class="sec">
+    <h2>글수정</h2>
+    <form action="/edit", method="post">
+      <input id="userId" class="userId" name="userId" value="<%= member.userId %>">
+      <input id="password" class="password" name="password" type="password" placeholder="비밀번호" value="<%= member.password %>">
+      <input id="name" class="name" name="name" placeholder="name" value="<%= member.name %>">
+      <input id="birthNum" class="birthNum" name="birthNum" placeholder="birthNum" value="<%= member.birthNum %>">
+      <input id="phone" class="phone" name="phone" placeholder="phone" value="<%= member.phone %>">
+
+      <button id="ok" class="edit" data-id="<%= member.userId %>">수정</button>
+      
+      <div>
+        <img src="<%= memImg.imgUrl %>" alt="">
+      </div>
+      
+    </form> 
+    <a href="/">메인</a>
+  </section>
+  
+<script>
+
+
+// 각 input상자에서 값 가져오기
+
+const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('click', function(e){
+    const editPassword = document.getElementById('password').value
+    const editName = document.getElementById('name').value
+    const editBirthNum = document.getElementById('birthNum').value
+    const editPhone = document.getElementById('phone').value
+  
+    e.preventDefault()
+
+    let newInfo = {
+        password : editPassword, // 해당 input값 불러오기
+        name : editName,
+        birthNum : editBirthNum,
+        phone : editPhone
+    }
+
+  const id = e.target.dataset.id
+  fetch('/edit/'+ id, {
+    method : 'PUT',
+    headers: { 'Content-Type': 'application/json'}, 
+    body: JSON.stringify(newInfo)
+  }) 
+  .then( r => r.text())
+  .then( r => {
+    window.location.href="/"; 
+  })
+  .catch(err => { 
+    console.log(err);
+  })
+})
+
+
+  
+
+</script>
+</body>
+</html>
