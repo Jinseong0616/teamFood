@@ -1,0 +1,38 @@
+* { margin: 0; padding: 0; box-sizing: border-box; } 
+ul,ol,li { list-style: none; padding: 0;} 
+a { text-decoration: none; } 
+
+body { width: 1000px; background-color: #f0f0f3; } 
+.container { background-color: white; border-radius: 10px;} 
+
+/* .restaurantMain{padding-bottom: ;} */
+
+.restaurantInfo{padding: 0 15px;}
+
+.restaurantInfo .infoImg{ white-space: nowrap; margin-bottom: 25px;}
+.restaurantInfo .infoImg img{ width: 50%; height: 300px;}
+
+.restaurantInfo .infoName h1{padding-left: 10px; font-size: 35px; font-weight: bold;}
+.restaurantInfo .infoName .shareBtn{width: 73px; height: 35px;  border-radius: 10px;font-size: 13px;}
+
+.restaurantCategory{ margin-bottom: 10px;}
+.restaurantCategory a{color: #7e7e7e;}
+.restaurantCategory a:not(:last-child)::after {content: " |";}
+
+.gradeInfo {display: flex; align-items: center; margin-bottom: 20px;}
+.gradeInfo p{margin: 0;}
+.restaurantRating .gradeInfo p{padding-left: 0;}
+.restaurantRating .gradeInfo span
+{font-weight: bold; font-size: 25px; padding-left: 5px;}
+.restaurantRating .gradeRating{font-size: 25px;}
+.restaurantRating .gradeRating .bi-star-fill{color: blue;}
+
+.restaurantDetail{padding: 0 12px 10px 12px; margin-bottom: 20px;}
+.restaurantDetail .address{display: flex; align-items: center;}
+.restaurantDetail li{margin-bottom: 10px;}
+.restaurantDetail .address .btn{width: 73px; height: 32px; font-size: 14px; padding: 0; background-color: #124886; border-color: #124886;}
+
+.restaurantReviewPic{padding: 22px; margin-bottom: 20px;}
+.restaurantReviewPic h2{font-size: 25px; font-weight: bold; margin-bottom: 20px;} 
+.restaurantReviewPic .text-primary{font-size: 27px;}
+.restaurantReviewPic .btn{margin-right: 30px; border-radius: 10px;}
