@@ -125,6 +125,42 @@ app.get('/logout', (req,res)=>{
   })
 })
 
+// 세부 페이지 (***기능구현만 일단 해놓은 상태***)
+app.get('/detail/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 레스토랑 정보 가져오기
+    const restaurant = await Store.findOne({ where: { restaurantId: id } });
+    // 레스토랑에 대한 리뷰 가져오기
+    const reviews = await Review.findAll({ where: { restaurantId: id } });
+    // 레스토랑 리뷰의 해당 유저의 사진 가져오기
+    // const reviewPic = await Image.findOne({ where: { reviewId: id } });
+
+    // 회원별로 작성한 리뷰에 대한 평균별점 계산
+    const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
+    reviews.forEach(review => {
+      if (!(review.userId in userRatings)) {
+        userRatings[review.userId] = { totalRating: 0, reviewCount: 0 };
+      }
+      userRatings[review.userId].totalRating += review.rating;
+      userRatings[review.userId].reviewCount++;
+    });
+    // 각 회원별 평균별점 계산
+    const userAvgRatings = {};
+    Object.keys(userRatings).forEach(userId => {
+      userAvgRatings[userId] = {
+        avgRating: userRatings[userId].totalRating / userRatings[userId].reviewCount,
+        reviewCount: userRatings[userId].reviewCount
+      };
+    });
+
+    res.render('detail.ejs', { restaurant, reviews, userAvgRatings });
+  } catch (error) {
+    console.error('에러 발생:', error);
+    res.status(500).send('서버 에러');
+  }
+});
 
 // 회원가입 페이지
 app.get('/join', async function(req,res){
