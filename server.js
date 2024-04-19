@@ -6,10 +6,11 @@ const app = express()
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
+const axios = require('axios')
 
 // db
 const db = require('./models')
-const {User, Store, Restaurant, Image, Favorite, Review} = db
+const {User, Store, Restaurant, Image, Favorite, Review,Region} = db
 
 // 포트
 
@@ -53,15 +54,21 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
-app.get('/', (req,res)=>{
+app.get('/',async (req,res)=>{
   const userId = req.isAuthenticated() ? req.user.userId : false
+
   res.render('index.ejs', {userId})
 })
 
-// app.get('/:region', (req,res)=>{
-//   const userId = req.isAuthenticated() ? req.user.userId : false
-//   res.render('index.ejs', {userId})
-// })
+app.get('/region', async (req,res)=>{
+  const selectedCity = req.query.city;
+
+  let guList;
+
+  guList = await Region.findAll({where : { city : selectedCity }})
+
+  res.json(guList)
+})
 
 
 app.get('/login', (req,res)=>{

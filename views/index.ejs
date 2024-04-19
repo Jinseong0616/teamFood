@@ -46,19 +46,29 @@
   <div class="modal-content">
     <span class="close">&times;</span>
     <h2>지역을 선택해주세요</h2>
-    <select id="regions">
-      <optgroup label="서울특별시">
-        <option value="seoul_gangnam">강남구</option>
-        <option value="seoul_gangdong">강동구</option>
-        <!-- 서울의 다른 구 추가 -->
-      </optgroup>
-      <optgroup label="부산광역시">
-        <option value="busan_haeundae">해운대구</option>
-        <option value="busan_jung">중구</option>
-        <!-- 부산의 다른 구 추가 -->
-      </optgroup>
-      <!-- 다른 지역 추가 -->
-    </select>
+    <div class="table">
+      <div class="region_option row">
+          <div class="col">광역시도</div>
+          <div class="col">시군구</div>
+      </div>
+      <div class="region_list d-flex row">
+        <div class="col">
+          <ul class="city">
+            <li><button>서울</button></li>
+            <li><button>경기</button></li>
+            <li><button>인천</button></li>
+          </ul>
+        </div>
+        <div class="col">
+          <ul>
+            <li><button>동</button></li>
+            <li><button>서</button></li>
+            <li><button>남</button></li>
+            <li><button>북</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <button id="selectRegion">선택</button>
   </div>
 </div>
@@ -165,14 +175,63 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
   document.getElementById("myModal").style.display = "none";
 });
 
-// 선택된 지역 처리
-document.getElementById("selectRegion").addEventListener("click", function() {
-  var selectedRegion = document.getElementById("regions").value;
-  // 선택된 지역에 대한 추가적인 작업 수행
-  console.log("선택된 지역:", selectedRegion);
-  // 모달 닫기
-  document.getElementById("myModal").style.display = "none";
+
+// --------------------------------------------------
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const selectRegionButton = document.getElementById("selectRegion");
+
+  selectRegionButton.addEventListener("click", function() {
+    const selectedCity = document.querySelector(".city button.selected").innerText;
+    
+    axios.get(`/regions?city=${selectedCity}`)
+      .then(function(response) {
+        const guList = response.data;
+        updateGuList(guList);
+      })
+      .catch(function(error) {
+        console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
+      });
+  });
+
+  // 동적으로 받아온 구 목록을 업데이트하는 함수
+  function updateGuList(guList) {
+    const guListContainer = document.querySelector(".region_list .col:nth-child(2) ul");
+    guListContainer.innerHTML = "";
+    guList.forEach(function(gu) {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.innerText = gu;
+      li.appendChild(button);
+      guListContainer.appendChild(li);
+    });
+  }
+
+  // 도시 버튼에 이벤트 리스너 추가
+  const cityButtons = document.querySelectorAll(".city button");
+  cityButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      cityButtons.forEach(function(btn) {
+        btn.classList.remove("selected");
+      });
+      button.classList.add("selected");
+
+      // 선택한 도시에 해당하는 구 목록을 업데이트
+      const selectedCity = button.innerText;
+      axios.get(`/regions?city=${selectedCity}`)
+        .then(function(response) {
+          const guList = response.data;
+          updateGuList(guList);
+        })
+        .catch(function(error) {
+          console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
+        });
+    });
+  });
 });
+
+
   </script>
 </body>
 </html>
