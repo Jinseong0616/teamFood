@@ -24,6 +24,9 @@ module.exports = {
       callNumber: {
         type: Sequelize.STRING
       },
+      views: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

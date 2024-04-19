@@ -1,5 +1,6 @@
 // 1. 모듈 - require
 const express = require('express')
+const bodyParser = require('body-parser')
 const sequelize = require('sequelize')
 const app = express()
 const session = require('express-session')
@@ -8,7 +9,7 @@ const LocalStrategy = require('passport-local')
 
 // db
 const db = require('./models')
-const {User} = db
+const {User, Store, Restaurant, Image, Favorite, Review} = db
 
 // 포트
 
@@ -52,13 +53,19 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
-app.get('/login', (req,res)=>{
-  res.render('loginPage.ejs')
+app.get('/', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
 })
 
-app.get('/list', (req,res)=>{
-  const userId = req.isAuthenticated() ? req.user.userId : false
-  res.render('list.ejs', {userId})
+// app.get('/:region', (req,res)=>{
+//   const userId = req.isAuthenticated() ? req.user.userId : false
+//   res.render('index.ejs', {userId})
+// })
+
+
+app.get('/login', (req,res)=>{
+  res.render('loginPage.ejs')
 })
 
 app.post('/login',(req,res)=>{
@@ -73,7 +80,7 @@ app.post('/login',(req,res)=>{
       req.logIn(user, (err)=>{
           if(err) return next(err)
            req.session.userId = user.userId;
-           return res.redirect('/list')   
+           return res.redirect('/')   
       })
   })(req,res)
 })
@@ -102,7 +109,24 @@ passport.deserializeUser(async(user, done) =>{
 
 
 
+// 메인 페이지
+app.get('/', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
+})
 
+
+
+
+// 로그아웃
+app.get('/logout', (req,res)=>{
+  req.logout(()=>{
+    res.redirect('/')
+  })
+})
+
+
+// 회원가입 페이지
 app.get('/join', async function(req,res){
   res.render('joinPage.ejs')
 })
@@ -125,6 +149,29 @@ app.post('/join', async function(req,res){
   }
 }) 
 
+// 마이페이지
+app.get('/myPage/:id', async(req,res)=>{
+    const {id} = req.params
+    console.log(id)
+    const member = await User.findOne({where : {userId : id}})  // 회원 정보
+    const memImg = await Image.findOne({where : {userId : id}})
 
+    res.render('myPage.ejs', {member, memImg})
+})
+
+app.put('/edit/:id', async (req,res)=>{
+  const {id} = req.params
+  const newInfo = req.body
+  const member = await User.findOne({where : {userId : id}})
+  
+
+  if(member){
+    Object.keys(newInfo).forEach((prop)=>{
+      member[prop] = newInfo[prop]
+    })
+    await member.save()
+    res.redirect('/')
+  }
+})
 
 
