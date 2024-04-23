@@ -225,6 +225,7 @@ app.put('/edit/:id', async (req,res)=>{
 app.get('/region', async (req,res)=>{
   
   const selectedCity = req.query.city;
+  
   console.log(selectedCity)
 
   let guList;
