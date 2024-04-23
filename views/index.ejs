@@ -58,9 +58,9 @@
       <div class="region_list d-flex row">
         <div class="col">
           <ul class="city">
-            <li><button>서울</button></li>
-            <li><button>경기</button></li>
-            <li><button>인천</button></li>
+            <li><button id="selectCity">서울</button></li>
+            <li><button id="selectCity">경기</button></li>
+            <li><button id="selectCity">인천</button></li>
           </ul>
         </div>
         <div class="col">
@@ -168,6 +168,8 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <script>
 
 document.getElementById("openModal").addEventListener("click", function() {
@@ -184,12 +186,13 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  const selectRegionButton = document.getElementById("selectRegion");
+  const selectCityButton = document.getElementById("selectCity");
 
-  selectRegionButton.addEventListener("click", function() {
-    const selectedCity = document.querySelector(".city button.selected").innerText;
+  selectCityButton.addEventListener("click", function() {
+    const selectedCity = selectCityButton.innerText;
+    console.log(selectedCity)
     
-    axios.get(`/regions?city=${selectedCity}`)
+    axios.get(`http://localhost:3000/region?city=${selectedCity}`) 
       .then(function(response) {
         const guList = response.data;
         updateGuList(guList);

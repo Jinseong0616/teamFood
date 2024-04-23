@@ -18,9 +18,13 @@ const uploadUser = multer({dest: 'uploads/users'})  // 회원
 
 // db
 const db = require('./models')
+<<<<<<< HEAD
+const {User, Store, Restaurant, Image, Favorite, Review,region} = db
+=======
 const exp = require('constants')
 
 const {User, Store, Restaurant, Image, Favorite, Review, Region} = db
+>>>>>>> 79c3c124ba09abccd6072330dd8975136abf837c
 
 // 포트
 
@@ -220,13 +224,18 @@ app.put('/edit/:id', async (req,res)=>{
 })
 
 
+
+
 //지역 불러오기 API
 app.get('/region', async (req,res)=>{
   const selectedCity = req.query.city;
+  console.log(selectedCity)
 
   let guList;
 
-  guList = await Region.findAll({where : { city : selectedCity }})
+  guList = await region.findAll({where : { city : selectedCity }})
+
+  console.log(guList)
 
   res.json(guList)
 })
