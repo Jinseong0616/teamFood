@@ -222,6 +222,7 @@ app.put('/edit/:id', async (req,res)=>{
 
 //지역 불러오기 API
 app.get('/region', async (req,res)=>{
+  
   const selectedCity = req.query.city;
   console.log(selectedCity)
 

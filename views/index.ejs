@@ -172,6 +172,7 @@
 
   <script>
 
+// 모달 열기
 document.getElementById("openModal").addEventListener("click", function() {
   document.getElementById("myModal").style.display = "block";
 });
@@ -183,7 +184,7 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 
 
 // --------------------------------------------------
-
+// 모달 작동 상태
 
 document.addEventListener("DOMContentLoaded", function() {
   const selectCityButton = document.getElementById("selectCity");
@@ -194,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     axios.get(`http://localhost:3000/region?city=${selectedCity}`) 
       .then(function(response) {
-        const guList = response.data;
+        const guList = JSON.parse(response.data);
         updateGuList(guList);
       })
       .catch(function(error) {
@@ -205,11 +206,17 @@ document.addEventListener("DOMContentLoaded", function() {
   // 동적으로 받아온 구 목록을 업데이트하는 함수
   function updateGuList(guList) {
     const guListContainer = document.querySelector(".region_list .col:nth-child(2) ul");
+
+    console.log(guListContainer)
+    
     guListContainer.innerHTML = "";
     guList.forEach(function(gu) {
+
       const li = document.createElement("li");
+      console.log(li)
+      
       const button = document.createElement("button");
-      button.innerText = gu;
+      button.innerText = gu.gu;
       li.appendChild(button);
       guListContainer.appendChild(li);
     });
@@ -226,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // 선택한 도시에 해당하는 구 목록을 업데이트
       const selectedCity = button.innerText;
-      axios.get(`/regions?city=${selectedCity}`)
+      axios.get(`http://localhost:3000/region?city=${selectedCity}`)
         .then(function(response) {
           const guList = response.data;
           updateGuList(guList);
