@@ -22,7 +22,7 @@
             <h2>신규 회원가입</h2>
         </div>
 
-        <form action="/join" method="POST">
+        <form action="/join" method="POST" enctype="multipart/form-data">
             <div class="joinForm">
                 <div class="joinItem">
                         <strong>아이디</strong>
@@ -47,6 +47,9 @@
                 <div class="joinItem">
                     <strong>휴대폰</strong>
                     <input name="phone" type="tel" placeholder="'-'를 빼고 숫자만 입력" value="010-xxxx-xxxx">
+                </div>
+                <div class="joinItem">
+                    <input name="imgUrl" id="imgUrl" type="file" placeholder="회원사진">
                 </div>
                 <div class="joinBtn">
                     <button type="submit" type="button" class="btn btn-dark loginButton">회원가입</button>

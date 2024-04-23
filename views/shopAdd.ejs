@@ -22,7 +22,7 @@
             <h2>식당 추가하기</h2>
         </div>
 
-        <form action="/add" method="POST">
+        <form action="/add" method="POST" enctype="multipart/form-data" >
             <div class="addForm">
                 <div class="addItem">
                         <strong>음식점 이름</strong>
@@ -45,11 +45,15 @@
                     <input name="callNumber" id="callNumber" type="text" placeholder="전화 번호">
                 </div>
                 <div class="addItem">
+                    <input name="imgUrl" id="imgUrl" type="file" placeholder="사진">
+                </div>
+                <div class="addItem">
                   <input name="views" id="views" type="hidden" value="0" placeholder="조회수">
               </div>
+              
                 <div class="addBtn row">
                     <button type="submit" class="btn btn-dark col-4">등록하기</button>
-                    <button type="reset" class="btn btn-dark col-4">취소하기</button>
+                    <button type="reset" class="btn btn-dark col-4"><a href="/">취소하기</a></button>
                 </div>
             </div>
         </form>
