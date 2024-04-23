@@ -46,38 +46,34 @@
     <section class="visual">
       <button id="openModal">지역 선택</button>
 
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>지역을 선택해주세요</h2>
-    <div class="table">
-      <div class="region_option row">
-          <div class="col">광역시도</div>
-          <div class="col">시군구</div>
-      </div>
-      <div class="region_list d-flex row">
-        <div class="col">
-          <ul class="city">
-            <li><button id="selectCity">서울</button></li>
-            <li><button id="selectCity">경기</button></li>
-            <li><button id="selectCity">인천</button></li>
-          </ul>
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>지역을 선택해주세요</h2>
+          <div class="table">
+            <div class="region_option row">
+                <div class="col">광역시도</div>
+                <div class="col">시군구</div>
+            </div>
+            <div class="region_list d-flex row">
+              <div class="col">
+                <ul class="city">
+                  <li><button class="selectCity">서울</button></li>
+                  <li><button class="selectCity">경기</button></li>
+                  <li><button class="selectCity">인천</button></li>
+                </ul>
+              </div>
+              <div class="col">
+                <ul class="gu">
+                  <!-- 이부분에 각 시 군 구 들어감! -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="selectedGu">선택된 지역</div>
+          <button id="selectRegion">선택</button>
         </div>
-        <div class="col">
-          <ul>
-            <li><button>동</button></li>
-            <li><button>서</button></li>
-            <li><button>남</button></li>
-            <li><button>북</button></li>
-          </ul>
-        </div>
       </div>
-    </div>
-    <button id="selectRegion">선택</button>
-  </div>
-</div>
-
-
     </section>
 
     <div class="info d-flex justify-content-center">
@@ -186,21 +182,6 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  const selectCityButton = document.getElementById("selectCity");
-
-  selectCityButton.addEventListener("click", function() {
-    const selectedCity = selectCityButton.innerText;
-    console.log(selectedCity)
-    
-    axios.get(`http://localhost:3000/region?city=${selectedCity}`) 
-      .then(function(response) {
-        const guList = response.data;
-        updateGuList(guList);
-      })
-      .catch(function(error) {
-        console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
-      });
-  });
 
   // 동적으로 받아온 구 목록을 업데이트하는 함수
   function updateGuList(guList) {
@@ -209,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function() {
     guList.forEach(function(gu) {
       const li = document.createElement("li");
       const button = document.createElement("button");
-      button.innerText = gu;
+      button.innerText = gu.gu;
       li.appendChild(button);
       guListContainer.appendChild(li);
     });
@@ -226,17 +207,27 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // 선택한 도시에 해당하는 구 목록을 업데이트
       const selectedCity = button.innerText;
-      axios.get(`/regions?city=${selectedCity}`)
+      axios.get(`/region?city=${selectedCity}`)
         .then(function(response) {
           const guList = response.data;
           updateGuList(guList);
         })
-        .catch(function(error) {
+        .catch(function(error) { 
           console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
         });
     });
   });
 });
+
+
+const guButton = document.querySelectorAll(".gu button");
+guButton.forEach(function(button){
+  button.addEventListener("click",function(){
+    const selectedGu = button.innerText;
+    console.log(selectedGu)
+  })
+})
+
 
 
   </script>
