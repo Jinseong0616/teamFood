@@ -54,27 +54,18 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
-app.get('/',async (req,res)=>{
+// 메인 페이지
+app.get('/', (req,res)=>{
   const userId = req.isAuthenticated() ? req.user.userId : false
-
   res.render('index.ejs', {userId})
 })
 
-app.get('/region', async (req,res)=>{
-  const selectedCity = req.query.city;
-
-  let guList;
-
-  guList = await Region.findAll({where : { city : selectedCity }})
-
-  res.json(guList)
-})
-
-
+// 로그인페이지
 app.get('/login', (req,res)=>{
   res.render('loginPage.ejs')
 })
 
+//로그인
 app.post('/login',(req,res)=>{
   passport.authenticate('local', (error, user, info)=>{
       
@@ -86,8 +77,8 @@ app.post('/login',(req,res)=>{
 
       req.logIn(user, (err)=>{
           if(err) return next(err)
-           req.session.userId = user.userId;
-           return res.redirect('/')   
+            req.session.userId = user.userId;
+            return res.redirect('/')   
       })
   })(req,res)
 })
@@ -112,18 +103,6 @@ passport.deserializeUser(async(user, done) =>{
     return done(null, newUserInfo)
   })
 })
-
-
-
-
-// 메인 페이지
-app.get('/', (req,res)=>{
-  const userId = req.isAuthenticated() ? req.user.userId : false
-  res.render('index.ejs', {userId})
-})
-
-
-
 
 // 로그아웃
 app.get('/logout', (req,res)=>{
@@ -182,3 +161,95 @@ app.put('/edit/:id', async (req,res)=>{
 })
 
 
+//지역 불러오기 API
+app.get('/region', async (req,res)=>{
+  const selectedCity = req.query.city;
+
+  let guList;
+
+  guList = await Region.findAll({where : { city : selectedCity }})
+
+  res.json(guList)
+})
+
+
+app.get('/search', async function(req,res){
+  res.render('search.ejs')
+})
+
+
+
+// 검색 결과 조회
+app.post('/search', async function(req, res) {
+  const searchKeyword = req.body.keyword; // 클라이언트로부터 검색어를 받아옵니다.
+  console.log('검색어는 ? ',searchKeyword)
+  try {
+    // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
+    const shops = await Store.findAll({
+      where: {
+        [Sequelize.Op.or]: [ // 지역
+          {
+            restaurantName: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
+          },{
+            category: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
+          }
+        ]
+      }
+    });
+
+    res.render('search.ejs', { shops }); // 검색 결과를 클라이언트에게 전달합니다.
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '검색 실패' })
+
+  }
+});
+
+
+// 음식점 추가하기
+app.get('/add', async function(req,res){
+  res.render('shopAdd.ejs')
+})
+
+// 음식점 추가하기
+app.post('/add', async function(req,res){
+  const { restaurantName, restaurantAddress, openTime, categori, callNumber, views } = req.body;
+  console.log(restaurantName)
+  console.log(restaurantAddress)
+  console.log(openTime)
+  console.log(categori)
+  console.log(callNumber)
+  console.log(views)
+
+  try {
+    
+    const existStore = await Store.findOne({
+      where: {
+        restaurantName: restaurantName,
+        callNumber: callNumber
+      }
+    });
+
+    if (existStore) {
+      return res.status(400).send("이미 등록된 음식점입니다");
+    }
+
+
+    await Store.create({
+      restaurantName: restaurantName,
+      restaurantAddress: restaurantAddress,
+      openTime: openTime,
+      categori: categori,
+      callNumber: callNumber,
+      views: views
+    });
+
+
+    //res.status(200).send("등록 성공!");
+    res.redirect('/search?success=true');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '음식점 등록 실패' });
+  }
+
+}) 
