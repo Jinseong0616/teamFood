@@ -19,14 +19,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'region',
-<<<<<<< HEAD
     id : false,
     defaultScope: {
       attributes: { exclude: ['id', 'createdAt', 'updatedAt'] } // id, createdAt, updatedAt를 제외하고 모든 쿼리에 적용
     }
-=======
-    id: false
->>>>>>> 79c3c124ba09abccd6072330dd8975136abf837c
   });
 
   return region;
