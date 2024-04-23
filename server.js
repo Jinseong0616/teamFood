@@ -209,15 +209,8 @@ app.get('/region', async (req,res)=>{
 })
 
 
-app.get('/search', async function(req,res){
-  res.render('search.ejs')
-})
-
-
-
-// 검색 결과 조회
-app.post('/search', async function(req, res) {
-  const searchKeyword = req.body.keyword; // 클라이언트로부터 검색어를 받아옵니다.
+app.get('/search', async function(req,res){  
+  const searchKeyword = req.query.keyword; // 클라이언트로부터 검색어를 받아옵니다.
   console.log('검색어는 ? ',searchKeyword)
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
@@ -228,7 +221,10 @@ app.post('/search', async function(req, res) {
             restaurantName: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
           },{
             category: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
+          },{
+            restaurantAddress: {[sequelize.Op.like]: `%${searchKeyword}%`}
           }
+
         ]
       }
     });
@@ -237,9 +233,9 @@ app.post('/search', async function(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
-
   }
-});
+  res.render('search.ejs')
+})
 
 
 // 음식점 추가하기
