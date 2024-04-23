@@ -88,11 +88,33 @@
         <div class="photo-container">
 
                 <div class="picGrid row row-cols-3 g-3">
-                    <% for (let i = 1; i <= 9; i++) { %>
-                        <div class="col">
-                            <img src="imgUrl<%= i %>.jpg" alt="imgId <%= i %>">
-                        </div>
-                    <% } %>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="1">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="2">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="3">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="4">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="5">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="6">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="7">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="8">
+                    </div>
+                    <div class="col">
+                        <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxODAxMjZfMTE5%2FMDAxNTE2OTY3MzI0Nzcw.lVqNHtwZwxDu9kQkR4XvbjikGcZLlLOELNIgxqfdjnYg.-iFMTGNKaPLVhgAyMTV99m8j7NYuDFvacAUoyC5khBMg.JPEG.dmswn851027%2FIMG_4803.jpg&type=a340" alt="9">
+                    </div>
                 </div>
 
                 <div class="d-grid gap-2" role="group">
@@ -106,7 +128,6 @@
             <p><%= reviews.length %>건의 방문자 평가</p>
             <div class="gradeInfo">
                 <div class="gradeRating">
-                    <span class="totalScore"><%= avgRating.toFixed(1) %>점</span>
                     <% 
                     for (let i = 0; i < reviews.length; i++) {
                         totalRating += reviews[i].rating;
@@ -118,15 +139,15 @@
                             <i class="bi bi-star"></i>
                         <% } %>
                     <% } %>
+                    <span class="totalScore"><%= avgRating.toFixed(1) %>점</span>
                 </div>
             </div>
         </div>
 
         <% for (let userId in userAvgRatings) { %>
-            <div class="container userReview">
+            <div class="container">
                 <p class="personGrade">
                     <span class="username">
-                        <img src="<%=userId.imgUrl %>" alt="<%= userId %>">
                         <strong><%= userId %></strong>
                     </span>
                     <span class="scoreInfo">
@@ -155,15 +176,6 @@
                             </p>
                             <p class="reviewContent">
                                 <%= reviews[i].content %>
-                            </p>
-                            <p class="userReviewPic">
-                               <div class="picGrid row row-cols-4 g-3">
-                                    <% for (let j = 1; j <= 4; j++) { %>
-                                        <div class="col">
-                                            <img src="<%= %>" alt="reviewPic <%= j %>">
-                                        </div>
-                                    <% } %>
-                                </div>
                             </p>
                         </div>
                     <% } %>
