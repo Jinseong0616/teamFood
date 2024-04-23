@@ -1,6 +1,7 @@
 // 1. 모듈 - require
 const express = require('express')
-const Sequelize = require('sequelize')
+const bodyParser = require('body-parser')
+const sequelize = require('sequelize')
 const app = express()
 const session = require('express-session')
 const passport = require('passport')
@@ -9,11 +10,7 @@ const axios = require('axios')
 
 // db
 const db = require('./models')
-<<<<<<< HEAD
 const {User, Store, Restaurant, Image, Favorite, Review,Region} = db
-=======
-const {User, Store, Review, Image, Favorite} = db
->>>>>>> develop
 
 // 포트
 
@@ -57,21 +54,12 @@ passport.use(new LocalStrategy(async (username, pw, done)=>{
 
 }))
 
-<<<<<<< HEAD
 app.get('/',async (req,res)=>{
-=======
-app.get('/login', (req,res)=>{
-  res.render('loginPage.ejs')
-})
-
-app.get('/', (req,res)=>{
->>>>>>> develop
   const userId = req.isAuthenticated() ? req.user.userId : false
 
   res.render('index.ejs', {userId})
 })
 
-<<<<<<< HEAD
 app.get('/region', async (req,res)=>{
   const selectedCity = req.query.city;
 
@@ -87,8 +75,6 @@ app.get('/login', (req,res)=>{
   res.render('loginPage.ejs')
 })
 
-=======
->>>>>>> develop
 app.post('/login',(req,res)=>{
   passport.authenticate('local', (error, user, info)=>{
       
@@ -130,8 +116,12 @@ passport.deserializeUser(async(user, done) =>{
 
 
 
+// 메인 페이지
+app.get('/', (req,res)=>{
+  const userId = req.isAuthenticated() ? req.user.userId : false
+  res.render('index.ejs', {userId})
+})
 
-<<<<<<< HEAD
 
 
 
@@ -180,8 +170,6 @@ app.get('/detail/:id', async (req, res) => {
 });
 
 // 회원가입 페이지
-=======
->>>>>>> develop
 app.get('/join', async function(req,res){
   res.render('joinPage.ejs')
 })
@@ -204,85 +192,29 @@ app.post('/join', async function(req,res){
   }
 }) 
 
+// 마이페이지
+app.get('/myPage/:id', async(req,res)=>{
+    const {id} = req.params
+    console.log(id)
+    const member = await User.findOne({where : {userId : id}})  // 회원 정보
+    const memImg = await Image.findOne({where : {userId : id}})
 
-// 검색
-app.get('/search', async function(req,res){
-  res.render('search.ejs')
+    res.render('myPage.ejs', {member, memImg})
 })
 
+app.put('/edit/:id', async (req,res)=>{
+  const {id} = req.params
+  const newInfo = req.body
+  const member = await User.findOne({where : {userId : id}})
+  
 
-// 검색 결과 조회
-app.post('/search', async function(req, res) {
-  const searchKeyword = req.body.keyword; // 클라이언트로부터 검색어를 받아옵니다.
-  console.log('검색어는 ? ',searchKeyword)
-  try {
-    // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
-    const shops = await Store.findAll({
-      where: {
-        [Sequelize.Op.or]: [ // 지역
-          {
-            restaurantName: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
-          },{
-            category: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
-          }
-        ]
-      }
-    });
-
-    res.render('search.ejs', { shops }); // 검색 결과를 클라이언트에게 전달합니다.
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: '검색 실패' });
-
+  if(member){
+    Object.keys(newInfo).forEach((prop)=>{
+      member[prop] = newInfo[prop]
+    })
+    await member.save()
+    res.redirect('/')
   }
-});
-
-// 음식점 추가하기
-app.get('/add', async function(req,res){
-  res.render('shopAdd.ejs')
 })
-
-// 음식점 추가하기
-app.post('/add', async function(req,res){
-  const { restaurantName, restaurantAddress, openTime, categori, callNumber, views } = req.body;
-  console.log(restaurantName)
-  console.log(restaurantAddress)
-  console.log(openTime)
-  console.log(categori)
-  console.log(callNumber)
-  console.log(views)
-
-  try {
-    
-    const existStore = await Store.findOne({
-      where: {
-        restaurantName: restaurantName,
-        callNumber: callNumber
-      }
-    });
-
-    if (existStore) {
-      return res.status(400).send("이미 등록된 음식점입니다");
-    }
-
-
-    await Store.create({
-      restaurantName: restaurantName,
-      restaurantAddress: restaurantAddress,
-      openTime: openTime,
-      categori: categori,
-      callNumber: callNumber,
-      views: views
-    });
-
-
-    //res.status(200).send("등록 성공!");
-    res.redirect('/search?success=true');
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: '음식점 등록 실패' });
-  }
-
-}) 
 
 
