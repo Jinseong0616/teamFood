@@ -65,10 +65,7 @@
         </div>
         <div class="col">
           <ul>
-            <li><button>동</button></li>
-            <li><button>서</button></li>
-            <li><button>남</button></li>
-            <li><button>북</button></li>
+            
           </ul>
         </div>
       </div>
@@ -189,20 +186,6 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 document.addEventListener("DOMContentLoaded", function() {
   const selectCityButton = document.getElementById("selectCity");
 
-  selectCityButton.addEventListener("click", function() {
-    const selectedCity = selectCityButton.innerText;
-    console.log(selectedCity)
-    
-    axios.get(`http://localhost:3000/region?city=${selectedCity}`) 
-      .then(function(response) {
-        const guList = JSON.parse(response.data);
-        updateGuList(guList);
-      })
-      .catch(function(error) {
-        console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
-      });
-  });
-
   // 동적으로 받아온 구 목록을 업데이트하는 함수
   function updateGuList(guList) {
     const guListContainer = document.querySelector(".region_list .col:nth-child(2) ul");
@@ -216,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
       console.log(li)
       
       const button = document.createElement("button");
-      button.innerText = gu.gu;
+      button.innerText = gu.gu;  // 원인 요소 설정을 안해서 안됐었음 
       li.appendChild(button);
       guListContainer.appendChild(li);
     });
@@ -224,6 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // 도시 버튼에 이벤트 리스너 추가
   const cityButtons = document.querySelectorAll(".city button");
+
   cityButtons.forEach(function(button) {
     button.addEventListener("click", function() {
       cityButtons.forEach(function(btn) {
@@ -233,7 +217,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
       // 선택한 도시에 해당하는 구 목록을 업데이트
       const selectedCity = button.innerText;
-      axios.get(`http://localhost:3000/region?city=${selectedCity}`)
+
+      axios.get(`/region?city=${selectedCity}`)
         .then(function(response) {
           const guList = response.data;
           updateGuList(guList);
