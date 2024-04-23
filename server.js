@@ -2,15 +2,25 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const sequelize = require('sequelize')
+const path = require('path')
 const app = express()
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const axios = require('axios')
+const multer = require('multer')
+
+
+// 이미지 디렉토리 설정
+
+const uploadStore = multer({dest: 'uploads/store'}) // 스토어
+const uploadUser = multer({dest: 'uploads/users'})  // 회원
 
 // db
 const db = require('./models')
-const {User, Store, Restaurant, Image, Favorite, Review,Region} = db
+const exp = require('constants')
+
+const {User, Store, Restaurant, Image, Favorite, Review, Region} = db
 
 // 포트
 
@@ -19,6 +29,7 @@ const port = 3000
 // 2. use, set 
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/uploads'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
@@ -118,8 +129,11 @@ app.get('/detail/:id', async (req, res) => {
 
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
+
     // 레스토랑에 대한 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
+    
+    
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
 
@@ -155,15 +169,24 @@ app.get('/join', async function(req,res){
 
 
 // 회원가입
-app.post('/join', async function(req,res){
+app.post('/join', uploadUser.single('imgUrl'), async function(req,res){
   const newMember = req.body
-  console.log(newMember)
+  const newFile = req.file
+  console.log(newFile.filename)
   try{
+
+      
       const member = await User.findOne({where : {userId : newMember.userId}})
       if(member){
           return res.send('중복입니다.')
       }
+
       const addMember = await User.create(newMember)
+      
+      await Image.create({
+        userId : addMember.userId,
+        imgUrl : newFile.filename
+      })
       res.redirect('/login')
   }catch(error){
       console.log('검색 중 오류 발생', error)
@@ -209,6 +232,7 @@ app.get('/region', async (req,res)=>{
 })
 
 
+// 검색 기능
 app.get('/search', async function(req,res){  
   const searchKeyword = req.query.keyword; // 클라이언트로부터 검색어를 받아옵니다.
   console.log('검색어는 ? ',searchKeyword)
@@ -244,20 +268,42 @@ app.get('/add', async function(req,res){
 })
 
 // 음식점 추가하기
-app.post('/add', async function(req,res){
+app.post('/add', uploadStore.single('imgUrl'), async function(req,res){
+
+  const userId = req.isAuthenticated() ? req.user.userId : false
+
   const newStore = req.body;
+
+  // 파일 업로드
+  const newFile = req.file;
   console.log(newStore)
-  
+
+  console.log(req.file.filename)  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
+
+ 
   try {
     
     const existStore = await Store.findOne({ where: {restaurantName : newStore.restaurantName}});
+
+    if (!req.file) {
+      return res.status(400).send('파일이 업로드되지 않았습니다.');
+  }
 
     if (existStore) {
       return res.status(400).send("이미 등록된 음식점입니다");
     }
 
-    await Store.create(newStore);
-
+  
+    const addStore = await Store.create(newStore);
+    
+    if(addStore){
+      await Image.create({
+        restaurantId : addStore.restaurantId,
+        imgUrl : newFile.filename
+      })
+  
+    }
+    
     //res.status(200).send("등록 성공!");
     res.redirect('/');
   } catch (error) {
@@ -266,3 +312,4 @@ app.post('/add', async function(req,res){
   }
 
 }) 
+

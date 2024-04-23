@@ -92,7 +92,7 @@ main{display: flex; justify-content: center; align-items: center;}
 .map{width: 400px; height: 400px;}
 
 .look-shop{padding: 20px 20px; cursor: pointer;}
-.look-shop:hover{background-color: rgb(243, 239, 239);}
+.shop-h:hover{background-color: rgb(243, 239, 239);}
 
 .info{padding: 2px 0 2px 16px;}
 .info .shop-name{margin-bottom: 10px; font-size: 24px;}

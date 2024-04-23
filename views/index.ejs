@@ -20,7 +20,8 @@
             
             <% if(userId && userId == "root") { %>
               <li>관리자</li>
-              <li><a href="/adminPage">관리자페이지</a></li>
+              <li><a href="/add">관리자페이지</a></li>
+              <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
               <li><a href="/logout">로그아웃</a></li>
               
 
