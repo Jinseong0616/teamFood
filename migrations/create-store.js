@@ -18,7 +18,7 @@ module.exports = {
       openTime: {
         type: Sequelize.STRING
       },
-      categori: {
+      category: {
         type: Sequelize.STRING
       },
       callNumber: {

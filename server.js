@@ -223,11 +223,11 @@ app.post('/search', async function(req, res) {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
       where: {
-        [Sequelize.Op.or]: [ // 지역
+        [sequelize.Op.or]: [ // 지역
           {
-            restaurantName: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
+            restaurantName: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
           },{
-            category: {[Sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
+            category: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
           }
         ]
       }
@@ -249,40 +249,21 @@ app.get('/add', async function(req,res){
 
 // 음식점 추가하기
 app.post('/add', async function(req,res){
-  const { restaurantName, restaurantAddress, openTime, categori, callNumber, views } = req.body;
-  console.log(restaurantName)
-  console.log(restaurantAddress)
-  console.log(openTime)
-  console.log(categori)
-  console.log(callNumber)
-  console.log(views)
-
+  const newStore = req.body;
+  console.log(newStore)
+  
   try {
     
-    const existStore = await Store.findOne({
-      where: {
-        restaurantName: restaurantName,
-        callNumber: callNumber
-      }
-    });
+    const existStore = await Store.findOne({ where: {restaurantName : newStore.restaurantName}});
 
     if (existStore) {
       return res.status(400).send("이미 등록된 음식점입니다");
     }
 
-
-    await Store.create({
-      restaurantName: restaurantName,
-      restaurantAddress: restaurantAddress,
-      openTime: openTime,
-      categori: categori,
-      callNumber: callNumber,
-      views: views
-    });
-
+    await Store.create(newStore);
 
     //res.status(200).send("등록 성공!");
-    res.redirect('/search?success=true');
+    res.redirect('/');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '음식점 등록 실패' });
