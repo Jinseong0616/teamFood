@@ -10,7 +10,7 @@ const axios = require('axios')
 
 // db
 const db = require('./models')
-const {User, Store, Restaurant, Image, Favorite, Review,Region} = db
+const {User, Store, Restaurant, Image, Favorite, Review,region} = db
 
 // 포트
 
@@ -197,13 +197,18 @@ app.put('/edit/:id', async (req,res)=>{
 })
 
 
+
+
 //지역 불러오기 API
 app.get('/region', async (req,res)=>{
   const selectedCity = req.query.city;
+  console.log(selectedCity)
 
   let guList;
 
-  guList = await Region.findAll({where : { city : selectedCity }})
+  guList = await region.findAll({where : { city : selectedCity }})
+
+  console.log(guList)
 
   res.json(guList)
 })
