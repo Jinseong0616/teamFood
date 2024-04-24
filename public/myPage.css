@@ -1,0 +1,41 @@
+
+a{text-decoration: none;}
+
+.header { padding: 20px 0 20px; border-bottom: gray solid 1px; text-align: center;} 
+.header img { width: 300px; } 
+
+.sec{margin-top: 50px;}
+
+.input-box{ width: 100%; display: flex; justify-content: center;}
+.input-box tr input{width: 400px; height: 40px;}
+.input-box th{width: 100px;}
+.input-box td{padding: 24px 48px;}
+
+.input-box .tr-profile{}
+/* .input-box .tr-profile img{width: 50%;  border-radius: 50%;} */
+
+.person-circle {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 200px; 
+  border-radius: 50%; 
+  overflow: hidden; 
+}
+
+.person-circle img {
+  width: 100%; 
+  height: auto; 
+  display: block; 
+}
+
+.sec .edit-box{display: flex; justify-content: center; padding: 50px 0 50px;}
+.sec div .edit{
+  width: 400px; 
+  height: 60px; 
+  background-color: #0ac7ce;
+  font-size:  18px;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
