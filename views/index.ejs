@@ -71,9 +71,14 @@
             </div>
           </div>
           <div class="selectedGu">선택된 지역</div>
-          <div class="row selectBtn">
-            <button class="col">취소</button>
-          <button class="col" id="selectRegion">선택</button>
+          <div class="row selectBtn gx-2">
+            <div class="col">
+              <button>취소</button>
+            </div>
+            <div class="col">
+              <button id="selectRegion">선택</button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -245,5 +250,11 @@ function updateGuList(guList) {
   });
 
   </script>
+  <script>
+  // 취소 버튼을 눌렀을 때 모달을 닫음
+  document.querySelector(".selectBtn .col:first-child button").addEventListener("click", function() {
+    document.getElementById("myModal").style.display = "none";
+  });
+</script>
 </body>
 </html>

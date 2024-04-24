@@ -142,7 +142,8 @@ section{
   color: white;
 }
 
-.modal-content .selectBtn button{width: 100%; border-radius: 10px; border: #aaa; color: #aaa;}
+.modal-content .selectBtn button{height: 100%; width: 100%; border-radius: 10px; border: gray; color: gray;}
+
 #selectRegion {  height: 50px; background-color: white; border-color: #19b7c2; color: #19b7c2; border: 1px solid #19b7c2; }
 
 .close {
