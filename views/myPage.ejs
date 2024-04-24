@@ -27,7 +27,7 @@
 
              <% if(memImg){ %>
                 <div class="person-circle">
-                  <img id="profileImage" src="/users/<%= memImg.imgUrl %>" alt="">
+                  <img id="imgUrl" name="imgUrl" src="/users/<%= memImg.imgUrl %>" alt="">
                 </div>
              <% } else { %>
                 <div class="person-circle">
@@ -152,7 +152,7 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
 
   // 이미지 업로드를 위한 이벤트 리스너
   const profileImageInput = document.getElementById('profileImageInput');
-  const profileImage = document.getElementById('profileImage');
+  const profileImage = document.getElementById('imgUrl');
 
     profileImageInput.addEventListener('change', function(event) {
       const file = event.target.files[0];

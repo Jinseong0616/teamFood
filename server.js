@@ -247,7 +247,7 @@ app.get('/myPage/:id', async(req,res)=>{
 })
 
 
-app.put('/edit/:id', uploadUser.single('profileImage'), async (req,res)=>{
+app.put('/edit/:id', uploadUser.single('imgUrl'), async (req,res)=>{
   const id = req.params.id
   const newInfo = JSON.parse(req.body.data)
   const newFile = req.file
@@ -320,7 +320,7 @@ app.get('/search', async function(req,res){
       }] 
   });
 
-    res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
+    res.render('search.ejs', {shops,userId}); // 검색 결과를 클라이언트에게 전달합니다.
 
 
 
