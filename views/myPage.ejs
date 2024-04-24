@@ -24,11 +24,11 @@
             <th>프로필 사진</th>
             <td class="d-flex">
               <div class="person-circle">
-                  <img src="/users/<%= memImg.imgUrl %>" alt="">
+                  <img id="profileImage" src="/users/<%= memImg.imgUrl %>" alt="">
               </div>
               <div class="img-edit">
-                <input type="file" id="imageInput" accept="image/*" >
-                <button>찾아보기</button>
+                <label for="profileImageInput" style="cursor: pointer;" class="find">찾아보기</label>
+                <input id="profileImageInput" type="file" accept="image/*" style="display: none;">
               </div>
             </td>          
           </tr>
@@ -79,30 +79,36 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
     const editName = document.getElementById('name').value
     const editBirthNum = document.getElementById('birthNum').value
     const editPhone = document.getElementById('phone').value
-  
+    const profileImage = document.getElementById('profileImageInput').files[0];
+
     e.preventDefault()
 
     let newInfo = {
-        password : editPassword, // 해당 input값 불러오기
+        password : editPassword,
         name : editName,
         birthNum : editBirthNum,
         phone : editPhone
     }
 
-  const id = e.target.dataset.id
-  fetch('/edit/'+ id, {
-    method : 'PUT',
-    headers: { 'Content-Type': 'application/json'}, 
-    body: JSON.stringify(newInfo)
-  }) 
-  .then( r => r.text())
-  .then( r => {
-    window.location.href="/"; 
-  })
-  .catch(err => { 
-    console.log(err);
-  })
-})
+    const id = e.target.dataset.id;
+    const formData = new FormData();
+    formData.append('profileImage', profileImage);
+    formData.append('data', JSON.stringify(newInfo));
+
+    fetch('/edit/'+ id, {
+        method : 'PUT',
+        body: formData
+    }) 
+    .then( r => r.text())
+    .then( r => {
+        window.location.href="/"; 
+    })
+    .catch(err => { 
+        console.log(err);
+    });
+});
+
+
 
 
   const deleteId = document.getElementById('deleteId').addEventListener('click',  function(e){
@@ -131,6 +137,23 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
     }
   })
   
+
+  // 이미지 업로드를 위한 이벤트 리스너
+  const profileImageInput = document.getElementById('profileImageInput');
+  const profileImage = document.getElementById('profileImage');
+
+    profileImageInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        profileImage.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+  });
+
+
 </script>
 </body>
 </html>
