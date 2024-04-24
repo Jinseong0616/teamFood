@@ -215,12 +215,13 @@
         <div class="select-shop">
           <ul class="shop-box">
             <li class="look-shop">
-              <a href="#" class="search">
+              
 
                 <!--  -->
                 <% shops.forEach(shop => { %>
+                  <a href="/detail/<%= shop.restaurantId %>" class="search">
                   <div class="shop-h row">        
-                    <img src="/test/<%= shop.Images[0].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
                       <div class="info col-9">
                         <h3 class="shop-name"><%= shop.restaurantName %></h3>
                         <p class="category"><%= shop.category %></p>
@@ -259,6 +260,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script>
+
   // 여러 이미지를 클릭하여 선택할 수 있는 기능
   document.addEventListener("DOMContentLoaded", function() {
     const genderImages = document.querySelectorAll('.gender .click');
@@ -324,6 +326,7 @@ for(let i = 0; i < question.length; i++){
 
   gradeButton.addEventListener('click', function() {
     console.log('평점순으로 정렬합니다.');
+    sortByGrade
     console.log(sortByGrade(shops));
   });
 
