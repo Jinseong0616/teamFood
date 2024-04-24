@@ -44,23 +44,23 @@
   <main>
     
     <section class="visual">
-      <button id="openModal">지역 선택</button>
+      <button class="select" id="openModal">지역 선택</button>
 
-      <div id="myModal" class="modal">
+      <div id="myModal" class="modal container-fluid">
         <div class="modal-content">
           <span class="close">&times;</span>
-          <h2>지역을 선택해주세요</h2>
+          <h2>지역 선택</h2>
           <div class="table">
             <div class="region_option row">
                 <div class="col">광역시도</div>
                 <div class="col">시군구</div>
             </div>
             <div class="region_list d-flex row">
-              <div class="col">
+              <div class="col-6">
                 <ul class="city">
-                  <li><button class="selectCity">서울</button></li>
-                  <li><button class="selectCity">경기</button></li>
-                  <li><button class="selectCity">인천</button></li>
+                  <li><button type="radio" class="selectCity">서울</button></li>
+                  <li><button type="radio" class="selectCity ">경기</button></li>
+                  <li><button type="radio" class="selectCity " >인천</button></li>
                 </ul>
               </div>
               <div class="col">
@@ -71,7 +71,10 @@
             </div>
           </div>
           <div class="selectedGu">선택된 지역</div>
-          <button id="selectRegion">선택</button>
+          <div class="row selectBtn">
+            <button class="col">취소</button>
+          <button class="col" id="selectRegion">선택</button>
+          </div>
         </div>
       </div>
     </section>
@@ -179,29 +182,44 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 });
 
 
+
+
 // --------------------------------------------------
 // 모달 작동 상태
 
-document.addEventListener("DOMContentLoaded", function() {
-
-  // 동적으로 받아온 구 목록을 업데이트하는 함수
-  function updateGuList(guList) {
+function updateGuList(guList) {
     const guListContainer = document.querySelector(".region_list .col:nth-child(2) ul");
-
-    console.log(guListContainer)
     
+    // 이전에 추가된 이벤트 리스너를 제거합니다.
     guListContainer.innerHTML = "";
+    
     guList.forEach(function(gu) {
-
-      const li = document.createElement("li");
-      console.log(li)
-      
-      const button = document.createElement("button");
-      button.innerText = gu.gu;  // 원인 요소 설정을 안해서 안됐었음 
-      li.appendChild(button);
-      guListContainer.appendChild(li);
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.innerText = gu.gu;
+        button.classList.add("selectGu");
+        li.appendChild(button);
+        guListContainer.appendChild(li);
+        
+        // 각 버튼에 클릭 이벤트를 추가합니다.
+        button.addEventListener("click", function() {
+            // 모든 구 버튼에서 selected 클래스를 제거합니다.
+            document.querySelectorAll(".gu button").forEach(function(btn) {
+                btn.classList.remove("selected");
+            });
+            // 현재 클릭한 구 버튼에 selected 클래스를 추가합니다.
+            button.classList.add("selected");
+            
+            const selectedGu = button.innerText;
+            console.log(selectedGu); // 선택된 구의 이름을 출력합니다.
+            
+            // 선택된 지역을 나타내는 요소에 접근합니다.
+            const selectedGuElement = document.querySelector(".selectedGu");
+            // 선택된 지역을 설정합니다.
+            selectedGuElement.innerText = "선택된 지역: " + selectedGu;
+        });
     });
-  }
+}
 
   // 도시 버튼에 이벤트 리스너 추가
   const cityButtons = document.querySelectorAll(".city button");
@@ -225,18 +243,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
   });
-});
-
-
-const guButton = document.querySelectorAll(".gu button");
-guButton.forEach(function(button){
-  button.addEventListener("click",function(){
-    const selectedGu = button.innerText;
-    console.log(selectedGu)
-  })
-})
-
-
 
   </script>
 </body>
