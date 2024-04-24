@@ -7,7 +7,6 @@ const app = express()
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-const axios = require('axios')
 const multer = require('multer')
 const {Op} = require('sequelize')
 
@@ -344,14 +343,13 @@ app.post('/add', upload.array('imgUrl', 2), async function(req,res){
     const existStore = await Store.findOne({ where: {restaurantAddress : newStore.restaurantAddress}});
 
     // 파일 업로드가 성공적으로 이루어졌는지 확인
-    if (!newFiles || newFiles.length === 0) {
-      return res.status(400).send('파일이 업로드되지 않았습니다.');
-    }
-    
     if (existStore) {
       return res.status(400).send("이미 등록된 음식점입니다");
     }
-
+    
+    if (!newFiles || newFiles.length === 0) {
+      return res.status(400).send('파일이 업로드되지 않았습니다.');
+    }
     const addStore = await Store.create(newStore);
     
     if(addStore){
