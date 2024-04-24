@@ -313,6 +313,19 @@ for(let i = 0; i < question.length; i++){
     }
   });
 
+  // 평점순으로 정렬하는 함수
+  function sortByGrade(shops) {
+    return shops.sort((a, b) => b.grade - a.grade);
+  }
+
+  // 버튼 요소를 가져와서 클릭 이벤트를 등록합니다.
+  const gradeButton = document.querySelector('.grade');
+
+  gradeButton.addEventListener('click', function() {
+    console.log('평점순으로 정렬합니다.');
+    console.log(sortByGrade(shops));
+  });
+
 </script>
 
 </html>
