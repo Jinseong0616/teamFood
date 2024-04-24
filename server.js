@@ -19,7 +19,8 @@ const uploadUser = multer({dest: 'uploads/users'})  // 회원
 // db
 const db = require('./models')
 const {User, Store, Restaurant, Image, Favorite, Review,region} = db
-
+// Store.hasMany(Image, { foreignKey: 'restaurantId' })
+// Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
 
 const port = 3000
@@ -245,26 +246,25 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
-      where: {
-        [sequelize.Op.or]: [ // 지역
-          {
-            restaurantName: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
-          },{
-            category: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
-          },{
-            restaurantAddress: {[sequelize.Op.like]: `%${searchKeyword}%`}
-          }
-
-        ]
-      }
+      include: [{
+        model: Image,
+        on: {
+          restaurantId: sequelize.col('store.restaurantId')
+        },
+        required: false
+      }],
+      where: sequelize.or(
+        sequelize.where(sequelize.col('store.restaurantAddress'), 'like', `%${searchKeyword}%`),
+        sequelize.where(sequelize.col('store.category'), 'like', `%${searchKeyword}%`),
+        sequelize.where(sequelize.col('store.restaurantName'), 'like', `%${searchKeyword}%`)
+      )
     });
 
-    res.render('search.ejs', { shops }); // 검색 결과를 클라이언트에게 전달합니다.
+    res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
   }
-  res.render('search.ejs')
 })
 
 
