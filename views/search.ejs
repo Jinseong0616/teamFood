@@ -215,12 +215,14 @@
         <div class="select-shop">
           <ul class="shop-box">
             <li class="look-shop">
-              <a href="#" class="search">
+              
 
                 <!--  -->
                 <% shops.forEach(shop => { %>
+                <a href="/detail/<%= shop.restorauntId %>" class="search">
                   <div class="shop-h row">
-                    <img src="" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <img src="/test/<%=shop.imgUrl%>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <!-- <h2><%= shop.imgUrl %></h2> -->
                     <div class="info col-9">
                       <h3 class="shop-name"><%= shop.restaurantName %></h3>
                       <p class="category"><%= shop.category %></p>

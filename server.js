@@ -7,7 +7,6 @@ const app = express()
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
-const axios = require('axios')
 const multer = require('multer')
 
 
@@ -261,19 +260,38 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
+      attributes: [
+        'restaurantId',
+        [sequelize.fn('MAX', sequelize.col('restaurantName')), 'restaurantName'],
+        [sequelize.fn('MAX', sequelize.col('restaurantAddress')), 'restaurantAddress'],
+        [sequelize.fn('MAX', sequelize.col('category')), 'category'],
+        [sequelize.fn('MAX', sequelize.col('openTime')), 'openTime'],
+        [sequelize.fn('MAX', sequelize.col('callNumber')), 'callNumber'],
+        [sequelize.fn('MAX', sequelize.col('views')), 'views'],
+        [sequelize.fn('MAX', sequelize.col('Images.imgUrl')), 'maxImgUrl']
+      ],
       include: [{
         model: Image,
-        on: {
-          restaurantId: sequelize.col('store.restaurantId')
-        },
-        required: false
+        attributes: [],
+        required: false,
+        where: {
+          imgUrl: {
+            [sequelize.like]: `%${searchKeyword}%`
+          }
+        }
       }],
-      where: sequelize.or(
-        sequelize.where(sequelize.col('store.restaurantAddress'), 'like', `%${searchKeyword}%`),
-        sequelize.where(sequelize.col('store.category'), 'like', `%${searchKeyword}%`),
-        sequelize.where(sequelize.col('store.restaurantName'), 'like', `%${searchKeyword}%`)
-      )
+      where: {
+        [sequelize.or]: [
+          { restaurantAddress: { [sequelize.like]: `%${searchKeyword}%` } },
+          { category: { [sequelize.like]: `%${searchKeyword}%` } },
+          { restaurantName: { [sequelize.like]: `%${searchKeyword}%` } }
+        ]
+      },
+      group: ['stores.restaurantId']
     });
+
+    console.log(shops[1].Images)
+  
 
     res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
@@ -305,14 +323,13 @@ app.post('/add', upload.array('imgUrl', 10), async function(req,res){
     const existStore = await Store.findOne({ where: {restaurantAddress : newStore.restaurantAddress}});
 
     // 파일 업로드가 성공적으로 이루어졌는지 확인
-    if (!newFiles || newFiles.length === 0) {
-      return res.status(400).send('파일이 업로드되지 않았습니다.');
-    }
-    
     if (existStore) {
       return res.status(400).send("이미 등록된 음식점입니다");
     }
-
+    
+    if (!newFiles || newFiles.length === 0) {
+      return res.status(400).send('파일이 업로드되지 않았습니다.');
+    }
     const addStore = await Store.create(newStore);
     
     if(addStore){
