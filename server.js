@@ -16,10 +16,26 @@ const multer = require('multer')
 const uploadStore = multer({dest: 'uploads/store'}) // 스토어
 const uploadUser = multer({dest: 'uploads/users'})  // 회원
 
+
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/test') // 파일이 저장될 경로
+  },
+  filename: function(req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`) // 파일명 설정
+  }
+});
+const upload = multer({storage : storage})
+
+
+
+
 // db
 const db = require('./models')
 const {User, Store, Restaurant, Image, Favorite, Review,region} = db
-
+// Store.hasMany(Image, { foreignKey: 'restaurantId' })
+// Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
 
 const port = 3000
@@ -245,26 +261,25 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
-      where: {
-        [sequelize.Op.or]: [ // 지역
-          {
-            restaurantName: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 가게가 포함되어있는거
-          },{
-            category: {[sequelize.Op.like]: `%${searchKeyword}%`} // 검색어에 카테고리가 포함되어 있는거
-          },{
-            restaurantAddress: {[sequelize.Op.like]: `%${searchKeyword}%`}
-          }
-
-        ]
-      }
+      include: [{
+        model: Image,
+        on: {
+          restaurantId: sequelize.col('store.restaurantId')
+        },
+        required: false
+      }],
+      where: sequelize.or(
+        sequelize.where(sequelize.col('store.restaurantAddress'), 'like', `%${searchKeyword}%`),
+        sequelize.where(sequelize.col('store.category'), 'like', `%${searchKeyword}%`),
+        sequelize.where(sequelize.col('store.restaurantName'), 'like', `%${searchKeyword}%`)
+      )
     });
 
-    res.render('search.ejs', { shops }); // 검색 결과를 클라이언트에게 전달합니다.
+    res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
   }
-  res.render('search.ejs')
 })
 
 
@@ -274,40 +289,40 @@ app.get('/add', async function(req,res){
 })
 
 // 음식점 추가하기
-app.post('/add', uploadStore.single('imgUrl'), async function(req,res){
+app.post('/add', upload.array('imgUrl', 10), async function(req,res){
 
   const newStore = req.body;
 
   // 파일 업로드
-  const newFile = req.file;
+  const newFiles = req.files;
   console.log(newStore)
 
-  console.log(req.file.filename)  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
+  // console.log(req.file.filename)  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
  
   try {
     
     const existStore = await Store.findOne({ where: {restaurantAddress : newStore.restaurantAddress}});
 
-    if (!req.file) {
+    // 파일 업로드가 성공적으로 이루어졌는지 확인
+    if (!newFiles || newFiles.length === 0) {
       return res.status(400).send('파일이 업로드되지 않았습니다.');
-  }
-
+    }
+    
     if (existStore) {
       return res.status(400).send("이미 등록된 음식점입니다");
     }
 
-  
     const addStore = await Store.create(newStore);
     
     if(addStore){
-      await Image.create({
-        restaurantId : addStore.restaurantId,
-        imgUrl : newFile.filename
-      })
-  
+      for(const file of newFiles){
+        await Image.create({
+          restaurantId : addStore.restaurantId,
+          imgUrl : file.filename  // 여러 파일을 다루므로  newFile 대신 file 사용
+        })
+      }
     }
-    
     //res.status(200).send("등록 성공!");
     res.redirect('/');
   } catch (error) {
