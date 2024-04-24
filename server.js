@@ -131,6 +131,7 @@ app.get('/detail/:id', async (req, res) => {
     // 레스토랑에 대한 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
     
+    const imgUrl = await Image.findOne({where : {restaurantId : id}})
     
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
@@ -153,7 +154,7 @@ app.get('/detail/:id', async (req, res) => {
       };
     });
 
-    res.render('detail.ejs', { restaurant, reviews, userAvgRatings });
+    res.render('detail.ejs', { restaurant, reviews, userAvgRatings, imgList : imgUrl });
   } catch (error) {
     console.error('에러 발생:', error);
     res.status(500).send('서버 에러');
@@ -224,6 +225,7 @@ app.put('/edit/:id', async (req,res)=>{
 app.get('/region', async (req,res)=>{
   
   const selectedCity = req.query.city;
+  
   console.log(selectedCity)
 
   let guList;
@@ -274,8 +276,6 @@ app.get('/add', async function(req,res){
 // 음식점 추가하기
 app.post('/add', uploadStore.single('imgUrl'), async function(req,res){
 
-  const userId = req.isAuthenticated() ? req.user.userId : false
-
   const newStore = req.body;
 
   // 파일 업로드
@@ -287,7 +287,7 @@ app.post('/add', uploadStore.single('imgUrl'), async function(req,res){
  
   try {
     
-    const existStore = await Store.findOne({ where: {restaurantName : newStore.restaurantName}});
+    const existStore = await Store.findOne({ where: {restaurantAddress : newStore.restaurantAddress}});
 
     if (!req.file) {
       return res.status(400).send('파일이 업로드되지 않았습니다.');
