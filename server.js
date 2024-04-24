@@ -237,7 +237,8 @@ app.get('/region', async (req,res)=>{
 
 // 검색 기능
 app.get('/search', async function(req,res){  
-  const searchKeyword = req.query.keyword; // 클라이언트로부터 검색어를 받아옵니다.
+
+  const searchKeyword = req.query.keyword;
   console.log('검색어는 ? ',searchKeyword)
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
@@ -256,12 +257,13 @@ app.get('/search', async function(req,res){
       }
     });
 
-    res.render('search.ejs', { shops }); // 검색 결과를 클라이언트에게 전달합니다.
+    console.log(shops)
+    res.render('search.ejs', { shops  }); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
   }
-  res.render('search.ejs')
+
 })
 
 
@@ -316,3 +318,9 @@ app.post('/add', uploadStore.single('imgUrl'), async function(req,res){
 
 }) 
 
+
+// 회원탈퇴
+app.get('/delete/:id', async function(req, res){
+  const userId = req.params.userId
+  console.log(userId)
+})
