@@ -247,12 +247,16 @@ app.get('/myPage/:id', async(req,res)=>{
 })
 
 
-app.put('/edit/:id', async (req,res)=>{
-  const {id} = req.params
-  const newInfo = req.body
+app.put('/edit/:id', uploadUser.single('profileImage'), async (req,res)=>{
+  const id = req.params.id
+  const newInfo = JSON.parse(req.body.data)
+  const newFile = req.file
+  console.log('파일 이름 : ',newFile.filename)
+  console.log('edit 아이디 : ', id)
+
   const member = await User.findOne({where : {userId : id}})
   
-
+  
   if(member){
     Object.keys(newInfo).forEach((prop)=>{
       member[prop] = newInfo[prop]
