@@ -34,9 +34,12 @@ section{
 .visual{
   /* position: relative; */
   width: 100%; height: 300px;
-  background-color: yellow;}
-
-
+  background-color: #124886;}
+  
+  .visual .select{ background-color: #19b7c2; width: 150px; height: 40px; border-radius: 13px; color: white; border: #19b7c2;}
+  .visual button{justify-content: center; text-align: center;}
+  
+  
 
 
 
@@ -110,7 +113,7 @@ section{
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 500px;
+  width: 550px;
   height: 550px ;
   
 }
@@ -119,6 +122,28 @@ section{
   height: 300px;
   overflow-y: auto;
 }
+
+.modal-content h2{font-size: 22px; text-align: center;}
+.modal-content .table{border: #888 1px solid;}
+.modal-content .region_option{height: 35px; margin: auto; width: 100%; border-bottom: black 1px solid; align-items: center;}
+
+.modal-content .region_list .col-6{ border-right: #aaa 1px solid;}
+
+.modal-content .city button{margin-bottom: 15px;}
+.modal-content .gu button{margin-bottom: 10px;}
+.modal-content .city button,
+.modal-content .gu button
+{ width: 100%; height: 40px; border-radius: 10px; background-color: white; border: black solid 0.5px ;}
+
+.city button.selected,
+.gu button.selected
+{
+  background-color: #124886;
+  color: white;
+}
+
+.modal-content .selectBtn button{width: 100%; border-radius: 10px; border: #aaa; color: #aaa;}
+#selectRegion {  height: 50px; background-color: white; border-color: #19b7c2; color: #19b7c2; border: 1px solid #19b7c2; }
 
 .close {
   color: #aaa;
