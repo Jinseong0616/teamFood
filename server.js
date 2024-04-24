@@ -320,9 +320,10 @@ app.get('/search', async function(req,res){
       }] 
   });
 
-    // console.log(shops[0].Images)
+    res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
 
-    res.render('search.ejs', {shops, userId}); // 검색 결과를 클라이언트에게 전달합니다.
+
+
 
   } catch (error) {
     console.error(error);
