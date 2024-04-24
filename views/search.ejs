@@ -219,12 +219,13 @@
 
                 <!--  -->
                 <% shops.forEach(shop => { %>
-                  <div class="shop-h row">
-                    <img src="" alt="<%= shop.restaurantName %>" class="col-3 title-img">
-                    <div class="info col-9">
-                      <h3 class="shop-name"><%= shop.restaurantName %></h3>
-                      <p class="category"><%= shop.category %></p>
-                      <p class="hash"><%= shop.hashTags %></p>
+                  <div class="shop-h row">        
+                    <img src="/test/<%= shop.Images[0].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                      <div class="info col-9">
+                        <h3 class="shop-name"><%= shop.restaurantName %></h3>
+                        <p class="category"><%= shop.category %></p>
+                        <p class="hash"><%= shop.hashTags %></p>
+                    
                       <div class="rate d-flex">
                         <p class="score"><span><%= shop.score %></span>점</p>
                         <p class="user-score"><img src="/image/star.png" alt=""><%= shop.userScore %> (<%= shop.reviewCount %>명)</p>

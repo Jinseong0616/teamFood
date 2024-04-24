@@ -261,21 +261,34 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
+      where: {
+        [Op.or]: [
+          {
+            restaurantName: {
+              [Op.like]: `%${searchKeyword}%`
+            }
+          },
+          {
+            category: {
+              [Op.like]: `%${searchKeyword}%`
+            }
+          },
+          {
+            restaurantAddress:{
+              [Op.like]: `%${searchKeyword}%`
+            }
+          }
+        ]
+      },
       include: [{
         model: Image,
-        on: {
-          restaurantId: sequelize.col('store.restaurantId')
-        },
-        required: false
-      }],
-      where: sequelize.or(
-        sequelize.where(sequelize.col('store.restaurantAddress'), 'like', `%${searchKeyword}%`),
-        sequelize.where(sequelize.col('store.category'), 'like', `%${searchKeyword}%`),
-        sequelize.where(sequelize.col('store.restaurantName'), 'like', `%${searchKeyword}%`)
-      )
-    });
+        attributes: ['imgUrl']
+      }]
+  });
 
-    res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
+    // console.log(shops[0].Images)
+
+    res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
