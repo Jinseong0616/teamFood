@@ -287,26 +287,21 @@ app.get('/search', async function(req,res){
       }]
   });
 
-<<<<<<< HEAD
+
     // console.log(shops[0].Images)
 
     res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
-=======
-<<<<<<< HEAD
+
     console.log(shops)
     res.render('search.ejs', { shops  }); // 검색 결과를 클라이언트에게 전달합니다.
-=======
+
     res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
->>>>>>> 100fd32500a6b9731b84142de256200bbb242cac
->>>>>>> 2976086bfbbfb768e0a9185d04661f4933833ec9
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> 100fd32500a6b9731b84142de256200bbb242cac
 })
 
 
