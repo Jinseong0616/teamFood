@@ -8,43 +8,16 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header class="header container-lg d-flex align-items-center">
-    <div class="container g-0">
-      <form action="/search">
-      <div class="row d-flex g-0 align-items-center">
-        <div class="col-3"><a href=""><h1 class="logo">LOGO</h1></a></div>
-        <div class="col d-flex justify-content-center"><input class="search_box" name="keyword" placeholder="지역,음식 또는 식당명 입력"><button>검색버튼</button>
-        </div>
-        <div class="col-3 d-flex justify-content-end">
-          <ul class="user d-flex justify-content-end">
-            
-            <% if(userId && userId == "root") { %>
-              <li>관리자</li>
-              <li><a href="/add">관리자페이지</a></li>
-              <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
-              <li><a href="/logout">로그아웃</a></li>
-              
-
-            <% } else if(userId) { %>
-              <li><%= userId %></li> 
-              <li><a href="/logout">로그아웃</a></li>
-              <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
-
-            <% } else { %>
-              <li><a href="/login">로그인</li> 
-              <li><a href="/join">회원가입</a></li> 
-          <% } %>
-          </ul>
-        </div>
-      </div>
-      </form>    
-    </div>
-  </header>
+  <%- include('header.ejs') %>
 
   <main>
     
     <section class="visual">
-      <button class="select" id="openModal">지역 선택</button>
+      <div class="select">
+        <p>당신을 위한</p>
+        <h1> 추천 맛집</h1>
+        <button id="openModal">지역 선택</button>
+      </div>
 
       <div id="myModal" class="modal container-fluid">
         <div class="modal-content">
@@ -71,9 +44,14 @@
             </div>
           </div>
           <div class="selectedGu">선택된 지역</div>
-          <div class="row selectBtn">
-            <button class="col">취소</button>
-          <button class="col" id="selectRegion">선택</button>
+          <div class="row selectBtn gx-2">
+            <div class="col">
+              <button>취소</button>
+            </div>
+            <div class="col">
+              <button id="selectRegion">선택</button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -90,80 +68,82 @@
       <div class="category_box">
         
         <div class="row restoraunt_list g-0">
-          <div class="col">
-            <div class="pic"><a href="/search?keyword=고기"><img src="/image/category/고기.jpg" alt=""></a></div>
-            <p class="restoraunt_title">고기</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="/image/category/돈까스.jpg" alt=""></a></div>
-            <p class="restoraunt_title">돈까스</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="/image/category/버거.jpg" alt=""></a></div>
-            <p class="restoraunt_title">버거</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/분식.jpg" alt=""></a></div>
-            <p class="restoraunt_title">분식</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/아시안.jpg" alt=""></a></div>
-            <p class="restoraunt_title">아시안</p>
-          </div>
-        </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=고기"><img src="/image/category/Meat.jpg" alt=""></a></div>
+    <p class="restoraunt_title">고기</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=돈까스"><img src="/image/category/Pork%20Cutlet.jpg" alt=""></a></div>
+    <p class="restoraunt_title">돈까스</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=버거"><img src="/image/category/Burger.jpg" alt=""></a></div>
+    <p class="restoraunt_title">버거</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=분식"><img src="/image/category/Snack.jpg" alt=""></a></div>
+    <p class="restoraunt_title">분식</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=아시안"><img src="/image/category/Asian.jpg" alt=""></a></div>
+    <p class="restoraunt_title">아시안</p>
+  </div>
+</div>
 
-        <div class="row restoraunt_list g-0">
-          <div class="col">
-            <div class="pic"><a href=""><img src="/img/양식.jpg" alt=""></a></div>
-            <p class="restoraunt_title">양식</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/일식.jpg" alt=""></a></div>
-            <p class="restoraunt_title">일식</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/족발.jpg" alt=""></a></div>
-            <p class="restoraunt_title">족발</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/죽.jpg" alt=""></a></div>
-            <p class="restoraunt_title">죽</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/중식.jpg" alt=""></a></div>
-            <p class="restoraunt_title">중식</p>
-          </div>
-        </div>
+<div class="row restoraunt_list g-0">
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=양식"><img src="/image/category/Western.jpg" alt=""></a></div>
+    <p class="restoraunt_title">양식</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=일식"><img src="/image/category/Japanese.jpg" alt=""></a></div>
+    <p class="restoraunt_title">일식</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=족발"><img src="/image/category/Pig%27s%20Feet.jpg" alt=""></a></div>
+    <p class="restoraunt_title">족발 • 보쌈 </p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=죽"><img src="/image/category/Porridge.jpg" alt=""></a></div>
+    <p class="restoraunt_title">죽</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=중식"><img src="/image/category/Chinese.jpg" alt=""></a></div>
+    <p class="restoraunt_title">중식</p>
+  </div>
+</div>
 
-        <div class="row restoraunt_list g-0">
-          <div class="col">
-            <div class="pic"><a href=""><img src="/img/찌개.jpg" alt=""></a></div>
-            <p class="restoraunt_title">찌개</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/치킨.jpg" alt=""></a></div>
-            <p class="restoraunt_title">치킨</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/피자.jpg" alt=""></a></div>
-            <p class="restoraunt_title">피자</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/돈까스.jpg" alt=""></a></div>
-            <p class="restoraunt_title">돈까스</p>
-          </div>
-          <div class="col">
-            <div class="pic"><a href=""><img src="./img/디저트.jpg" alt=""></a></div>
-            <p class="restoraunt_title">디저트</p>
-          </div>
-        </div>
+<div class="row restoraunt_list g-0">
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=찌개"><img src="/image/category/Stew.jpg" alt=""></a></div>
+    <p class="restoraunt_title">찌개</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=치킨"><img src="/image/category/Chicken.jpg" alt=""></a></div>
+    <p class="restoraunt_title">치킨</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=피자"><img src="/image/category/Pizza.jpg" alt=""></a></div>
+    <p class="restoraunt_title">피자</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=돈까스"><img src="/image/category/Pork%20Cutlet.jpg" alt=""></a></div>
+    <p class="restoraunt_title">돈까스</p>
+  </div>
+  <div class="col">
+    <div class="pic"><a href="/search?keyword=디저트"><img src="/image/category/Dessert.jpg" alt=""></a></div>
+    <p class="restoraunt_title">디저트</p>
+  </div>
+</div>
+
+
         
       </div>
     </section>
     
 
   </main>
-  
+  <%- include('footer.ejs') %>
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -245,5 +225,11 @@ function updateGuList(guList) {
   });
 
   </script>
+  <script>
+  // 취소 버튼을 눌렀을 때 모달을 닫음
+  document.querySelector(".selectBtn .col:first-child button").addEventListener("click", function() {
+    document.getElementById("myModal").style.display = "none";
+  });
+</script>
 </body>
 </html>

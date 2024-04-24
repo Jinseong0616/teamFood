@@ -39,3 +39,10 @@ a{text-decoration: none;}
   border: none;
   border-radius: 2px;
 }
+
+.find{
+  border: 1px solid black; 
+  padding: 8px 30px; color: white; 
+  background-color: black;
+
+ }
