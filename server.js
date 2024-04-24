@@ -157,6 +157,9 @@ app.get('/logout', (req,res)=>{
 
 // 세부 페이지 (** *기능구현만 일단 해놓은 상태 ***)
 app.get('/detail/:id', async (req, res) => {
+
+  const userId = req.isAuthenticated() ? req.user.userId : false
+
   try {
     const { id } = req.params;
 
@@ -167,6 +170,8 @@ app.get('/detail/:id', async (req, res) => {
     const reviews = await Review.findAll({ where: { restaurantId: id } });
     
     const imgUrl = await Image.findAll({where : {restaurantId : id}})
+
+    const user = await User.findOne({where : {userId : id}})
     
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
@@ -190,7 +195,7 @@ app.get('/detail/:id', async (req, res) => {
       };
     });
 
-    res.render('detail.ejs', { restaurant, reviews, userAvgRatings, imgList : imgUrl });
+    res.render('detail.ejs', { restaurant, reviews, userAvgRatings, imgList : imgUrl , userId});
   } catch (error) {
     console.error('에러 발생:', error);
     res.status(500).send('서버 에러');
@@ -207,7 +212,6 @@ app.get('/join', async function(req,res){
 app.post('/join', uploadUser.single('imgUrl'), async function(req,res){
   const newMember = req.body
   const newFile = req.file
-  console.log(newFile.filename)
   try{
 
       
@@ -217,11 +221,13 @@ app.post('/join', uploadUser.single('imgUrl'), async function(req,res){
       }
 
       const addMember = await User.create(newMember)
+      if(newFile){
+        await Image.create({
+          userId : addMember.userId,
+          imgUrl : newFile.filename
+        })
+      }
       
-      await Image.create({
-        userId : addMember.userId,
-        imgUrl : newFile.filename
-      })
       res.redirect('/login')
   }catch(error){
       console.log('검색 중 오류 발생', error)
@@ -236,8 +242,10 @@ app.get('/myPage/:id', async(req,res)=>{
     const member = await User.findOne({where : {userId : id}})  // 회원 정보
     const memImg = await Image.findOne({where : {userId : id}})
 
+    
     res.render('myPage.ejs', {member, memImg})
 })
+
 
 app.put('/edit/:id', async (req,res)=>{
   const {id} = req.params
@@ -276,7 +284,7 @@ app.get('/region', async (req,res)=>{
 
 // 검색 기능
 app.get('/search', async function(req,res){  
-
+  const userId = req.isAuthenticated() ? req.user.userId : false
   const searchKeyword = req.query.keyword;
   console.log('검색어는 ? ',searchKeyword)
   try {
@@ -310,9 +318,7 @@ app.get('/search', async function(req,res){
 
     // console.log(shops[0].Images)
 
-    res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
-
-    console.log(shops[0].Images)
+    res.render('search.ejs', {shops, userId}); // 검색 결과를 클라이언트에게 전달합니다.
 
   } catch (error) {
     console.error(error);
