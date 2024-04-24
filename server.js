@@ -117,18 +117,37 @@ passport.serializeUser((user, done) =>{
   })
 })
 
-passport.deserializeUser(async(user, done) =>{
-  let result = await User.findOne({where : {userId : user.userId}})
-  delete result.password  // 객체에서 파라미터 지움. password 파라미터 필요없어서 지움
-  
-    const newUserInfo={
-      userId : result.userId,
+passport.deserializeUser(async (user, done) => {
+  try {
+    let result = await User.findOne({ where: { userId: user.userId } });
+
+    if (result) {
+      // 사용자가 존재하고 비밀번호가 있는 경우에만 삭제
+      if (result.password) {
+        delete result.password; // 비밀번호 삭제
+      }
       
+      const newUserInfo = {
+        userId: result.userId,
+        // 필요한 경우 다른 필드도 추가할 수 있음
+      };
+      
+      process.nextTick(() => {
+        return done(null, newUserInfo);
+      });
+    } else {
+      // 사용자를 찾을 수 없는 경우 빈 객체를 반환
+      const newUserInfo = {};
+      process.nextTick(() => {
+        return done(null, newUserInfo);
+      });
     }
-  process.nextTick(()=>{
-    return done(null, newUserInfo)
-  })
-})
+  } catch (error) {
+    console.error("처리중 오류 발생", error);
+    done(error); // 오류가 발생한 경우 done 함수에 오류 전달
+  }
+});
+
 
 // 로그아웃
 app.get('/logout', (req,res)=>{
@@ -264,6 +283,7 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
+
      where: {
         [Op.or]: [
           {
@@ -299,7 +319,6 @@ app.get('/search', async function(req,res){
     console.error(error);
     res.status(500).json({ message: '검색 실패' })
   }
-
 })
 
 
@@ -354,7 +373,17 @@ app.post('/add', upload.array('imgUrl', 2), async function(req,res){
 
 
 // 회원탈퇴
-app.get('/delete/:id', async function(req, res){
-  const userId = req.params.userId
-  console.log(userId)
+app.delete('/delete/:id', async function(req, res){
+  const id = req.params.id
+  console.log('아이디 : ',id)
+
+  try {
+    await User.destroy({where : {userId : id}})
+    console.log('잘처리됨')
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("처리중 오류 발생",error);
+    res.status(500).send('서버 오류 발생');
+  } 
+
 })
