@@ -26,7 +26,10 @@
               <div class="person-circle">
                   <img src="/users/<%= memImg.imgUrl %>" alt="">
               </div>
-              <div class="img-edit"><button>프로필 수정</button></div>
+              <div class="img-edit">
+                <input type="file" id="imageInput" accept="image/*" >
+                <button>찾아보기</button>
+              </div>
             </td>          
           </tr>
           <tr class="tr-id">
@@ -103,14 +106,15 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
   })
 })
 
-  const deleteId = document.getElementById('deleteId').addEventListener('click',function(e){
+  const deleteId = document.getElementById('deleteId').addEventListener('click',  function(e){
 
     if(confirm("정말로 탈퇴하시겠습니까?")){
       const id = document.getElementById('userId').value;
       console.log('회원아이디',id)
 
+      const url = 'http://localhost:3000'
       // 서버로 DELETE 요청 보내기
-      fetch('/delete/' + id, {
+      fetch(`${url}/delete/${id}`, {
             method: 'DELETE'
         })
         .then(response => {
