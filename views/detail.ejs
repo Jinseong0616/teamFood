@@ -13,16 +13,17 @@
     <div class="restaurantMain container">
         <div class="restaurantInfo">
             <div class="infoImg">
-                <img src="/store/<%= imgList.imgUrl %>" alt="음식점 사진">
-                <img src="" alt="음식점 사진">
+                <% for(let i = 0 ; i < imgList.length; i++) { %>
+                    <img src="/test/<%= imgList[i].imgUrl %>" alt="음식점 사진">
+               <% } %>
             </div>
             <div class="infoName row justify-content-between">
-                <h1 class="col">음식점 이름</h1>
+                <h1 class="col"><%= restaurant.restaurantName %></h1>
                 <button class="col-3 shareBtn"><i class="bi bi-share"></i> 공유</button>
             </div>
             <div class="restaurantCategory">
-                <a href="/지역구">지역</a>
-                <a href="/카테고리">카테고리</a>
+                <a href="/지역구"><%= restaurant.restaurantAddress %></a>
+                <a href="/카테고리"><%= restaurant.restaurantCategory %></a>
             </div>
             <div class="restaurantRating">
                 <div class="gradeInfo row row-cols-auto">
@@ -51,20 +52,23 @@
         <div class="restaurantDetail">
             <ul>
                 <li class="address row justify-content-between">
-                    <i class="col bi bi-geo-alt"> 음식점의 위치</i>
+                    <i class="col bi bi-geo-alt"><%= restaurant.restaurantAddress %></i>
                     <button type="button" class="col-3 btn btn-info text-light">지도보기</button>
                 </li>
                 <li class="number">
-                    <i class="bi bi-journal"> 032-1234-5678</i>
+                    <i class="bi bi-journal"> <%= restaurant.callNumber %></i>
                 </li>
                 <li class="category">
-                    <i class="bi bi-tag">  한식, 고기</i>
+
+                    <!-- 태그 보류 -->
+                    <i class="bi bi-tag"> 한식, 고기</i>   
                 </li>
                 <li class="openTime">
-                    <i class="bi bi-clock-history"> 10:00 ~ 22:00 </i>
+                    <i class="bi bi-clock-history"> <%= restaurant.openTime %> </i>
                 </li>
                 <li>
-                    <i class="bi bi-chat-left-text ">  폐업신고 · 정보수정 제안 </i>
+                     <!-- 모달창 구현 -->
+                    <i class="bi bi-chat-left-text"> 폐업신고 · 정보수정 제안 </i>
                 </li>
             </ul>
         </div>

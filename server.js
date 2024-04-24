@@ -9,6 +9,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const axios = require('axios')
 const multer = require('multer')
+const {Op} = require('sequelize')
 
 
 // 이미지 디렉토리 설정
@@ -136,7 +137,7 @@ app.get('/logout', (req,res)=>{
   })
 })
 
-// 세부 페이지 (***기능구현만 일단 해놓은 상태***)
+// 세부 페이지 (** *기능구현만 일단 해놓은 상태 ***)
 app.get('/detail/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,13 +148,14 @@ app.get('/detail/:id', async (req, res) => {
     // 레스토랑에 대한 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
     
-    const imgUrl = await Image.findOne({where : {restaurantId : id}})
+    const imgUrl = await Image.findAll({where : {restaurantId : id}})
     
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
 
     // 회원별로 작성한 리뷰에 대한 평균별점 계산
     const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
+
     reviews.forEach(review => {
       if (!(review.userId in userRatings)) {
         userRatings[review.userId] = { totalRating: 0, reviewCount: 0 };
@@ -262,7 +264,7 @@ app.get('/search', async function(req,res){
   try {
     // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
     const shops = await Store.findAll({
-      where: {
+     where: {
         [Op.or]: [
           {
             restaurantName: {
@@ -284,18 +286,14 @@ app.get('/search', async function(req,res){
       include: [{
         model: Image,
         attributes: ['imgUrl']
-      }]
+      }] 
   });
-
 
     // console.log(shops[0].Images)
 
     res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
 
-    console.log(shops)
-    res.render('search.ejs', { shops  }); // 검색 결과를 클라이언트에게 전달합니다.
-
-    res.render('search.ejs', { shops,}); // 검색 결과를 클라이언트에게 전달합니다.
+    console.log(shops[0].Images)
 
   } catch (error) {
     console.error(error);
@@ -311,7 +309,7 @@ app.get('/add', async function(req,res){
 })
 
 // 음식점 추가하기
-app.post('/add', upload.array('imgUrl', 10), async function(req,res){
+app.post('/add', upload.array('imgUrl', 2), async function(req,res){
 
   const newStore = req.body;
 
