@@ -1,7 +1,5 @@
 // 1. 모듈 - require
 const express = require('express')
-const bodyParser = require('body-parser')
-const sequelize = require('sequelize')
 const path = require('path')
 const app = express()
 const session = require('express-session')
@@ -311,8 +309,6 @@ app.get('/search', async function(req,res){
     // console.log(shops[0].Images)
 
     res.render('search.ejs', {shops}); // 검색 결과를 클라이언트에게 전달합니다.
-
-    console.log(shops[0].Images)
 
   } catch (error) {
     console.error(error);
