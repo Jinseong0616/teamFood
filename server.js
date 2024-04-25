@@ -201,7 +201,6 @@ app.get("/join", async function (req, res) {
 });
 
 // 회원가입
-
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
@@ -210,7 +209,6 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
     if (member) {
       return res.send("중복입니다.");
     }
-
     const addMember = await User.create(newMember);
     
     if (newFile) {
