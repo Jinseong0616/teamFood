@@ -8,6 +8,7 @@ const LocalStrategy = require('passport-local')
 const multer = require('multer')
 const {Op} = require('sequelize')
 
+const bcrypt = require('bcrypt')
 
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
@@ -21,6 +22,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+
 
 // db
 const db = require("./models");
@@ -63,11 +65,14 @@ passport.use(
 
     if (!result) {
       return done(null, false, { message: "ID가 DB에 없음" });
-    } else if (result.password != pw) {
-      return done(null, false, { message: "비밀번호 불일치" });
-    } else {
+
+    } 
+    if (await bcrypt.compare(pw, result.password)) {  // 같으면 true
       return done(null, result);
-    }
+    }  
+    else if (result.password != pw) {
+      return done(null, false, { message: "비밀번호 불일치" });
+    } 
   })
 );
 
@@ -204,11 +209,18 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
+
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
+
     if (member) {
       return res.send("중복입니다.");
     }
+
+    let hashPassword = await bcrypt.hash(newMember.password, 10);
+
+    newMember.password = hashPassword;
+
     const addMember = await User.create(newMember);
     
     if (newFile) {
@@ -262,6 +274,8 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   console.log("파일 이름 : ", newFile.filename);
   console.log("edit 아이디 : ", id);
 
+
+  
   const member = await User.findOne({ where: { userId: id } });
   let imgFile = await Image.findOne({ where: { userId: id } });
 
