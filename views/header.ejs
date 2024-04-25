@@ -12,13 +12,20 @@
       <form action="/search">
       <div class="row d-flex g-0 align-items-center">
 
-        <div class="col-3"><a href="/"><h1 class="logo">LOGO</h1></a></div>
-
+        <div class="col-3">
+          <a href="/">
+            <h1 class="logo">
+              <img class="logo-img" src="https://dcicons.s3.ap-northeast-1.amazonaws.com/new/images/web/react_components/Header/logo.png" alt="다이닝코드">
+            </h1>
+          </a>
+        </div>
+        
         <div class="col d-flex justify-content-center"><input class="search_box" name="keyword" placeholder="지역,음식 또는 식당명 입력"><button>검색버튼</button>
         </div>
         <div class="col-3 d-flex justify-content-end">
           <ul class="user d-flex justify-content-end">
             
+
             <%if(userId){%>
               <%if(userId == "root"){%>
                 <li>관리자</li>
@@ -26,7 +33,7 @@
                 <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
                 <li><a href="/logout">로그아웃</a></li>
               <%}else{%>
-                <li><%= userId %></li> 
+                <li><%= userId %>님</li> 
                 <li><a href="/logout">로그아웃</a></li>
                 <li><a href="/myPage/<%= userId %>">마이페이지</a></l>
               <%}%>
@@ -41,5 +48,16 @@
       </form>    
     </div>
   </header>
+  <nav>
+    <div class="container g-0 nav-box">
+      <ul class="nav-ul d-flex">
+        <li class="nav-li"><a href="#" >공지사항</a></li>
+        <li class="nav-li"><a href="#">자주묻는질문</a></li>
+        <li class="nav-li"><a href="#">다이닝코드소개</a></li>
+        <li class="nav-li"><a href="#">다이닝코드 이용안내</a></li>
+        <li class="nav-li"><a href="#">매거진</a></li>
+      </ul>
+    </div>
+  </nav>
 </body>
 </html>

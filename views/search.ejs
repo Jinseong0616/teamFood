@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="/search.css">
 </head>
 <body>
-  <a href="/">메인</a>
 
   <%- include('header.ejs') %>
 
@@ -161,7 +160,7 @@
               <div class="square" style="background-color: rgb(67, 163, 147);"></div>
               <h4>지역</h4>
             </div>
-            <button class="question"><span>광역시도</span></button>
+            <button class="city"><span>광역시도</span></button>
             <div class="answer">
               <ul class="city_list">
                 <li>서울</li>
@@ -208,7 +207,6 @@
           <ul class="shop-box">
             <li class="look-shop">
               
-
                 <!--  -->
 
 
@@ -288,7 +286,7 @@
     });
 
 
-    let question = document.getElementsByClassName('question');
+let question = document.getElementsByClassName('city');
 
 function questionOpen(question,answer){
     if(answer.style.maxHeight){
@@ -320,7 +318,7 @@ for(let i = 0; i < question.length; i++){
   });
 
   const cityList = document.querySelector(".city_list");
-  const button = document.querySelector("button.question span");
+  const button = document.querySelector("button.city span");
 
   cityList.addEventListener("click", function(event) {
     if (event.target.tagName === "LI") {
