@@ -1,6 +1,10 @@
 * { margin: 0; padding: 0; box-sizing: border-box; } 
 ul,ol,li { list-style: none; } 
+<<<<<<< HEAD
+a { text-decoration: none; }
+=======
 a { text-decoration: none;}
+>>>>>>> a503ceb048579b71ad3dba5b0b5dcedf6b046b56
 p{margin: 0; color: black;}
 
 section{ width: 1350px;}
