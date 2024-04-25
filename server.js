@@ -201,6 +201,7 @@ app.get("/join", async function (req, res) {
 });
 
 // 회원가입
+
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
@@ -217,7 +218,6 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
         imgUrl: newFile.filename,
       });
     }
-
     res.redirect("/login");
   } catch (error) {
     console.log("검색 중 오류 발생", error);
@@ -225,16 +225,34 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   }
 });
 
+// 아이디 중복확인
+app.post('/checkId', async(req, res)=>{
+  const userId = req.body.userId
+  console.log(userId)
+
+  try {
+    const existingMember = await User.findOne({ where: { userId: userId } });
+      if (existingMember) {
+          res.json({ exists: true }); 
+      } else {
+          res.json({ exists: false }); 
+      }
+  } catch (error) {
+    console.log('검색 중 오류 발생', error)
+    res.status(500).send("서버 오류 발생");
+  }
+})
+
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
 
   const member = await User.findOne({ where: { userId: id } }); // 회원 정보
   const memImg = await Image.findOne({ where: { userId: id } });
-
-  res.render("myPage.ejs", { member, memImg });
-});
-
+  
+  res.render('myPage.ejs',{member,memImg})
+})
+  
 // 회원 수정
 app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const { id } = req.params;
@@ -247,7 +265,6 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 
   const member = await User.findOne({ where: { userId: id } });
   let imgFile = await Image.findOne({ where: { userId: id } });
-  console.log("이미지파일", imgFile.imgUrl);
 
   if (member) {
     Object.keys(newInfo).forEach((prop) => {
@@ -288,7 +305,9 @@ app.get("/region", async (req, res) => {
 // 검색 기능
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
+
   const searchKeyword = req.query.keyword;
+  
   let shops;
   console.log("검색어는 ? ", searchKeyword);
   try {
@@ -337,6 +356,11 @@ app.get("/search", async function (req, res) {
     res.status(500).json({ message: "검색 실패" });
   }
 });
+
+
+
+
+
 
 // 음식점 추가하기
 app.get("/add", async function (req, res) {
@@ -403,3 +427,5 @@ app.delete("/delete/:id", async function (req, res) {
 app.get('/maps', (req,res)=>{
   res.render('maps.ejs')
 })
+
+

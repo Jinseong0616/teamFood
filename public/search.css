@@ -1,6 +1,10 @@
 * { margin: 0; padding: 0; box-sizing: border-box; } 
 ul,ol,li { list-style: none; } 
+<<<<<<< HEAD
+a { text-decoration: none; }
+=======
 a { text-decoration: none;}
+>>>>>>> a503ceb048579b71ad3dba5b0b5dcedf6b046b56
 p{margin: 0; color: black;}
 
 header, .select, .food-shop{background-color: white; }
@@ -31,7 +35,7 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 .categoryGroup, .gender{padding-left: 16px;}
 
 
-.question {
+.city {
   padding: 0;
   font: 18px "inherit";
   width: 100%;
@@ -39,7 +43,7 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
   border: black 0.5px solid;
 }
 
-.question span{
+.city span{
   text-align: left;
   display: flex;
   justify-content: flex-start;

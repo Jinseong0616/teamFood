@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/search.css">
 </head>
 <body>
+
   <%- include('header.ejs') %>
 
   <main class="container">
@@ -152,6 +153,7 @@
             </li>
           </ul>
           <div class="dk"><hr></div>
+
         </div>
         <div class="sel-location">
           <div class="title d-flex">
@@ -174,6 +176,7 @@
               <li>목포</li>
               <li>전라</li>
             </ul>
+
           </div>
         </div>
       </div>
@@ -200,6 +203,7 @@
           <ul class="shop-box">
             <li class="look-shop">
               
+            
                 <% shops.forEach(shop => { %>
                   <a href="/detail/<%= shop.restaurantId %>" class="search">
                   <div class="shop-h row">     
@@ -273,7 +277,7 @@
     });
 
 
-    let question = document.getElementsByClassName('question');
+let question = document.getElementsByClassName('question');
 
 function questionOpen(question,answer){
     if(answer.style.maxHeight){
