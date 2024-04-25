@@ -211,8 +211,8 @@
               <button class="yeon"><span>연관순</span></button>
             </div>
           </div>
-          <div class="r-btn col">
-            <button><span><img src="/image/icon_gps_update.png" alt="현위치로 재설정 버튼">현위치 : 위치없음</span></button>
+          <div class="r-btn col" id="map" style="width:100%;height:400px;">
+            <%- include('maps.ejs') %>
           </div>
         </div>
         <div class="map"></div>
@@ -222,10 +222,26 @@
               
 
                 <!--  -->
+
+
+                
+
+
+
                 <% shops.forEach(shop => { %>
                   <a href="/detail/<%= shop.restaurantId %>" class="search">
-                  <div class="shop-h row">        
-                    <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                  <div class="shop-h row">     
+
+                    <% if (shop.Images && shop.Images.length > 1) { %>
+                      <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <% } else if (shop.Images && shop.Images.length > 0) { %>
+                      <!-- 만약 첫 번째 이미지만 존재한다면, 첫 번째 이미지를 사용 -->
+                      <img src="/test/<%= shop.Images[0].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <% } else { %>
+                      <!-- 이미지가 없을 경우의 대체 이미지 또는 대체 텍스트 -->
+                      <img src="/path/to/default/image.png" alt="Default Image" class="col-3 title-img">
+                    <% } %>
+                    
                       <div class="info col-9">
                         <h3 class="shop-name"><%= shop.restaurantName %></h3>
                         <p class="category"><%= shop.category %></p>
