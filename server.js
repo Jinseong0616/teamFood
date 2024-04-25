@@ -211,6 +211,7 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
     }
 
     const addMember = await User.create(newMember);
+    
     if (newFile) {
       await Image.create({
         userId: addMember.userId,
