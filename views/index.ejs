@@ -43,13 +43,13 @@
               </div>
             </div>
           </div>
-          <div class="selectedGu">선택된 지역</div>
+          <div class="selectedGu">선택된 지역 :</div>
           <div class="row selectBtn gx-2">
             <div class="col">
               <button>취소</button>
             </div>
             <div class="col">
-              <button id="selectRegion">선택</button>
+              <button type="button" id="selectRegion">선택</button>
             </div>
 
           </div>
@@ -167,6 +167,31 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 // --------------------------------------------------
 // 모달 작동 상태
 
+
+  // 도시 버튼에 이벤트 리스너 추가
+  const cityButtons = document.querySelectorAll(".city button");
+
+  cityButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      cityButtons.forEach(function(btn) {
+        btn.classList.remove("selected");
+      });
+      button.classList.add("selected");
+
+      // 선택한 도시에 해당하는 구 목록을 업데이트
+      const selectedCity = button.innerText;
+      axios.get(`/region?city=${selectedCity}`)
+        .then(function(response) {
+          const guList = response.data;
+          updateGuList(guList);
+        })
+        .catch(function(error) { 
+          console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
+        });
+    });
+  });
+
+//구 선택 버튼 동작
 function updateGuList(guList) {
     const guListContainer = document.querySelector(".region_list .col:nth-child(2) ul");
     
@@ -196,40 +221,28 @@ function updateGuList(guList) {
             // 선택된 지역을 나타내는 요소에 접근합니다.
             const selectedGuElement = document.querySelector(".selectedGu");
             // 선택된 지역을 설정합니다.
-            selectedGuElement.innerText = "선택된 지역: " + selectedGu;
+            selectedGuElement.innerText = "선택된 지역 : " + selectedGu;
+
+            var currentUrl = window.location.href;
+            console.log(currentUrl)
+            const selectRegionBtn = document.getElementById("selectRegion");
+            selectRegionBtn.addEventListener("click", function(){
+              currentUrl = currentUrl + "?region="+selectedGu
+              console.log(currentUrl)
+            })
+
         });
     });
 }
 
-  // 도시 버튼에 이벤트 리스너 추가
-  const cityButtons = document.querySelectorAll(".city button");
 
-  cityButtons.forEach(function(button) {
-    button.addEventListener("click", function() {
-      cityButtons.forEach(function(btn) {
-        btn.classList.remove("selected");
-      });
-      button.classList.add("selected");
 
-      // 선택한 도시에 해당하는 구 목록을 업데이트
-      const selectedCity = button.innerText;
-      axios.get(`/region?city=${selectedCity}`)
-        .then(function(response) {
-          const guList = response.data;
-          updateGuList(guList);
-        })
-        .catch(function(error) { 
-          console.error("서버로부터 데이터를 받아오는데 실패했습니다.", error);
-        });
-    });
-  });
 
-  </script>
-  <script>
   // 취소 버튼을 눌렀을 때 모달을 닫음
   document.querySelector(".selectBtn .col:first-child button").addEventListener("click", function() {
     document.getElementById("myModal").style.display = "none";
   });
+  
 </script>
 </body>
 </html>

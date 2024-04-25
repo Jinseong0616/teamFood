@@ -272,13 +272,13 @@ app.get('/region', async (req,res)=>{
   
   const selectedCity = req.query.city;
   
-  console.log(selectedCity)
+  // console.log(selectedCity)
 
   let guList;
 
   guList = await region.findAll({where : { city : selectedCity }})
 
-  console.log(guList)
+  // console.log(guList)
 
   res.json(guList)
 })
@@ -286,6 +286,7 @@ app.get('/region', async (req,res)=>{
 
 // 검색 기능
 app.get('/search', async function(req,res){  
+  
   const userId = req.isAuthenticated() ? req.user.userId : false
   const searchKeyword = req.query.keyword;
   console.log('검색어는 ? ',searchKeyword)
@@ -346,7 +347,6 @@ app.post('/add', upload.array('imgUrl', 2), async function(req,res){
 
   // console.log(req.file.filename)  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
- 
   try {
     
     const existStore = await Store.findOne({ where: {restaurantAddress : newStore.restaurantAddress}});
