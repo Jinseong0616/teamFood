@@ -201,6 +201,7 @@ app.get("/join", async function (req, res) {
 });
 
 // 회원가입
+
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
@@ -217,13 +218,30 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
         imgUrl: newFile.filename,
       });
     }
-
     res.redirect("/login");
   } catch (error) {
     console.log("검색 중 오류 발생", error);
     res.status(500).send("서버 오류 발생");
   }
 });
+
+// 아이디 중복확인
+app.post('/checkId', async(req, res)=>{
+  const userId = req.body.userId
+  console.log(userId)
+
+  try {
+    const existingMember = await User.findOne({ where: { userId: userId } });
+      if (existingMember) {
+          res.json({ exists: true }); 
+      } else {
+          res.json({ exists: false }); 
+      }
+  } catch (error) {
+    console.log('검색 중 오류 발생', error)
+    res.status(500).send("서버 오류 발생");
+  }
+})
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -232,8 +250,6 @@ app.get("/myPage/:id", async (req, res) => {
   const member = await User.findOne({ where: { userId: id } }); // 회원 정보
   const memImg = await Image.findOne({ where: { userId: id } });
 
-  res.render("myPage.ejs", { member, memImg });
-});
 
 // 회원 수정
 app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
