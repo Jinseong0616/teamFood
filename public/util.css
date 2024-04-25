@@ -10,9 +10,12 @@
   border: none;
 }
 
+.user li{padding: 0 10px;}
 
 
 
+
+/* footer */
 footer { white-space: nowrap;}
 
 footer li::after { content: " |"; } 

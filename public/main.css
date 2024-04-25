@@ -14,7 +14,7 @@ section{
 
 
 /* 헤더 */
-.header{height: 74px; white-space: nowrap;}
+/* .header{height: 74px; white-space: nowrap;}
 .header ul{margin: 0;}
 .header .logo{margin: 0;}
 .header .search_box{
@@ -23,7 +23,7 @@ section{
   background-color: rgb(245, 245, 245);
   border-radius: 20px;
   border: none;
-}
+} */
 
 .user li{padding: 0 10px;}
 
@@ -166,7 +166,7 @@ section{
 }
 
 
-/*  footer  */
+ /* footer 
 footer { white-space: nowrap;}
 
 footer li::after { content: " |"; } 
@@ -180,4 +180,4 @@ footer li::after { content: " |"; }
 .footerPage .info .mainName { font-size: 15px; } 
 .footerPage li {padding: 0 0 0 10px; } 
 
-.footerPage p { margin-bottom: 9px; } 
+.footerPage p { margin-bottom: 9px; }  */

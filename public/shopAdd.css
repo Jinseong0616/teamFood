@@ -31,7 +31,7 @@ text-align: center;}
 
 
 /* footer css 디자인 나중에 삭제해도 무방 */
-footer { white-space: nowrap;}
+/* footer { white-space: nowrap;}
 
 footer li::after { content: " |"; } 
 
@@ -44,7 +44,7 @@ footer li::after { content: " |"; }
 .footerPage .info .mainName { font-size: 15px; } 
 .footerPage li {padding: 0 0 0 10px; } 
 
-.footerPage p { margin-bottom: 9px; } 
+.footerPage p { margin-bottom: 9px; }  */
 
 
 
