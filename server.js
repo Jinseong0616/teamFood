@@ -212,6 +212,7 @@ app.get('/join', async function(req,res){
 app.post('/join', uploadUser.single('imgUrl'), async function(req,res){
   const newMember = req.body
   const newFile = req.file
+  console.log(newMember)
   try{
 
       
@@ -235,6 +236,24 @@ app.post('/join', uploadUser.single('imgUrl'), async function(req,res){
   }
 }) 
 
+// 아이디 중복확인
+app.post('/checkId', async(req, res)=>{
+  const userId = req.body.userId
+  console.log(userId)
+
+  try {
+    const existingMember = await User.findOne({ where: { userId: userId } });
+      if (existingMember) {
+          res.json({ exists: true }); 
+      } else {
+          res.json({ exists: false }); 
+      }
+  } catch (error) {
+    console.log('검색 중 오류 발생', error)
+    res.status(500).send("서버 오류 발생");
+  }
+})
+
 // 마이페이지
 app.get('/myPage/:id', async(req,res)=>{
     const {id} = req.params
@@ -247,22 +266,38 @@ app.get('/myPage/:id', async(req,res)=>{
 })
 
 
-app.put('/edit/:id', uploadUser.single('imgUrl'), async (req,res)=>{
-  const id = req.params.id
-  const newInfo = JSON.parse(req.body.data)
-  const newFile = req.file
-  console.log('파일 이름 : ',newFile.filename)
-  console.log('edit 아이디 : ', id)
+app.put('/edit/:id', uploadUser.single('profileImage'), async (req,res)=>{
+  try {
+    const id = req.params.id
+    const newInfo = JSON.parse(req.body.data)
+    const newFile = req.file
+    console.log('edit 아이디 : ', id)
 
-  const member = await User.findOne({where : {userId : id}})
-  
-  
-  if(member){
-    Object.keys(newInfo).forEach((prop)=>{
-      member[prop] = newInfo[prop]
-    })
-    await member.save()
-    res.redirect('/')
+    const member = await User.findOne({where : {userId : id}})
+    
+    if(member){
+      Object.keys(newInfo).forEach((prop)=>{
+        member[prop] = newInfo[prop]
+      })
+      await member.save()
+      
+      if(newFile){
+        const memImg = await Image.findOne({where : {userId : id}})
+        console.log('새로운 파일 등록?',newFile)
+        if(memImg){
+          await Image.update({ imageData: newFile.path }, { where: { userId: id } });
+        } else {
+          await Image.create({
+            userId : id,
+            imageData : newFile.path
+          })
+        }
+      }
+      res.redirect('/')
+    }
+  } catch (error) {
+    console.error('에러 발생:', error);
+    res.status(500).send('서버 에러 발생');
   }
 })
 

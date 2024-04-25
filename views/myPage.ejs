@@ -24,23 +24,19 @@
             <th>프로필 사진</th>
             <td class="d-flex">
 
-
-             <% if(memImg){ %>
+            <% if(memImg){ %>
                 <div class="person-circle">
                   <img id="imgUrl" name="imgUrl" src="/users/<%= memImg.imgUrl %>" alt="">
                 </div>
-             <% } else { %>
+            <% } else { %>
                 <div class="person-circle">
                   <img src="/test/Pic.jpg" alt="">
                 </div>
               <% } %>
 
-
-
-
               <div class="img-edit">
                 <label for="profileImageInput" style="cursor: pointer;" class="find">찾아보기</label>
-                <input id="profileImageInput" type="file" accept="image/*" style="display: none;">
+                <input id="profileImageInput" name="imgUrl" type="file" accept="image/*" style="display: none;">
               </div>
             </td>          
           </tr>

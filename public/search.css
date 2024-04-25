@@ -22,13 +22,13 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 
 .open{width: 100%;}
 
-.question {
+.city {
   padding: 0;
   font: 18px "inherit";
   width: 100%;
 }
 
-.question span{
+.city span{
   text-align: left;
   display: flex;
   justify-content: flex-start;
