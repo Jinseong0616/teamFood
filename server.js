@@ -1,14 +1,13 @@
 // 1. 모듈 - require
-const express = require("express");
-const bodyParser = require("body-parser");
-const sequelize = require("sequelize");
-const path = require("path");
-const app = express();
-const session = require("express-session");
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const multer = require("multer");
-const { Op } = require("sequelize");
+const express = require('express')
+const path = require('path')
+const app = express()
+const session = require('express-session')
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const multer = require('multer')
+const {Op} = require('sequelize')
+
 
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
@@ -273,17 +272,18 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 //지역 불러오기 API
 app.get("/region", async (req, res) => {
   const selectedCity = req.query.city;
-
-  console.log(selectedCity);
+  
+  // console.log(selectedCity)
 
   let guList;
 
   guList = await region.findAll({ where: { city: selectedCity } });
 
-  console.log(guList);
+  // console.log(guList)
 
-  res.json(guList);
-});
+  res.json(guList)
+})
+
 
 // 검색 기능
 app.get("/search", async function (req, res) {

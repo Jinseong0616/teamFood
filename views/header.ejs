@@ -17,22 +17,22 @@
         <div class="col-3 d-flex justify-content-end">
           <ul class="user d-flex justify-content-end">
             
-            <% if(userId && userId == "root") { %>
-              <li>관리자</li>
-              <li><a href="/add">관리자페이지</a></li>
-              <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
-              <li><a href="/logout">로그아웃</a></li>
-              
-  
-            <% } else if(userId) { %>
-              <li><%= userId %></li> 
-              <li><a href="/logout">로그아웃</a></li>
-              <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
-  
-            <% } else { %>
+            <%if(userId){%>
+              <%if(userId == "root"){%>
+                <li>관리자</li>
+                <li><a href="/add">관리자페이지</a></li>
+                <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
+                <li><a href="/logout">로그아웃</a></li>
+              <%}else{%>
+                <li><%= userId %></li> 
+                <li><a href="/logout">로그아웃</a></li>
+                <li><a href="/myPage/<%= userId %>">마이페이지</a></l>
+              <%}%>
+            <%}else{%>
               <li><a href="/login">로그인</li> 
               <li><a href="/join">회원가입</a></li> 
-          <% } %>
+            <%}%>
+            
           </ul>
         </div>
       </div>
