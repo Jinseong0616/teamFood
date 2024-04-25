@@ -1,14 +1,23 @@
 * { margin: 0; padding: 0; box-sizing: border-box; } 
 ul,ol,li { list-style: none; } 
+<<<<<<< HEAD
+a { text-decoration: none; }
+=======
 a { text-decoration: none;}
+>>>>>>> a503ceb048579b71ad3dba5b0b5dcedf6b046b56
 p{margin: 0; color: black;}
 
-section{ width: 1350px;}
+header, .select, .food-shop{background-color: white; }
+
+body{background-color: #f0f0f0;}
+
+main{margin: auto; justify-content: center; align-items: center; margin-top: 30px}
+
+section{ width: 1350px; margin-bottom: 100px;}
 
 /* 왼쪽 박스 */
-main{background-color: #f0f0f0; margin: auto; justify-content: center; align-items: center;}
 
-.select{width: 260px; border: 1px solid black; border-radius: 5px;}
+.select{width: 260px; height: 650px; border: 1px solid black; border-radius: 10px;}
 
 .sel-social{padding-top: 10px;}
 .title{align-items: center; padding: 3px 16px 9px;}
@@ -23,9 +32,8 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 
 .peopleGroup{margin: 0; padding: 0 0 0 16px;}
 
-.CategoryGroup, .gender{padding-left: 16px;}
+.categoryGroup, .gender{padding-left: 16px;}
 
-.open{width: 100%;}
 
 .city {
   padding: 0;
@@ -44,7 +52,7 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 
 
 .answer {
-  /*background-color: yellow;*/
+  background-color: white;
   font-size: 18px;
   line-height: 1.5;
   transition: 0;
@@ -52,29 +60,24 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
   max-height: 0;
   overflow: hidden;
   margin-bottom: 30px;
-  /* padding: 0 30px; */
   padding: 0;
 }
 
 .city_list {
-  /* overflow: scroll;  가로 스크롤*/ 
+  border: gray 1px solid;
   max-height: 200px; /* 스크롤이 보일 최대 높이를 지정하세요 */
   overflow-y: auto; /* 세로 스크롤을 만듭니다. */
-  margin: 20px 0 0 0;
-  padding: 0 0 0 15px ;
+  margin: 10px 0 0 0;
+  padding-left: 10px;
   cursor: pointer;
 }
 
+.city_list li{box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.1);}
 .city_list li:hover{background-color: rgb(204, 205, 206);}
-
-  .form-check-input:checked + .form-check-label::before {
-    background-color: #124886 !important;
-  }
-
 
 /* 오른쪽 박스 */
 
-.food-shop{width: 900px;  overflow-x: auto;}
+.food-shop{width: 900px;  overflow-x: auto; border: black 1px solid; margin-left: 20px; border-radius: 10px; padding: 0 20px;} 
 .order-wrap{
   border-bottom: 1px solid rgb(245, 245, 245);
   border-top-right-radius:14px;
@@ -83,13 +86,10 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 
 .range{width: 80px; border-right: 1px solid rgb(245, 245, 245); justify-content: center; align-items: center; display: flex;}
 
+.l-btn{margin: 20px 0;}
+
 .order{ align-items: center; justify-content: center; display: flex;}
-.order .yeon{margin: 0 0 0 20px;}
-.order .grade{ margin: 0 0 0 10px;}
-.order .review{margin: 0 0 0 10px;}
-.order .like{margin: 0 0 0 10px;}
-.order .load{margin: 0 20px 0 10px;}
-.order button{height: 34px; border-radius: 6px; cursor: pointer;}
+.order button{height: 34px; border-radius: 6px; cursor: pointer; margin-left: 20px;}
 .order button span{margin: 0 15px;}
 
 .r-btn button{height: 62px; padding: 0 20px; border : 1px solid black;}
@@ -100,7 +100,9 @@ button{background-color: white;}
 .map{width: 400px; height: 400px;}
 
 .look-shop{padding: 20px 20px; cursor: pointer;}
+.shop-h{ box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.1); margin-bottom: 20px;}
 .shop-h:hover{background-color: rgb(243, 239, 239);}
+.shop-box{padding-left: 0;}
 
 .info{padding: 2px 0 2px 16px;}
 .info .shop-name{margin-bottom: 10px; font-size: 24px;}
@@ -115,6 +117,8 @@ img{width: 16px; height: 16px;}
 .rate .score{margin-right: 5px;}
 .rate .user-score{margin-right: 5px;}
 
+.request { margin: 20px 0 0 20px; background-color: white; border-radius: 15px;
+  border: black 1px solid; width: 900px; justify-content: end;}
 .request .inner{
   display: flex; 
   justify-content: center; 
@@ -127,11 +131,17 @@ img{width: 16px; height: 16px;}
 .request button{
   padding: 14px 101px;
   background-color:rgb(25, 183, 194);
-  color: rgb(255, 255, 255);
   border-radius: 10px;
   cursor: pointer;
 }
+.request-btn a{color: white; font-weight: bold;}
 .request span{
   color: rgb(158, 158, 158);
   font-size: 14px;
 }
+
+.blank {width: 260px; margin-right: 20px;}
+
+footer{background-color: white; padding: 40px 0 ;}
+
+#map{border-radius: 10px;}

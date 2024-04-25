@@ -250,8 +250,10 @@ app.get("/myPage/:id", async (req, res) => {
 
   const member = await User.findOne({ where: { userId: id } }); // 회원 정보
   const memImg = await Image.findOne({ where: { userId: id } });
-
-
+  
+  res.render('myPage.ejs',{member,memImg})
+})
+  
 // 회원 수정
 app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const { id } = req.params;
@@ -304,6 +306,7 @@ app.get("/region", async (req, res) => {
 // 검색 기능
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
+
   const searchKeyword = req.query.keyword;
   
   let shops;
@@ -354,6 +357,8 @@ app.get("/search", async function (req, res) {
     res.status(500).json({ message: "검색 실패" });
   }
 });
+
+
 
 
 
