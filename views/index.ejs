@@ -242,17 +242,42 @@ function updateGuList(guList) {
     document.getElementById("myModal").style.display = "none";
   });
   
-  const links = document.querySelectorAll(".pic a")
-  var currentUrl = window.location.href;
-  const regionString = currentUrl.split('?')[1];
 
+  //지역 선택시 카테로리 선택 URL 변경
+  const links = document.querySelectorAll(".pic a")
+  var currentUrl = window.location.href;//현재 URL
+  const regionString = currentUrl.split('?')[1]; //현재 URL에서 ?region= 이부분 갖고옴
+
+  const inputElement = document.getElementById("keyword");//검색창 요소
+  
+
+  //지역선택을 했을 때 동작
   if(regionString != undefined){
     links.forEach(link =>{  
 
-    const keywordString = link.href.split('?')[1]
-    link.href = "/search?"+regionString+"&"+keywordString
+      //지역선택, 카테고리 검색
+      const categoryString = link.href.split('?')[1]
+      link.href = "/search?"+regionString+"&"+categoryString //category검색할 때 URL
+
+      //지역선택,검색어로 검색
+      inputElement.onchange = function(){
+        
+        const inputKeyword = inputElement.value;
+        const searchBtn = document.getElementById("searchBtn")
+
+        searchBtn.addEventListener("click",function(e){
+          e.preventDefault()
+
+          const targetUrl = "/search?"+regionString+"&keyword="+inputKeyword;
+          
+          window.location.href = targetUrl;
+        })
+        
+      }
     })
   }
+
+  
   
 
 
