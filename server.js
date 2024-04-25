@@ -247,7 +247,6 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 
   const member = await User.findOne({ where: { userId: id } });
   let imgFile = await Image.findOne({ where: { userId: id } });
-  console.log("이미지파일", imgFile.imgUrl);
 
   if (member) {
     Object.keys(newInfo).forEach((prop) => {
@@ -289,6 +288,7 @@ app.get("/region", async (req, res) => {
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const searchKeyword = req.query.keyword;
+  
   let shops;
   console.log("검색어는 ? ", searchKeyword);
   try {
@@ -337,6 +337,9 @@ app.get("/search", async function (req, res) {
     res.status(500).json({ message: "검색 실패" });
   }
 });
+
+
+
 
 // 음식점 추가하기
 app.get("/add", async function (req, res) {
@@ -403,3 +406,5 @@ app.delete("/delete/:id", async function (req, res) {
 app.get('/maps', (req,res)=>{
   res.render('maps.ejs')
 })
+
+
