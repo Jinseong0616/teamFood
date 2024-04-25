@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
     <header>
         <div class="header">
           <a href="/">
@@ -29,6 +28,8 @@
                 <div class="joinItem">
                         <strong>아이디</strong>
                         <input name="userId" id="userId" type="text"  placeholder="회원 아이디" value="test">
+                        <button type="button" id="checkIdBtn" class="check-btn">중복확인</button>
+                        <span id="userIdValidation" class="validation-msg"></span>
                 </div>
                 <div class="joinItem">
                     <strong>비밀번호</strong>
@@ -53,7 +54,7 @@
                 <div class="joinItem">
                     <input name="imgUrl" id="imgUrl" type="file" placeholder="회원사진">
                 </div>
-                <div class="joinBtn">
+                <div class="joinBtn" id="joinBtn">
                     <button type="submit" type="button" class="btn btn-dark loginButton">회원가입</button>
                 </div>
             </div>
@@ -62,7 +63,61 @@
 
     <%- include('footer.ejs') %>
     
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+        let isIdValidated = false;
+        document.getElementById('checkIdBtn').addEventListener('click',function(e){
+            const userId = document.getElementById('userId').value
+            console.log(userId)
+            fetch('/checkId', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 받은 응답에 따라 처리
+                if (data.exists) {
+                    alert('이미 사용 중인 아이디입니다.');
+                    document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
+                    document.getElementById('userIdValidation').classList.add('invalid');
+                    isIdValidated = false;
+                } else {
+                    alert('사용 가능한 아이디입니다.');
+                    document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다';
+                    document.getElementById('userIdValidation').classList.remove('invalid');
+                    isIdValidated = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('서버 오류가 발생했습니다.');
+            });
+        })
+        
+    
+        // 중복확인 후 로직
+        document.getElementById('joinBtn').addEventListener('click', function(e) {
+            if (!isIdValidated) {
+                alert('중복 확인을 하세요')
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 </html>

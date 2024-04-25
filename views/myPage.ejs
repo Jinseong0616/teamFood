@@ -27,16 +27,13 @@
 
              <% if(memImg){ %>
                 <div class="person-circle">
-                  <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="">
+                  <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="이미지변경">
                 </div>
-             <% } else { %>
+            <% } else { %>
                 <div class="person-circle">
-                  <img src="/test/Pic.jpg" alt="">
+                  <img id="profileImage" name="profileImage" src="/test/Pic.jpg" alt="기본이미지">
                 </div>
               <% } %>
-
-
-
 
               <div class="img-edit">
                 <label for="imgUrl" style="cursor: pointer;" class="find">찾아보기</label>
