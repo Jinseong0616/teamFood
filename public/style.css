@@ -55,7 +55,7 @@ text-align: center;}
 
 .join .btn { width: 200px; height: 40px; border-radius: 0; margin-top: 12px; font-size: 13px;}
 
-footer { white-space: nowrap;}
+/* footer { white-space: nowrap;}
 
 footer li::after { content: " |"; } 
 
@@ -68,4 +68,4 @@ footer li::after { content: " |"; }
 .footerPage .info .mainName { font-size: 15px; } 
 .footerPage li {padding: 0 0 0 10px; } 
 
-.footerPage p { margin-bottom: 9px; } 
+.footerPage p { margin-bottom: 9px; }  */

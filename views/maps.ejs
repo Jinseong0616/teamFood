@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> <!-- 문서의 문자 인코딩 설정 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- 최신 IE 호환 모드 사용 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"> <!-- 반응형 웹 디자인을 위한 뷰포트 설정 -->
+    <title>Display a Simple Map</title> <!-- 문서의 제목 -->
+    <!-- 네이버 지도 API 스크립트를 불러옴. ncpClientId에 자신의 클라이언트 ID를 입력해야 함 -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=xxg33jbszs"></script>
+</head>
+<body>
+<div id="map" style="width:100%;height:400px;"></div> <!-- 지도를 표시할 div 요소 -->
+<script>
+
+var map; // 지도 객체를 저장할 변수 선언
+var infowindow = new naver.maps.InfoWindow(); // 정보 창 객체 생성
+
+function onSuccessGeolocation(position) {
+    var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude); // 사용자의 현재 위치를 나타내는 LatLng 객체 생성
+
+    if (!map) {
+        map = new naver.maps.Map('map', {
+            center: location, // 지도의 중심을 사용자의 현재 위치로 설정
+            zoom: 17 // 지도의 확대 레벨 설정
+        });
+    }
+
+    map.setCenter(location); // 지도의 중심을 사용자의 현재 위치로 다시 설정
+    var marker = new naver.maps.Marker({
+        position: location, // 마커의 위치를 사용자의 현재 위치로 설정
+        map: map // 마커를 표시할 지도 객체 지정
+    });
+    infowindow.setContent('<div style="padding:20px;">' + 'Current location' + '</div>'); // 정보 창의 내용 설정
+    infowindow.open(map, marker); // 정보 창을 마커 위에 열기
+    console.log('Coordinates: ' + location.toString()); // 콘솔에 좌표 정보 출력
+}
+
+function onErrorGeolocation() {
+    var center = new naver.maps.LatLng(37.3595704, 127.105399); // 오류 발생 시 표시할 기본 위치
+    if (!map) {
+        map = new naver.maps.Map('map', {
+            center: center,
+            zoom: 17
+        });
+    }
+
+    infowindow.setContent('<div style="padding:20px;"><h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5></div>'); // 오류 메시지를 표시하는 정보 창의 내용 설정
+    infowindow.open(map, center); // 정보 창을 지도의 중심 위치에 열기
+}
+
+// navigator.geolocation을 지원하는 경우 위치 정보를 얻어오는 함수 실행
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(onSuccessGeolocation, onErrorGeolocation);
+} else {    // 지원하지 않는 경우 기본 위치를 중심으로 지도 표시
+  
+    var center = new naver.maps.LatLng(37.3595704, 127.105399);
+    map = new naver.maps.Map('map', {
+        center: center,
+        zoom: 17
+    });
+    infowindow.setContent('<div style="padding:20px;"><h5 style="margin-bottom:5px;color:#f00;">Geolocation not supported</h5></div>'); // 지원하지 않음 메시지를 표시하는 정보 창의 내용 설정
+    infowindow.open(map, center); // 정보 창을 지도의 중심 위치에 열기
+}
+
+</script>
+</body>
+</html>

@@ -13,27 +13,32 @@
   <%- include('header.ejs') %>
 
 
-  <main>
-    <section class="container-md row">
+  <main class="container">
+    <section class="row ">
+      
       <div class="select col-3">
         <div class="sel-social">
           <div class="title d-flex">
             <div class="square" style="background-color: rgb(234, 99, 99);"></div>
             <h4>소셜</h4>
           </div>
+
           <ul class="filterOption">
+
             <li class="filterBtn">
               <div class="filterBtn-click d-flex">
                 <img src="/image/plus.png" alt="+">
                 <p>내가좋아요한</p>
               </div>
             </li>
+
             <li class="filterBtn">
               <div class="filterBtn-click d-flex">
                 <img src="/image/plus.png" alt="+">
                 <p>나의팔로우추천</p>
               </div>
             </li>
+
             <li class="filterBtn">
               <div class="filterBtn-click d-flex">
                 <img src="/image/plus.png" alt="+">
@@ -41,52 +46,52 @@
                 </p>
               </div>
             </li>
+
           </ul>
           <div class="bk"><hr></div>
         </div>
+
         <div class="sel-user-age">
           <div class="title d-flex">
             <div class="square" style="background-color: rgb(255, 125, 60);"></div>
             <h4>이용자층</h4>
           </div>
+
           <ul class="peopleGroup row">
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>20대
-                </p>
+            <div class="form-check col-6">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  20대
+                </label>
               </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>30대
-                </p>
+            <div class="form-check col-6">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  30대
+                </label>
               </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>40대
-                </p>
+            <div class="form-check col-6">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  40대
+                </label>
               </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>50대
-                </p>
+            <div class="form-check col-6">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  50대
+                </label>
               </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>60대이상
-                </p>
+            <div class="form-check col-6">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  60대 이상
+                </label>
               </div>
-            </li>
+            
             <li class="filterBtn col-6"></li>
           </ul>
+
           <div class="bk"><hr></div>
           <ul class="gender row">
             <li class="col">
@@ -100,6 +105,7 @@
           </ul>
           <div class="bk"><hr></div>         
         </div>
+        
         <div class="sel-category">
           <div class="title d-flex">
             <div class="square" style="background-color: rgb(251, 201, 68);"></div>
@@ -107,67 +113,47 @@
           </div>
           <ul class="CategoryGroup row">
             <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>밥집</p>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  한식
+                </label>
               </div>
             </li>
             <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>카페</p>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  일식
+                </label>
               </div>
             </li>
             <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>술집</p>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  중식
+                </label>
               </div>
             </li>
             <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>고깃집</p>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  아시안
+                </label>
               </div>
             </li>
             <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>횟집</p>
-              </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>한식</p>
-              </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>중식</p>
-              </div>
-            </li>
-            <li class="filterBtn col-6">
-              <div class="filterBtn-click d-flex">
-                <img src="/image/plus.png" alt="+">
-                <p>일식</p>
-                <li class="filterBtn col-6">
-                  <div class="filterBtn-click d-flex">
-                    <img src="/image/plus.png" alt="+">
-                    <p>양식</p>
-                  </div>
-                </li>
-                <li class="filterBtn col-6">
-                  <div class="filterBtn-click d-flex">
-                    <img src="/image/plus.png" alt="+">
-                    <p>아시안</p>
-                  </div>
-                </li>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  디저트
+                </label>
               </div>
             </li>
           </ul>
-          <button class="open">펼치기</button>
+            
           <div class="dk"><hr></div>
           <div class="sel-location">
             <div class="title d-flex">
@@ -195,9 +181,13 @@
           <div class="bk"><hr></div>
         </div>
       </div>
+
+
       <div class="food-shop col-9">
         <div class="order-wrap row">
-          <div class="l-btn d-flex col-9" >
+
+          <div class="l-btn d-flex" >
+
             <div class="range">
               <span><img src="/image/tab.png" alt="정렬">정렬</span>
             </div>
@@ -209,20 +199,35 @@
               <button class="yeon"><span>연관순</span></button>
             </div>
           </div>
-          <div class="r-btn col">
-            <button><span><img src="/image/icon_gps_update.png" alt="현위치로 재설정 버튼">현위치 : 위치없음</span></button>
-          </div>
         </div>
-        <div class="map"></div>
+          <div class="r-btn col" id="map">
+            <%- include('maps.ejs') %>
+          </div>
         <div class="select-shop">
           <ul class="shop-box">
             <li class="look-shop">
               
                 <!--  -->
+
+
+                
+
+
+
                 <% shops.forEach(shop => { %>
                   <a href="/detail/<%= shop.restaurantId %>" class="search">
-                  <div class="shop-h row">        
-                    <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                  <div class="shop-h row">     
+
+                    <% if (shop.Images && shop.Images.length > 1) { %>
+                      <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <% } else if (shop.Images && shop.Images.length > 0) { %>
+                      <!-- 만약 첫 번째 이미지만 존재한다면, 첫 번째 이미지를 사용 -->
+                      <img src="/test/<%= shop.Images[0].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                    <% } else { %>
+                      <!-- 이미지가 없을 경우의 대체 이미지 또는 대체 텍스트 -->
+                      <img src="/path/to/default/image.png" alt="Default Image" class="col-3 title-img">
+                    <% } %>
+                    
                       <div class="info col-9">
                         <h3 class="shop-name"><%= shop.restaurantName %></h3>
                         <p class="category"><%= shop.category %></p>
