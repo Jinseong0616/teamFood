@@ -223,25 +223,39 @@ function updateGuList(guList) {
             // 선택된 지역을 설정합니다.
             selectedGuElement.innerText = "선택된 지역 : " + selectedGu;
 
-            var currentUrl = window.location.href;
-            console.log(currentUrl)
+            
             const selectRegionBtn = document.getElementById("selectRegion");
             selectRegionBtn.addEventListener("click", function(){
+              var currentUrl = window.location.href;
+              currentUrl = "";
               currentUrl = currentUrl + "?region="+selectedGu
               console.log(currentUrl)
+              window.location.href = currentUrl;
             })
 
         });
     });
 }
 
-
-
-
   // 취소 버튼을 눌렀을 때 모달을 닫음
   document.querySelector(".selectBtn .col:first-child button").addEventListener("click", function() {
     document.getElementById("myModal").style.display = "none";
   });
+  
+  const links = document.querySelectorAll(".pic a")
+  var currentUrl = window.location.href;
+  const regionString = currentUrl.split('?')[1];
+
+  if(regionString != undefined){
+    links.forEach(link =>{  
+
+    const keywordString = link.href.split('?')[1]
+    link.href = "/search?"+regionString+"&"+keywordString
+    })
+  }
+  
+
+
   
 </script>
 </body>

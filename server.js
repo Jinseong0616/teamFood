@@ -288,6 +288,7 @@ app.get("/region", async (req, res) => {
 // 검색 기능
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
+
   const searchKeyword = req.query.keyword;
   let shops;
   console.log("검색어는 ? ", searchKeyword);
@@ -338,7 +339,7 @@ app.get("/search", async function (req, res) {
   }
 });
 
-// 음식점 추가하기
+// 음식점 추가페이지
 app.get("/add", async function (req, res) {
   res.render("shopAdd.ejs");
 });
