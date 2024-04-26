@@ -51,16 +51,28 @@
     </div>
   </header>
   
-  <nav>
-    <div class="container g-0 nav-box">
-      <ul class="nav-ul d-flex">
-        <li class="nav-li"><a href="#" >공지사항</a></li>
-        <li class="nav-li"><a href="#">자주묻는질문</a></li>
-        <li class="nav-li"><a href="#">다이닝코드소개</a></li>
-        <li class="nav-li"><a href="#">다이닝코드 이용안내</a></li>
-        <li class="nav-li"><a href="#">매거진</a></li>
-      </ul>
-    </div>
-  </nav>
+  <script>
+    
+    const input = document.getElementById("keyword")
+    const btn = document.getElementById("searchBtn")
+
+    btn.addEventListener("click",function(e){
+      console.log(input.value)
+      if(input.value===''){
+          alert('검색어를 입력해주세요')
+          e.preventDefault()
+          return;
+        }
+    })
+
+    
+    
+    
+    // input.addEventListener("input",function(){
+      
+    // })
+
+    
+  </script>
 </body>
 </html>

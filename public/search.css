@@ -26,9 +26,10 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 .filterBtn .filterBtn-click{align-items: center;}
 .filterBtn-click img{margin-right: 10px;}
 
-.peopleGroup{margin: 0; padding: 0 0 0 16px;}
+.peopleGroup{margin: 0; padding-left: 16px;}
 
 .categoryGroup, .gender{padding-left: 16px;}
+.gender {margin-left: 0px;}
 
 
 .question {
@@ -36,7 +37,7 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
   font: 18px "inherit";
   width: 100%;
   border-radius: 5px;
-  border: black 0.5px solid;
+  border: gray 0.5px solid;
 }
 
 .question span{
@@ -131,6 +132,7 @@ img{width: 16px; height: 16px;}
   cursor: pointer;
 }
 .request-btn a{color: white; font-weight: bold;}
+.request-btn button{border: rgb(25, 183, 194);}
 .request span{
   color: rgb(158, 158, 158);
   font-size: 14px;

@@ -1,11 +1,10 @@
-* { margin: 0; padding: 0; box-sizing: border-box; } 
+* { margin: 0; padding: 0; box-sizing: border-box;} 
 ul,ol,li { list-style: none; padding: 0;} 
 a { text-decoration: none; } 
 
-body { width: 720px; background-color: #f0f0f3; margin: auto;} 
-.container { background-color: white; border-radius: 10px;} 
-
-/* .restaurantMain{padding-bottom: ;} */
+.content{width: 760px; margin: 0 auto; }
+main{padding: 20px 0; background-color: #f0f0f3; } 
+.restaurantMain {padding-top: 20px; background-color: white; border-radius: 10px;} 
 
 .restaurantInfo{padding: 0 15px;}
 
@@ -34,7 +33,7 @@ body { width: 720px; background-color: #f0f0f3; margin: auto;}
 .restaurantDetail li{margin-bottom: 10px;}
 .restaurantDetail .address .btn{width: 73px; height: 32px; font-size: 14px; padding: 0; background-color: #124886; border-color: #124886;}
 
-.restaurantReviewPic{padding: 22px; margin-bottom: 20px;}
+.restaurantReviewPic{ background-color: white; padding: 22px; margin-bottom: 20px; border-radius: 10px;}
 .restaurantReviewPic h2{font-size: 25px; font-weight: bold; margin-bottom: 20px;} 
 .restaurantReviewPic .text-primary{font-size: 27px;}
 
@@ -42,7 +41,7 @@ body { width: 720px; background-color: #f0f0f3; margin: auto;}
 .picGrid img{border-radius: 10px; width: 100%;}
 .morePic {padding: 18px; width: 100%;}
 
-.restaurantReview{padding: 22px;}
+.restaurantReview{padding: 22px; background-color: white; border-radius: 10px;}
 .reviewCount p{font-size: 24px;font-weight: bold;  }
 .reviewCount .gradeInfo{border-bottom: 1px solid gray; border-top: 1px solid gray; padding: 20px 0;}
 .reviewCount span{font-weight: bold;}
