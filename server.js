@@ -236,6 +236,21 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   }
 });
 
+
+// 리뷰페이지
+app.get("/review", async function (req, res) {
+  res.render("review.ejs");
+});
+
+// 리뷰
+app.post('/review',uploadUser.single("imgUrl"), async function(req, res){
+  const newReview = req.body
+  const newFile = req.file
+  console.log('리뷰',newReview)
+  console.log('파일',newFile)
+})
+
+
 // 아이디 중복확인
 app.post('/checkId', async(req, res)=>{
   const userId = req.body.userId
@@ -440,5 +455,3 @@ app.delete("/delete/:id", async function (req, res) {
 app.get('/maps', (req,res)=>{
   res.render('maps.ejs')
 })
-
-
