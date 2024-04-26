@@ -238,16 +238,28 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 
 
 // 리뷰페이지
-app.get("/review", async function (req, res) {
-  res.render("review.ejs");
+app.get("/review/:id", async function (req, res) {
+  const userId = req.params
+  
+
+  res.render("review.ejs",{userId});
 });
 
 // 리뷰
 app.post('/review',uploadUser.array("imgUrl"), async function(req, res){
   const newReview = req.body
   const newFile = req.file
+
   console.log('리뷰',newReview)
   console.log('파일',newFile)
+
+  await Review.create(newReview)
+
+  try {
+    const
+  } catch (error) {
+    
+  }
 })
 
 
