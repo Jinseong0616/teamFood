@@ -403,6 +403,7 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
+    console.log(shops[0].Images[0])
     res.render("search.ejs", { shops, userId }); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
@@ -477,7 +478,14 @@ app.delete("/delete/:id", async function (req, res) {
 });
 
 
+// 비밀번호 찾기
+app.get("/findPassword/",(req,res)=>{
+  res.render("findPassword.ejs")
+})
+
 app.get('/maps', (req,res)=>{
   res.render('maps.ejs')
 })
+
+
 
