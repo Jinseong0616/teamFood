@@ -59,14 +59,9 @@
                     </div>
                 </div>
                 
-                <div class="joinItem row align-items-center">
-                    <div class="col picCheck">
-                        <strong class="col">프로필 사진 :</strong>
-                        <input name="imgUrl" id="imgUrl" type="file" class="form-control-file" onchange="previewImage(event)">
-                    </div>
-                    <div class="col-12 picPreview">
-                        <img id="preview" src="#" alt="" style="max-width: 400px; max-height: 500px;">
-                    </div>
+                <div class="joinItem">
+                    <strong>프로필 사진 :</strong>
+                    <input name="imgUrl" id="imgUrl" type="file" placeholder="회원사진" style="width: 200px;">
                 </div>
 
                 <div class="joinBtn" id="joinBtn">
@@ -146,22 +141,6 @@
             
         }
  });
-
-//  미리보기
-  function previewImage(event) {
-        var input = event.target;
-        var preview = document.getElementById('preview');
-
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-            }
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
     
 </script>
 
