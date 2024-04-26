@@ -31,9 +31,9 @@ a{color: black;}
 
 
 .searchBar{position: relative;}
-.searchBar button{position: absolute; right: 15%; font-size: 25px;}
+.searchBar button{position: absolute; top: 5%; right: 15%; font-size: 25px;}
 
-#searchBtn{border: 0; background-color: rgb(245, 245, 245); }
+#searchBtn{border: 0; background-color: transparent; }
 
 
 /* 유저 버튼 */
