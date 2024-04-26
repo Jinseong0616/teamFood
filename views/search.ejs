@@ -56,6 +56,23 @@
             <h4>이용자층</h4>
           </div>
 
+          <ul class="gender row">
+              <div class="form-check col">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  남자
+                </label>
+              </div>
+              <div class="form-check col">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  여자
+                </label>
+              </div>
+          </ul>
+          <div class="bk"><hr></div>         
+        </div>
+
           <ul class="peopleGroup row">
             <div class="form-check col-6">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -90,20 +107,9 @@
             
             <li class="filterBtn col-6"></li>
           </ul>
-
           <div class="bk"><hr></div>
-          <ul class="gender row">
-            <li class="col">
-              <img src="/image/circle.png" class="click" alt="">
-              <label for="male">남자</label>
-            </li>
-            <li class="col">
-              <img src="/image/circle.png" class="click" alt="">
-              <label for="female">여자</label>
-            </li>
-          </ul>
-          <div class="bk"><hr></div>         
-        </div>
+
+
         
         <div class="sel-category">
           <div class="title d-flex">
@@ -262,22 +268,6 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script>
-
-  // 여러 이미지를 클릭하여 선택할 수 있는 기능
-  document.addEventListener("DOMContentLoaded", function() {
-    const genderImages = document.querySelectorAll('.gender .click');
-    genderImages.forEach(function(image) {
-      image.addEventListener('click', function() {
-        genderImages.forEach(function(otherImage) {
-          otherImage.classList.remove('clicked');
-          otherImage.src = "/image/default.png"; // 변경할 이미지의 경로로 수정하세요.
-        });
-        this.classList.add('clicked');
-        this.src = "/image/clicked.png"; // 변경될 이미지의 경로로 수정하세요.
-      });
-    });
-
-
 let question = document.getElementsByClassName('question');
 
 function questionOpen(question,answer){
@@ -307,7 +297,6 @@ for(let i = 0; i < question.length; i++){
         questionOpen(question[i],answer);
     });
 }
-  });
 
   const cityList = document.querySelector(".city_list");
   const button = document.querySelector("button.question span");
