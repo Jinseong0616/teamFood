@@ -317,12 +317,40 @@ app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
 
   const searchKeyword = req.query.keyword;
+  const region = req.query.region;
   
   let shops;
+
   console.log("검색어는 ? ", searchKeyword);
   try {
-    if (searchKeyword) {
+    if (region && searchKeyword) {
       // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
+      shops = await Store.findAll({
+        where: {
+          restaurantAddress: {
+            [Op.like]: `%${region}%`
+          },
+          [Op.or]: [
+            {
+              restaurantName: {
+                [Op.like]: `%${searchKeyword}%`
+              }
+            },
+            {
+              category: {
+                [Op.like]: `%${searchKeyword}%`
+              }
+            }
+          ]
+        },
+        include: [
+          {
+            model: Image,
+            attributes: ["imgUrl"],
+          },
+        ]
+      });
+    }else if(searchKeyword){
       shops = await Store.findAll({
         where: {
           [Op.or]: [
@@ -350,7 +378,7 @@ app.get("/search", async function (req, res) {
           },
         ],
       });
-    } else {
+    }else {
       shops = await Store.findAll({
         include: [
           {
@@ -437,5 +465,4 @@ app.delete("/delete/:id", async function (req, res) {
 app.get('/maps', (req,res)=>{
   res.render('maps.ejs')
 })
-
 
