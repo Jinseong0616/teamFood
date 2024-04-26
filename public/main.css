@@ -11,20 +11,6 @@ section{
   margin: 0 0 20px 0;
 }
 
-
-
-/* 헤더 */
-/* .header{height: 74px; white-space: nowrap;}
-.header ul{margin: 0;}
-.header .logo{margin: 0;}
-.header .search_box{
-  width: 80%; height: 40px;
-  padding: 20px; font-size: 14px;
-  background-color: rgb(245, 245, 245);
-  border-radius: 20px;
-  border: none;
-} */
-
 .user li{padding: 0 10px;}
 
 
@@ -164,20 +150,3 @@ section{
   text-decoration: none;
   cursor: pointer;
 }
-
-
- /* footer 
-footer { white-space: nowrap;}
-
-footer li::after { content: " |"; } 
-
-.footerPage { text-align: left; font-size: 14px; } 
-
-.footerPage ul { padding: 0; } 
-.footerPage .terms { font-weight: bold; margin-bottom: 24px; } 
-.footerPage .info { margin-bottom: 9px; } 
-
-.footerPage .info .mainName { font-size: 15px; } 
-.footerPage li {padding: 0 0 0 10px; } 
-
-.footerPage p { margin-bottom: 9px; }  */
