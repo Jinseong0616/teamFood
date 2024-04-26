@@ -243,7 +243,7 @@ app.get("/review", async function (req, res) {
 });
 
 // 리뷰
-app.post('/review',uploadUser.single("imgUrl"), async function(req, res){
+app.post('/review',uploadUser.array("imgUrl"), async function(req, res){
   const newReview = req.body
   const newFile = req.file
   console.log('리뷰',newReview)
