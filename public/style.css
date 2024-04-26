@@ -1,3 +1,4 @@
+
 * { margin: 0; padding: 0; box-sizing: border-box; } 
 ul,ol,li { list-style: none; } 
 a { text-decoration: none; } 
@@ -54,6 +55,20 @@ text-align: center;}
 .join .downWord { font-size: 12px; white-space: nowrap;}
 
 .join .btn { width: 200px; height: 40px; border-radius: 0; margin-top: 12px; font-size: 13px;}
+
+
+#userIdValidation {
+  font-weight: 600;
+  color: rgb(107, 214, 107);
+  
+  
+}
+#userIdValidation.invalid {
+  color: red;
+}
+#passwordValidation {
+  color: red;
+}
 
 /* footer { white-space: nowrap;}
 
