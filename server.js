@@ -13,6 +13,7 @@ const bcrypt = require('bcrypt')
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
+const uploadReview = multer({ dest: "uploads/reviews" }); // 회원
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -238,16 +239,35 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 
 
 // 리뷰페이지
-app.get("/review", async function (req, res) {
-  res.render("review.ejs");
+app.get("/review/:id", async function (req, res) {
+  const userId = req.isAuthenticated() ? req.user.userId : false;
+  const {id} = req.params
+  console.log(userId, id)
+  res.render("review.ejs",{userId, id});
 });
 
-// 리뷰
-app.post('/review',uploadUser.single("imgUrl"), async function(req, res){
+
+// 리뷰 작성
+app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
   const newReview = req.body
-  const newFile = req.file
-  console.log('리뷰',newReview)
-  console.log('파일',newFile)
+  const newFiles = req.files
+
+  const addReview = await Review.create(newReview)
+
+  console.log(addReview)
+
+  if (newFiles) {
+    for (const file of newFiles) {
+      await Image.create({
+        reviewId : addReview.reviewId,
+        userId : addReview.userId,
+        restaurantId: addReview.restaurantId,
+        imgUrl: file.filename, // 여러 파일을 다루므로  newFile 대신 file 사용
+      });
+    }
+  }
+ 
+
 })
 
 
@@ -403,7 +423,7 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
-    console.log(shops[0].Images[0])
+
     res.render("search.ejs", { shops, userId }); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
@@ -433,7 +453,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
 
   try {
     const existStore = await Store.findOne({
-      where: { restaurantAddress: newStore.restaurantAddress },
+      where: { restaurantAddress: newStore.restaurantAddress},
     });
 
     // 파일 업로드가 성공적으로 이루어졌는지 확인

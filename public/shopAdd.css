@@ -2,11 +2,10 @@
 ul,ol,li { list-style: none; } 
 a { text-decoration: none; } 
 
-body { width: 960px; margin: 0 auto; padding-bottom: 25px; } 
+.container { width: 960px; margin: 0 auto; padding-bottom: 25px; } 
 
-body .mainPage,
-body .addPage
-{ width: 400px; padding-left: 0; margin-bottom: 110px; } 
+body .mainPage { width: 400px; padding-left: 0; margin-bottom: 110px; } 
+body .addPage { width: 500px; padding-left: 0; margin-bottom: 110px; } 
 
 .header { padding: 20px 0 20px; border-bottom: gray solid 1px; } 
 .header img { width: 150px; } 
@@ -28,23 +27,6 @@ text-align: center;}
 .addBtn{display: flex; justify-content: space-between; padding-top: 15px; }
 .addBtn .btn{margin: 0 30px;}
 .addBtn .btn a{color: white;}
-
-
-/* footer css 디자인 나중에 삭제해도 무방 */
-/* footer { white-space: nowrap;}
-
-footer li::after { content: " |"; } 
-
-.footerPage { text-align: left; font-size: 14px; } 
-
-.footerPage ul { padding: 0; } 
-.footerPage .terms { font-weight: bold; margin-bottom: 24px; } 
-.footerPage .info { margin-bottom: 9px; } 
-
-.footerPage .info .mainName { font-size: 15px; } 
-.footerPage li {padding: 0 0 0 10px; } 
-
-.footerPage p { margin-bottom: 9px; }  */
 
 
 
