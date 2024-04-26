@@ -2,10 +2,10 @@ a{color: black;}
 
 /* 헤더 */
 
-.header{ margin-bottom: 30px; margin-top: 30px}
+.header{ margin-bottom: 20px; margin-top: 20px}
 .header ul{margin: 0;}
 .header .logo{margin: 0;}
-.header .logo .logo-img{width: 100%; height: 100%;}
+.header .logo .logo-img{width: 50%; height: 50%; margin: 0 0 10px 80px;}
 .header .search_box{
   width: 80%; height: 40px;
   padding: 20px; font-size: 14px;
