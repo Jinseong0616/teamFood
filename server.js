@@ -269,13 +269,10 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const { id } = req.params;
   const newInfo = JSON.parse(req.body.data);
 
-  console.log(newInfo);
+  const hashPassword = await bcrypt.hash(newInfo.password, 10)
+  newInfo.password = hashPassword
   const newFile = req.file;
-  console.log("파일 이름 : ", newFile.filename);
-  console.log("edit 아이디 : ", id);
 
-
-  
   const member = await User.findOne({ where: { userId: id } });
   let imgFile = await Image.findOne({ where: { userId: id } });
 
@@ -284,17 +281,17 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
       member[prop] = newInfo[prop];
     });
     await member.save();
-
-    if (imgFile) {
-      imgFile.imgUrl = newFile.filename;
-      await imgFile.save();
-    } else {
-      await Image.create({
-        userId: id,
-        imgUrl: newFile.filename,
-      });
-    }
-
+    if(newFile){
+      if (imgFile && member) {
+        imgFile.imgUrl = newFile.filename;
+        await imgFile.save();
+      } else if(!imgFile && member) {
+        await Image.create({
+          userId: id,
+          imgUrl: newFile.filename,
+        });
+      }
+  }
     res.redirect("/");
   }
 });
