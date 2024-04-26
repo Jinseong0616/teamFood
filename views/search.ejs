@@ -215,7 +215,7 @@
                   <div class="shop-h row">     
 
                     <% if (shop.Images && shop.Images.length > 1) { %>
-                      <img src="/test/<%= shop.Images[1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
+                      <img src="/test/<%= shop.Images[shop.Images.length-1].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
                     <% } else if (shop.Images && shop.Images.length > 0) { %>
                       <!-- 만약 첫 번째 이미지만 존재한다면, 첫 번째 이미지를 사용 -->
                       <img src="/test/<%= shop.Images[0].imgUrl %>" alt="<%= shop.restaurantName %>" class="col-3 title-img">
