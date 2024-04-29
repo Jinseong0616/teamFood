@@ -29,7 +29,7 @@
                         <strong>이메일</strong>
                         <div class="idCheck">
                             <input name="userId" id="userId" type="text"  placeholder="회원 아이디" value="test">
-                            <button type="button" id="checkIdBtn" class="check-btn">중복확인</button>
+                            <!-- <button type="button" id="checkIdBtn" class="check-btn">중복확인</button> -->
                         </div>
                         <span id="userIdValidation" class="validation-msg"></span>
                 </div>
@@ -96,9 +96,10 @@
 
   const userIdInput = document.getElementById('userId')
 
-  userIdInput.onchange = function(){
-    isIdValidated = false;
-
+  userIdInput.addEventListener('change', function(e){
+    
+    //console.log(userId)
+    
     const userId = userIdInput.value
         fetch('/checkId', {
           method: 'POST',
@@ -110,13 +111,16 @@
         .then(response => response.json())
         .then(data => {
           // 서버에서 받은 응답에 따라 처리
-          if (data.exists) {
-            // alert('이미 사용 중인 아이디입니다.');
+          if (userId == '') {
+            document.getElementById('userIdValidation').textContent = '올바르지 않은 아이디 형식입니다.';
+            document.getElementById('userIdValidation').classList.add('invalid');
+            isIdValidated = false;
+          } else if(data.exists) {
             document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
             document.getElementById('userIdValidation').classList.add('invalid');
-            //isIdValidated = false;
-          } else {
-            // alert('사용 가능한 아이디입니다!');
+            
+            isIdValidated = false;
+          } else{
             document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
             document.getElementById('userIdValidation').classList.remove('invalid');
             isIdValidated = true;
@@ -126,64 +130,37 @@
           console.error('Error:', error);
           alert('서버 오류가 발생했습니다.');
         });
-
-
-  }
-
-
-
-
-
-  document.getElementById('checkIdBtn').addEventListener('click',function(e){
-    
-    //console.log('버튼테스트')
-    
-    // const userId = userIdInput.value
-    //     fetch('/checkId', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify({ userId: userId })
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       // 서버에서 받은 응답에 따라 처리
-    //       if (data.exists) {
-    //         alert('이미 사용 중인 아이디입니다.');
-    //         document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
-    //         document.getElementById('userIdValidation').classList.add('invalid');
-    //         //isIdValidated = false;
-    //       } else {
-    //         alert('사용 가능한 아이디입니다!');
-    //         document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
-    //         document.getElementById('userIdValidation').classList.remove('invalid');
-    //         isIdValidated = true;
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.error('Error:', error);
-    //       alert('서버 오류가 발생했습니다.');
-    //     });
   })
 
-        
-  // 중복확인 후 로직
+    const passwordInput = document.getElementById('password')
+    
+    passwordInput.addEventListener('change', function(){
+        if(passwordRegex.test(passwordInput.value)){
+            document.getElementById('passwordValidation').textContent = '올바른 비밀번호입니다.';
+            document.getElementById('passwordValidation').classList.remove('invalid');
+        } else{
+            document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
+            document.getElementById('passwordValidation').classList.add('invalid');
+        }
+    })
+
+
   document.getElementById('joinBtn').addEventListener('click', function(e) {
-    const password = document.getElementById('password').value
-    if (!isIdValidated) {
-      alert('중복 확인을 하세요')
-      e.preventDefault();
-      return;
-    }          
-  
-    if(passwordRegex.test(password)) {
-      alert("환영합니다! 회원가입 되었습니다.")
-    } else {
-      alert("비밀번호가 조건에 부합하지 않습니다.");
-      document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
-      e.preventDefault()
-      
+    
+    if(isIdValidated && passwordRegex.test(passwordInput.value)){
+        alert("환영합니다! 회원가입 되었습니다.")
+    }
+    else if(!isIdValidated && passwordRegex.test(passwordInput.value)){
+        e.preventDefault()
+        alert('아이디를 확인해주세요.')
+    } 
+    else if(isIdValidated && !passwordRegex.test(passwordInput.value)){
+        e.preventDefault()
+        alert('비밀번호를 확인해주세요')
+    }
+    else {
+        e.preventDefault()
+        alert('올바른 값을 입력해주세요.')
     }
 });
 
@@ -198,16 +175,10 @@
             reader.onload = function (e) {
                 preview.src = e.target.result;
             }
-
             reader.readAsDataURL(input.files[0]);
         }
   }
     
-
 </script>
-
-
 </body>
-
-
 </html>
