@@ -6,17 +6,31 @@ a{text-decoration: none;}
 
 .sec{margin-top: 50px;}
 
-.input-box{ width: 100%; display: flex; justify-content: center;}
-.input-box tr input{width: 400px; height: 40px;}
-.input-box th{width: 100px;}
-.input-box td{padding: 24px 48px;}
+h2{
+  margin-bottom: 30px;
+  text-align: center;
+}
 
-.input-box .tr-profile{}
-/* .input-box .tr-profile img{width: 50%;  border-radius: 50%;} */
+
+.profile-img{margin: 0 auto; width: 596px; display: flex; justify-content: space-between;}
+
+
+.img-edit{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.img-edit .find{
+  font-size: 12px;
+  padding: 8px 20px; color: white; 
+  background-color: black;
+}
+
 
 .person-circle {
-  position: relative;
-  display: inline-block;
+  margin: 0 auto;
   width: 200px;
   height: 200px; 
   border-radius: 50%; 
@@ -25,9 +39,21 @@ a{text-decoration: none;}
 
 .person-circle img {
   width: 100%; 
-  height: auto; 
+  height: 100%; 
   display: block; 
 }
+
+
+.input-box{ width: 100%; display: flex; justify-content: center;}
+.input-box tr{
+  border-bottom: none;
+}
+
+.input-box tr input{width: 400px; height: 40px;}
+.input-box th{width: 100px;}
+.input-box td{padding: 24px 48px;}
+
+
 
 .sec .edit-box{display: flex; justify-content: center; padding: 50px 0 50px;}
 .sec div .edit{
@@ -40,9 +66,4 @@ a{text-decoration: none;}
   border-radius: 2px;
 }
 
-.find{
-  border: 1px solid black; 
-  padding: 8px 30px; color: white; 
-  background-color: black;
 
- }
