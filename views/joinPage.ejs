@@ -12,7 +12,7 @@
     <header>
         <div class="header">
           <a href="/">
-            <img src="https://dcicons.s3.ap-northeast-1.amazonaws.com/new/images/web/react_components/Header/logo.png" alt="다이닝코드">
+            <img src="/image/logo.PNG" alt="다이닝코드">
           </a>
         </div>
     </header>
@@ -26,9 +26,11 @@
         <form action="/join" method="POST" enctype="multipart/form-data">
             <div class="joinForm">
                 <div class="joinItem">
-                        <strong>아이디</strong>
-                        <input name="userId" id="userId" type="text"  placeholder="회원 아이디" value="test">
-                        <button type="button" id="checkIdBtn" class="check-btn">중복확인</button>
+                        <strong>이메일</strong>
+                        <div class="idCheck">
+                            <input name="userId" id="userId" type="text"  placeholder="회원 아이디" value="test">
+                            <button type="button" id="checkIdBtn" class="check-btn">중복확인</button>
+                        </div>
                         <span id="userIdValidation" class="validation-msg"></span>
                 </div>
                 <div class="joinItem">
@@ -49,18 +51,26 @@
                     <strong>주소</strong>
                     <input name="address" type="text" placeholder="주소" value="조선">
                 </div>
-                <div class="joinItem d-flex">
+                <div class="joinItem row">
                     <strong>휴대폰</strong>
-                    <input name="phone" type="tel" placeholder="'-'를 빼고 숫자만 입력">
-                    <button>인증번호 발송</button>
+                    <div class="numCheck d-flex justify-content-between">
+                        <input name="phone" type="tel" placeholder="'-'를 빼고 숫자만 입력">
+                        <button>인증번호 발송</button>
+                    </div>
                 </div>
                 
-                <div class="joinItem">
-                    <input name="imgUrl" id="imgUrl" type="file" placeholder="회원사진" style="width: 200px;">
+                <div class="joinItem row align-items-center">
+                    <div class="col picCheck">
+                        <strong class="col">프로필 사진 :</strong>
+                        <input name="imgUrl" id="imgUrl" type="file" class="form-control-file" onchange="previewImage(event)">
+                    </div>
+                    <div class="col-12 picPreview">
+                        <img id="preview" src="#" alt="" style="max-width: 400px; max-height: 500px;">
+                    </div>
                 </div>
 
                 <div class="joinBtn" id="joinBtn">
-                    <button type="submit" type="button" class="btn btn-dark loginButton">회원가입</button>
+                    <button type="submit" class="btn btn-dark loginButton">회원가입</button>
                 </div>
             </div>
         </form>
@@ -72,71 +82,110 @@
 <script>
 
         
-        let isIdValidated = false;
+  let isIdValidated = false;
         
-        const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()`])[a-z\d!@#$%^&*()`]{8,}$/
-        /*
-            (?=.*[a-z]): 최소 한 개의 소문자가 포함되어야 합니다.
-            (?=.*\d): 최소 한 개의 숫자가 포함되어야 합니다.
-            (?=.*[@$!%*?&]): 최소 한 개의 특수 문자(@$!%*?& 중 하나)가 포함되어야 합니다.
-            [A-Za-z\d@$!%*?&]{8,}: 위의 조건을 모두 충족하면서, 총 길이가 8자 이상이어야 합니다.
+  const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()`])[a-z\d!@#$%^&*()`]{8,}$/
+  /*
+  (?=.*\d): 최소 한 개의 숫자가 포함되어야 합니다.
+  (?=.*[@$!%*?&]): 최소 한 개의 특수 문자(@$!%*?& 중 하나)가 포함되어야 합니다.
+  [A-Za-z\d@$!%*?&]{8,}: 위의 조건을 모두 충족하면서, 총 길이가 8자 이상이어야 합니다.
+  
+  한줄 요약 : 영문, 특문, 숫자가 들어가고 최소 8자리 이상
+  (?=.*[a-z]): 최소 한 개의 소문자가 포함되어야 합니다.
+  */ 
 
-            한줄 요약 : 영문, 특문, 숫자가 들어가고 최소 8자리 이상
-        */ 
+  const userIdInput = document.getElementById('userId')
 
+  userIdInput.onchange = function(){
+    isIdValidated = false;
+  }
 
+  document.getElementById('checkIdBtn').addEventListener('click',function(e){
     
-        document.getElementById('checkIdBtn').addEventListener('click',function(e){
-            const userId = document.getElementById('userId').value
-            console.log(userId)
-            fetch('/checkId', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userId: userId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // 서버에서 받은 응답에 따라 처리
-                if (data.exists) {
-                    alert('이미 사용 중인 아이디입니다.');
-                    document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
-                    document.getElementById('userIdValidation').classList.add('invalid');
-                    isIdValidated = false;
-                } else {
-                    alert('사용 가능한 아이디입니다!');
-                    document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
-                    document.getElementById('userIdValidation').classList.remove('invalid');
-                    isIdValidated = true;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('서버 오류가 발생했습니다.');
-            });
+    //console.log(userId)
+    
+    const userId = userIdInput.value
+        fetch('/checkId', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId: userId })
         })
+        .then(response => response.json())
+        .then(data => {
+          // 서버에서 받은 응답에 따라 처리
+          if (data.exists) {
+            alert('이미 사용 중인 아이디입니다.');
+            document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
+            document.getElementById('userIdValidation').classList.add('invalid');
+            //isIdValidated = false;
+          } else {
+            alert('사용 가능한 아이디입니다!');
+            document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
+            document.getElementById('userIdValidation').classList.remove('invalid');
+            isIdValidated = true;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('서버 오류가 발생했습니다.');
+        });
+  })
+
         
-         // 중복확인 후 로직
-         document.getElementById('joinBtn').addEventListener('click', function(e) {
-            const password = document.getElementById('password').value
-            if (!isIdValidated) {
-                alert('중복 확인을 하세요')
-                e.preventDefault();
-                return;
+  // 중복확인 후 로직
+  document.getElementById('joinBtn').addEventListener('click', function(e) {
+    const password = document.getElementById('password').value
+    if (!isIdValidated) {
+      alert('중복 확인을 하세요')
+      e.preventDefault();
+      return;
+    }          
+  
+    if(passwordRegex.test(password)) {
+      alert("환영합니다! 회원가입 되었습니다.")
+    } else {
+      alert("비밀번호가 조건에 부합하지 않습니다.");
+      document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
+      e.preventDefault()
+      
+    }
+});
+
+//  미리보기
+  function previewImage(event) {
+        var input = event.target;
+        var preview = document.getElementById('preview');
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
             }
-            
-        
-        if(passwordRegex.test(password)) {
-            alert("환영합니다! 회원가입 되었습니다.")
-        } else {
-            alert("비밀번호가 조건에 부합하지 않습니다.");
-            document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
-            e.preventDefault()
-            
+
+            reader.readAsDataURL(input.files[0]);
         }
- });
+    }
     
+    const password = document.getElementById('password').value
+    
+    if (!isIdValidated) {
+      alert('중복 확인을 눌러주세요')
+      e.preventDefault();
+      return;
+    }
+    if(passwordRegex.test(password)) {
+      alert("환영합니다! 회원가입 되었습니다.")
+    }else{
+      alert("비밀번호가 조건에 부합하지 않습니다.");
+      document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
+      e.preventDefault()
+    }
+
+
+
 </script>
 
 
