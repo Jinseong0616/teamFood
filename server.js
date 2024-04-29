@@ -436,13 +436,8 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
-<<<<<<< HEAD
-    // console.log(shops[0].Images[0])
-    res.render("search.ejs", { shops, userId }); // 검색 결과를 클라이언트에게 전달합니다.
-=======
 
     res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
->>>>>>> df03e3b4ec164c5dd89b396cfb163f463cfe4c0d
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
