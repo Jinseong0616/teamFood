@@ -7,6 +7,8 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const multer = require('multer')
 const {Op} = require('sequelize')
+const nodemailer = require("nodemailer");
+
 
 const bcrypt = require('bcrypt')
 
@@ -23,6 +25,10 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+
+
+
+
 
 
 // db
@@ -78,9 +84,10 @@ passport.use(
 );
 
 // 메인 페이지
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-  res.render("index.ejs", { userId });
+  const user = await User.findOne({where : {userId}})
+  res.render("index.ejs", { name : user.name , userId });
 });
 
 // 로그인페이지
@@ -163,7 +170,7 @@ app.get("/detail/:id", async (req, res) => {
 
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    const user = await User.findOne({ where: { userId: id } });
+    const user = await User.findOne({ where: { userId: userId } });
 
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
@@ -178,6 +185,7 @@ app.get("/detail/:id", async (req, res) => {
       userRatings[review.userId].totalRating += review.rating;
       userRatings[review.userId].reviewCount++;
     });
+
     // 각 회원별 평균별점 계산
     const userAvgRatings = {};
     Object.keys(userRatings).forEach((userId) => {
@@ -187,13 +195,14 @@ app.get("/detail/:id", async (req, res) => {
         reviewCount: userRatings[userId].reviewCount,
       };
     });
-
+    console.log(user.name)
     res.render("detail.ejs", {
       restaurant,
       reviews,
       userAvgRatings,
       imgList: imgUrl,
       userId,
+      name : user.name
     });
   } catch (error) {
     console.error("에러 발생:", error);
@@ -239,11 +248,13 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 
 
 // 리뷰페이지
-app.get("/review/:id", async function (req, res) {
+app.get("/review/:restaurantId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-  const {id} = req.params
-  console.log(userId, id)
-  res.render("review.ejs",{userId, id});
+  const {restaurantId} = req.params
+
+
+  console.log(userId, restaurantId)
+  res.render("review.ejs",{userId, restaurantId});
 });
 
 
@@ -266,7 +277,7 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
       });
     }
   }
- 
+  res.redirect(`/detail/${newReview.restaurantId}`)
 
 })
 
@@ -357,6 +368,8 @@ app.get("/search", async function (req, res) {
   let shops;
 
   console.log("검색어는 ? ", searchKeyword);
+  const user = await User.findOne({where : {userId}})
+
   try {
     if (region && searchKeyword) {
       // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
@@ -424,7 +437,7 @@ app.get("/search", async function (req, res) {
       });
     }
 
-    res.render("search.ejs", { shops, userId }); // 검색 결과를 클라이언트에게 전달합니다.
+    res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
@@ -498,14 +511,71 @@ app.delete("/delete/:id", async function (req, res) {
 });
 
 
+
+
 // 비밀번호 찾기
 app.get("/findPassword/",(req,res)=>{
   res.render("findPassword.ejs")
 })
 
-app.get('/maps', (req,res)=>{
-  res.render('maps.ejs')
+
+
+
+
+
+app.get('/findEmail', (req,res)=>{
+  res.render('findEmail.ejs')
 })
 
 
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "ssorru0623@gmail.com",
+    pass: "cgqc muyw arfv zzmp",   // 앱 비밀번호
+  },
+});
 
+// 메세지를 보낼 이메일
+const userEmail = 'ssorru0623@gmail.com'
+
+
+app.post('/findEmail', (req,res)=>{
+  const {userId} = req.body;
+  console.log(userId)
+  const resetCode = Math.random().toString(36).substring(2, 15); // 비밀번호 재설정 코드 생성
+
+  bcrypt.hash(resetCode, 10, async function(err, hash) {
+    if (err) {
+      console.error('Hashing error:', err);
+    } else {
+      // DB에 해시화된 코드 저장 로직 (여기서는 생략)
+      const user =  await User.findOne({where : {userId: userId}})
+
+      if(user){
+        console.log(user.password)
+        user.password = hash;
+        await user.save();
+      }
+
+      // 이메일로 비밀번호 초기화 코드 발송
+      let mailOptions = {
+        from: userEmail,
+        to: userId,
+        subject: '비밀번호 초기화 코드',
+        text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
+      };
+      console.log(mailOptions); // mailOptions 객체 로그 출력
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.status(500).send('이메일을 보내는 데 실패했습니다.');
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.redirect('/login')
+        }
+      });
+    }
+  });
+})

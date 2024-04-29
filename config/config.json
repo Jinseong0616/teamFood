@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "member2",
-    "password": "123456789123456789",
+    "username": "foodMaster",
+    "password": "korea1234",
     "database": "FOOD",
-    "host": "192.168.5.19",
+    "host": "teamfood.crsmg6yq43zm.us-east-2.rds.amazonaws.com",
     "dialect": "mysql"
   },
   "test": {
