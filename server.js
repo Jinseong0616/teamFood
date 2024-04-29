@@ -91,7 +91,14 @@ passport.use(
 app.get("/", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const user = await User.findOne({where : {userId}})
-  res.render("index.ejs", { name : user.name , userId });
+
+  if(user){
+    res.render("index.ejs", { name : user.name , userId });
+  }
+  else {
+    res.render('index.ejs', {userId})
+  }
+  
 });
 
 // 로그인페이지
@@ -373,9 +380,9 @@ app.get("/search", async function (req, res) {
 
   console.log("검색어는 ? ", searchKeyword);
   const user = await User.findOne({where : {userId}})
-
+  
   try {
-    if (region && searchKeyword) {
+     if (region && searchKeyword) {
       // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
       shops = await Store.findAll({
         where: {
@@ -440,13 +447,12 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
-<<<<<<< HEAD
-    // console.log(shops[0].Images[0])
-    res.render("search.ejs", { shops, userId }); // 검색 결과를 클라이언트에게 전달합니다.
-=======
-
-    res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
->>>>>>> df03e3b4ec164c5dd89b396cfb163f463cfe4c0d
+    if(user){
+      res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+    }
+    else {
+      res.render("search.ejs", { shops, userId}); // 검색 결과를 클라이언트에게 전달합니다.
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
