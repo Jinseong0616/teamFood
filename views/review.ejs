@@ -29,8 +29,8 @@
           <!--  -->
 
 
-          <input id="userId" name="userId" value="<%= userId %>">
-          <input id="restaurantId" name="restaurantId" value="<%= restaurantId %>">
+          <input id="userId" name="userId" value="<%= userId %>" type="hidden">
+          <input id="restaurantId" name="restaurantId" value="<%= restaurantId %>" type="hidden">
           <div class="review-user"></div>
           <h3 class="rating-title">전체적으로 어떠셨나요?</h3>
             <p class="select-star">별점을 선택해주세요</p>
@@ -38,7 +38,7 @@
             <div class="rating">
               ★★★★★
               <span class="rating_star" name="ratingStar">★★★★★</span>
-              <input type="range" name="rating" value="1" step="1" min="0" max="5">
+              <input name="rating" id="rating" type="range" value="1" step="1" min="0" max="5">
             </div>
           </div>
           <div class="review-content">
@@ -72,10 +72,7 @@ const rating_star = document.querySelector('.rating_star');
 // 별점 드래그할 때
 rating_input.addEventListener('input', () => {
   rating_star.style.width = `${rating_input.value * 20}%`;
-<<<<<<< HEAD
-=======
   
->>>>>>> 3c64604197298c8268d4a3972339eb06022092f0
 });
 
 </script>
