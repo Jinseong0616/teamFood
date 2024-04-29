@@ -13,6 +13,7 @@ const bcrypt = require('bcrypt')
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
+const uploadReview = multer({ dest: "uploads/review" }); // 리뷰
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -238,27 +239,39 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 
 
 // 리뷰페이지
-app.get("/review/:id", async function (req, res) {
-  const userId = req.params
+app.get("/review/:reviewId/restaurant/:restaurantId", async function (req, res) {
+  const params = req.params
   
-
-  res.render("review.ejs",{userId});
+  console.log(params)
+  res.render("review.ejs",{params});
 });
 
 // 리뷰
-app.post('/review',uploadUser.single("imgUrl"), async function(req, res){
+app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
   const newReview = req.body
-  const newFile = req.file
+  const newFiles = req.files
+  console.log(req.body.restaurantId)
 
   console.log('리뷰',newReview)
-  console.log('파일',newFile)
+  console.log('파일',newFiles)
 
-  await Review.create(newReview)
+  const createReview = await Review.create(newReview)
 
   try {
-    const
+
+    if (newReview && newFiles) {
+      for (const file of newFiles) {
+        await Image.create({
+          userId : newReview.userId,
+          restaurantId: newReview.restaurantId,
+          reviewId: createReview.reviewId,
+          imgUrl: file.filename, // 여러 파일을 다루므로  newFile 대신 file 사용
+        });
+      }
+    }
   } catch (error) {
-    
+    console.error(error);
+    res.status(500).json({ message: "리뷰 등록 실패" });
   }
 })
 

@@ -14,7 +14,8 @@
       <div class="review-box">
         <form action="/review" method="post" enctype="multipart/form-data">
           <h2 class="review-title">리뷰작성하기</h2>
-          <p id="userId"><%= userId.id %></p>
+          <input  id="userId" name="userId" value="<%= params.reviewId %>">
+          <input id="restaurantId" name="restaurantId" value="<%= params.restaurantId %>">
           <div class="review-user"></div>
           <h3 class="rating-title">전체적으로 어떠셨나요?</h3>
             <p class="select-star">별점을 선택해주세요</p>
@@ -22,7 +23,7 @@
             <div class="rating">
               ★★★★★
               <span class="rating_star" name="ratingStar">★★★★★</span>
-              <input type="range" value="1" step="1" min="0" max="10">
+              <input type="range" name="rating" value="1" step="1" min="0" max="5">
             </div>
           </div>
           <div class="review-content">
@@ -51,42 +52,7 @@ const rating_star = document.querySelector('.rating_star');
 
 // 별점 드래그할 때
 rating_input.addEventListener('input', () => {
-  rating_star.style.width = `${rating_input.value * 10}%`;
-});
-
-// 작성하기 버튼 클릭 이벤트 처리
-document.getElementById('reviewBtn').addEventListener('click', function(event) {
-  event.preventDefault(); // 기본 이벤트 동작을 중단합니다.
-
-  // 별점, 리뷰 내용, 이미지 파일 가져오기
-  const userId = document.getElementById('userId').innerText.trim();
-  const rating = rating_input.value / 2;
-  const content = document.getElementById('reviewContent').value;
-  const image = document.getElementById('imgUrl').files[0];
-
-  // FormData 객체 생성
-  const formData = new FormData(); 
-
-  // FormData에 별점, 리뷰 내용, 이미지 파일 추가
-  formData.append('rating', rating);
-  formData.append('userId',userId);
-  formData.append('content', content);
-  formData.append('imgUrl', image);
-
-  // 서버로 데이터를 전송하는 fetch 요청 보내기
-  fetch('/review', {
-    method: 'POST', // POST 요청
-    body: formData // FormData 객체를 전송
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('데이터 전송 실패');
-    }
-    console.log('데이터 전송 성공');
-  })
-  .catch(error => {
-    console.error(error);
-  });
+  rating_star.style.width = `${rating_input.value * 20}%`;
 });
 
 </script>
