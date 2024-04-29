@@ -37,24 +37,28 @@
               <a href="/지역구"><%= restaurant.restaurantAddress %></a>
               <a href="/카테고리"><%= restaurant.restaurantCategory %></a>
             </div>
-            
+
             <div class="restaurantRating">
               <div class="gradeInfo row row-cols-auto">
                 <div class="gradeRating col">
-                  <% let totalRating = 0; for (let i = 0; i < reviews.length; i++) { totalRating += reviews[i].rating; }
-                  let avgRating = totalRating / reviews.length; for (let j = 1; j <= 5; j++) { %> <% if (j <= avgRating)
+                  <% let totalRating = 0; 
+                  for (let i = 0; i < reviews.length; i++) 
+                  { totalRating += reviews[i].rating; }
+                  let avgRating = totalRating / reviews.length; 
+                  for (let j = 1; j <= 5; j++) { %> <% if (j <= avgRating)
                   { %>
                   <i class="bi bi-star-fill"></i>
                   <% } else { %>
                   <i class="bi bi-star"></i>
-                  <% } %> <% } %>
+                  <% } %> 
+                  <% } %>
                 </div>
                 <span class="totalScore col"><%= avgRating.toFixed(1) %>점 </span>
                 <p class="col">(<%= reviews.length %>명의 평가)</p>
               </div>
             </div>
           </div>
-          
+
           <div class="restaurantDetail">
             <ul>
               <li class="address row justify-content-between">
