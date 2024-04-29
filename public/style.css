@@ -67,18 +67,14 @@ text-align: center;}
 .join .btn { width: 200px; height: 40px; border-radius: 0; margin-top: 12px; font-size: 13px;}
 
 
-#userIdValidation {
+#userIdValidation, #passwordValidation {
   font-weight: 600;
   color: rgb(107, 214, 107);
-  
-  
 }
-#userIdValidation.invalid {
+#userIdValidation.invalid, #passwordValidation.invalid {
   color: red;
 }
-#passwordValidation {
-  color: red;
-}
+ 
 
 /* footer { white-space: nowrap;}
 

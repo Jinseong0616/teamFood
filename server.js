@@ -15,7 +15,7 @@ const bcrypt = require('bcrypt')
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
-const uploadReview = multer({ dest: "uploads/reviews" }); // 회원
+const uploadReview = multer({ dest: "uploads/reviews" }); // 리뷰
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -226,6 +226,7 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
+ 
 
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
