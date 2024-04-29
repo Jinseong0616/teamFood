@@ -32,15 +32,16 @@
             
 
             <%if(userId){%>
-              <%if(userId == "root"){%>
+              <%if(name == "admin"){%>
                 <li>관리자</li>
                 <li><a href="/add">관리자페이지</a></li>
                 <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
                 <li><a href="/logout">로그아웃</a></li>
               <%}else{%>
-                <li><%= userId %>님</li> 
+                <li><%= name %>님</li> 
                 <li><a href="/logout">로그아웃</a></li>
-                <li><a href="/myPage/<%= userId %>">마이페이지</a></l>
+                <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
+                <li><a href="/review/<%= userId %>">리뷰</a></li>
               <%}%>
             <%}else{%>
               <li><a href="/login">로그인</li> 
@@ -67,14 +68,6 @@
           return;
         }
     })
-
-    
-    
-    
-    // input.addEventListener("input",function(){
-      
-    // })
-
     
   </script>
 </body>
