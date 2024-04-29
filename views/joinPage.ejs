@@ -98,12 +98,7 @@
 
   userIdInput.onchange = function(){
     isIdValidated = false;
-  }
 
-  document.getElementById('checkIdBtn').addEventListener('click',function(e){
-    
-    //console.log(userId)
-    
     const userId = userIdInput.value
         fetch('/checkId', {
           method: 'POST',
@@ -116,12 +111,12 @@
         .then(data => {
           // 서버에서 받은 응답에 따라 처리
           if (data.exists) {
-            alert('이미 사용 중인 아이디입니다.');
+            // alert('이미 사용 중인 아이디입니다.');
             document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
             document.getElementById('userIdValidation').classList.add('invalid');
             //isIdValidated = false;
           } else {
-            alert('사용 가능한 아이디입니다!');
+            // alert('사용 가능한 아이디입니다!');
             document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
             document.getElementById('userIdValidation').classList.remove('invalid');
             isIdValidated = true;
@@ -131,6 +126,45 @@
           console.error('Error:', error);
           alert('서버 오류가 발생했습니다.');
         });
+
+
+  }
+
+
+
+
+
+  document.getElementById('checkIdBtn').addEventListener('click',function(e){
+    
+    //console.log('버튼테스트')
+    
+    // const userId = userIdInput.value
+    //     fetch('/checkId', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({ userId: userId })
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       // 서버에서 받은 응답에 따라 처리
+    //       if (data.exists) {
+    //         alert('이미 사용 중인 아이디입니다.');
+    //         document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
+    //         document.getElementById('userIdValidation').classList.add('invalid');
+    //         //isIdValidated = false;
+    //       } else {
+    //         alert('사용 가능한 아이디입니다!');
+    //         document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
+    //         document.getElementById('userIdValidation').classList.remove('invalid');
+    //         isIdValidated = true;
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.error('Error:', error);
+    //       alert('서버 오류가 발생했습니다.');
+    //     });
   })
 
         
@@ -167,24 +201,8 @@
 
             reader.readAsDataURL(input.files[0]);
         }
-    }
+  }
     
-    const password = document.getElementById('password').value
-    
-    if (!isIdValidated) {
-      alert('중복 확인을 눌러주세요')
-      e.preventDefault();
-      return;
-    }
-    if(passwordRegex.test(password)) {
-      alert("환영합니다! 회원가입 되었습니다.")
-    }else{
-      alert("비밀번호가 조건에 부합하지 않습니다.");
-      document.getElementById('passwordValidation').textContent = '비밀번호를 다시 입력해주세요.';
-      e.preventDefault()
-    }
-
-
 
 </script>
 
