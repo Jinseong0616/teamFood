@@ -25,14 +25,14 @@
             </div>
 
             <div class="subtitle">
-                <h2>로그인을 통해 다이닝코드의 다양한 혜택을 누리세요.</h2>
+                <h2>로그인을 통해 YUM YARD 의 다양한 혜택을 누리세요.</h2>
             </div>
 
             <div class="loginForm loginBtn">
                 <form class="form-box" action="/login" method="POST">
-                    <input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="username" value="test1">
-                    <input type="password" placeholder="비밀번호 입력" name="password" value="1234">
-                    <button type="submit" type="button" class="btn btn-dark loginButton">로그인</button>
+                    <input type="text" placeholder="휴대전화번호 또는 이메일 입력" id="username" name="username">
+                    <input type="password" placeholder="비밀번호 입력" name="password" id="password">
+                    <button type="submit" class="btn btn-dark loginButton" id="login">로그인</button>
                 </form> 
             </div>
 
@@ -57,7 +57,7 @@
             </div>
 
             <div class="join">
-                <span class="upWord">아직 다이닝코드 회원이 아니신가요?</span>
+                <span class="upWord">아직 YUM YARD 회원이 아니신가요?</span>
                 <br>
                 <span class="downWord">회원가입을 하시면 더 많은 정보와 혜택을 받으실수 있습니다</span>
                 <a href="/join"><button type="button" class="btn btn-outline-secondary">회원가입</button></a>
@@ -68,4 +68,56 @@
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    const loginBtn = document.getElementById('login')
+    
+    loginBtn.addEventListener('click', function(e){
+        const inputPassword = document.getElementById('password').value
+        const inputUsername = document.getElementById('username').value
+
+        if(!inputPassword && !inputUsername){
+            e.preventDefault()
+            alert('아이디와 비밀번호를 입력해주세요.')
+            return;
+        }
+        else if(inputUsername && !inputPassword){
+            e.preventDefault()
+            alert('비밀번호를 입력해주세요.')
+            return;
+        }
+        else if(!inputUsername && inputPassword){
+            e.preventDefault()
+            alert('아이디를 입력해주세요.')
+            return;
+        }
+
+        fetch('/loginCheck', {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({userId : inputUsername, password : inputPassword})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.exists && data.passwordCorrect){
+                alert('로그인 되었습니다.')
+            }
+            else {
+                
+                alert('아이디 또는 비밀번호가 일치하지 않습니다.')
+                e.preventDefault()
+            }
+        })
+        .catch(err =>{
+            console.error('Error', error)
+            e.preventDefault()
+            alert('서버 오류가 발생했습니다.')
+        })
+    })
+    
+</script>
+
+
+
 </html>

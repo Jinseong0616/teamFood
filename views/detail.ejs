@@ -160,14 +160,63 @@
           </div>
           <% } %>
         </div>
-      </div>
-    </main>
-    <%- include('footer.ejs') %>
-  </body>
+        <% for (let userId in userAvgRatings) { %>
+            <div class="container userReview">
+                <p class="personGrade">
+                    <span class="username">
+                        <img src="<%=userId.imgUrl %>" alt="<%= userId %>">
+                        <strong><%= userId %></strong>
+                    </span>
+                    <span class="scoreInfo">
+                        평균별점
+                        <span class="avgScore">
+                            <%= userAvgRatings[userId].avgRating.toFixed(1) %>점
+                        </span>
+                        평가 
+                        <span class="scoreCnt"><%= userAvgRatings[userId].reviewCount %>개</span>
+                    </span>
+                </p>
+                    <% for (let i = 0; i < reviews.length; i++) { %>
+                        <% if (reviews[i].userId === userId) { %>
+                        <div class="container">
+                            <p class="pointDetail">
+                                <div class="restaurantRating">
+                                    <% for (let j = 1; j <= 5; j++) { %>
+                                        <% if (j <= reviews[i].rating) { %>
+                                            <i class="bi bi-star-fill"></i>
+                                            <% } else { %>
+                                            <i class="bi bi-star"></i>
+                                        <% } %>
+                                    <% } %>
+                                    <span class="totalScore"><%= reviews[i].rating %>점</span>
+                                </div>
+                            </p>
+                            <p class="reviewContent">
+                                <%= reviews[i].content %>
+                            </p>
+                            <p class="userReviewPic">
+                               <div class="picGrid row row-cols-4 g-3">
+                                    <% for (let j = 1; j <= 4; j++) { %>
+                                        <div class="col">
+                                            <img src="<%= %>" alt="reviewPic <%= j %>">
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </p>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+  </div>
+</main>
+<%- include('footer.ejs') %>
+</body>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
-  ></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+
+
 </html>
