@@ -25,7 +25,11 @@
           <table class="find-box">
             <tr class="find userid">
               <th>아이디</th>
+
+           
+
               <td><input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="userId" id="userId"></td>
+
             </tr>
           </table>
           <div class="find-btn">
@@ -46,7 +50,8 @@
     let isIdValidated = false;
     
     const emailCode = document.getElementById('email')
-    const form = document.querySelector('.form-box')
+
+
     emailCode.addEventListener('click',function(e){
       e.preventDefault()
       const inputId = document.getElementById('userId').value
