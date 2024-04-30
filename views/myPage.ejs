@@ -46,12 +46,7 @@
               <th>아이디</th>
               <td><input id="userId" class="userId col" name="userId"     value="<%= member.userId %>" readonly></td>
             </tr>
-            <tr class="tr-pwd">
-              <th>비밀번호</th>
-              <td>
-                <input id="password" class="password" name="password" type="password" placeholder="변경할 비밀번호">
-              </td>
-            </tr>
+            
             <tr class="tr-name">
               <th>이름</th>
               <td>
@@ -85,16 +80,15 @@
 // 각 input상자에서 값 가져오기
 
 const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('click', function(e){
-    const editPassword = document.getElementById('password').value
+    e.preventDefault()
+    
     const editName = document.getElementById('name').value
     const editBirthNum = document.getElementById('birthNum').value
     const editPhone = document.getElementById('phone').value
     const profileImage = document.getElementById('imgUrl').files[0];
-
-    e.preventDefault()
+    
 
     let newInfo = {
-        password : editPassword,
         name : editName,
         birthNum : editBirthNum,
         phone : editPhone

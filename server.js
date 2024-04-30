@@ -108,8 +108,7 @@ app.get("/login", (req, res) => {
 //로그인
 app.post("/login", (req, res) => {
   passport.authenticate("local", (error, user, info) => {
-    console.log(error, user, info)
-
+    
     if (error) return res.status(500).json(error); // 인증 과정에서 오류
     if (!user) return res.status(401).json({ message: "로그인 실패" });
 
@@ -335,9 +334,12 @@ app.get("/myPage/:id", async (req, res) => {
 app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const { id } = req.params;
   const newInfo = JSON.parse(req.body.data);
+  console.log(newInfo)
 
-  const hashPassword = await bcrypt.hash(newInfo.password, 10)
-  newInfo.password = hashPassword
+  // newInfo.password
+  
+  // const hashPassword = await bcrypt.hash(newInfo.password, 10)
+  // newInfo.password = hashPassword
   const newFile = req.file;
 
   const member = await User.findOne({ where: { userId: id } });
@@ -348,6 +350,7 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
       member[prop] = newInfo[prop];
     });
     await member.save();
+
     if(newFile){
       if (imgFile && member) {
         imgFile.imgUrl = newFile.filename;
@@ -545,15 +548,6 @@ app.get("/findPassword/",(req,res)=>{
 })
 
 
-
-
-
-
-app.get('/findEmail', (req,res)=>{
-  res.render('findEmail.ejs')
-})
-
-
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -638,6 +632,30 @@ app.get("/getReviewImage", async (req, res) => {
   // console.log(guList)
 
   res.json(ImageList)
+})
+
+
+
+
+// 비밀번호 변경 페이지
+app.get('/editPw/:id', async (req,res)=>{
+  const {id} = req.params
+  const member = await User.findOne({where : {userId : id}})
+  res.render('editPassword.ejs', {member})
+})
+
+// 비밀번호 변경
+app.put('/editPw/:id', async (req,res)=>{
+
+  const {id} = req.params
+  const newInfo = req.body.password
+  const member = await User.findOne({where : {userId : id}})
+  const hashPassword = await bcrypt.hash(newInfo, 10)
+  member.password = hashPassword
+  await member.save()
+
+  res.json({ message: "비밀번호가 성공적으로 변경되었습니다." })
+
 })
 
 
