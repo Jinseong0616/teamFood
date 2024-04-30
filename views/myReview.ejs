@@ -20,7 +20,9 @@
                     <div class="resName">
                       <% for(let j = 0; j < restaurantName.length; j++) { %>
                         <% if (restaurantName[j].restaurantId === myReviews[i].restaurantId) {%>
-                          <h2 class="resTitle"><%= restaurantName[j].restaurantName %></h2>
+                          <h2 class="resTitle">
+                            <a href="/detail/<%=restaurantName[j].restaurantId %>"><%= restaurantName[j].restaurantName %></a>
+                          </h2>                         
                         <% } %>
                       <% } %>  
                     </div>
@@ -60,4 +62,23 @@
   
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  const reviewItems = document.querySelectorAll(".lookMyReviews");
+
+  reviewItems.forEach(function(item) {
+    // 각 리뷰 아이템에 클릭 이벤트 리스너 추가
+    item.addEventListener("click", function() {
+      // 클릭한 리뷰 아이템 안에서 h2.resTitle 아래의 첫 번째 a 태그(href) 가져오기
+      const anchorTag = item.querySelector("h2.resTitle a");
+      
+      // 가져온 href 속성값으로 이동
+      if (anchorTag) {
+        window.location.href = anchorTag.href;
+      }
+    });
+  });
+});
+
+</script>
 </html>

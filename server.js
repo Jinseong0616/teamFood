@@ -605,6 +605,7 @@ const formatDate = (date) => {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
+// 내리뷰
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
 
