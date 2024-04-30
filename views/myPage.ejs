@@ -11,71 +11,72 @@
 <body>
   <header>
     <div class="header">
-        <a href="/"><img src="https://dcicons.s3.ap-northeast-1.amazonaws.com/new/images/web/react_components/Header/logo.png" alt="다이닝코드"></a>
+      <a href="/">
+        <img src="/image/logo.PNG" alt="다이닝코드">
+      </a>
     </div>
   </header>
 
   <section class="sec">
     <div class="container-lg">
-      <h2>프로필 수정하기</h2>
+      <!-- <h2>마이 페이지</h2> -->
       <form action="/edit", method="post" enctype="multipart/form-data">
-        <table class="input-box">
-          <tr class="tr-profile">
-            <th>프로필 사진</th>
-            <td class="d-flex">
+        <h2>내정보</h2>
+        <div class="profile-img">
+            <div class="img-edit">
+              <label for="imgUrl" style="cursor: pointer;" class="find">사진변경</label>
+              <input id="imgUrl" name="imgUrl" type="file" accept="image/*" style="display: none;" >
+            </div>
 
+          <% if(memImg){ %>
+            <div class="person-circle">
+              <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="이미지변경">
+            </div>
+          <% } else { %>
+            <div class="person-circle">
+              <img id="profileImage" name="profileImage" src="/test/Pic.jpg" alt="기본이미지">
+            </div>
+          <% } %>
+        </div> 
+        
 
-             <% if(memImg){ %>
-                <div class="person-circle">
-                  <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="이미지변경">
-                </div>
-            <% } else { %>
-                <div class="person-circle">
-                  <img id="profileImage" name="profileImage" src="/test/Pic.jpg" alt="기본이미지">
-                </div>
-              <% } %>
-
-              <div class="img-edit">
-                <label for="imgUrl" style="cursor: pointer;" class="find">찾아보기</label>
-                <input id="imgUrl" name="imgUrl" type="file" accept="image/*" style="display: none;" >
-              </div>
-            </td>          
-          </tr>
-          <tr class="tr-id">
-            <th>아이디</th>
-            <td><input id="userId" class="userId col" name="userId" value="<%= member.userId %>"></td>
-          </tr>
-          <tr class="tr-pwd">
-            <th>비밀번호</th>
-            <td>
-              <input id="password" class="password" name="password" type="password" placeholder="변경할 비밀번호">
-            </td>
-          </tr>
-          <tr class="tr-name">
-            <th>이름</th>
-            <td>
-              <input id="name" class="name" name="name" placeholder="name" value="<%= member.name %>">
-            </td>
-          </tr>
-          <tr class="tr-birth">
-            <th>생일</th>
-            <td>
-              <input id="birthNum" class="birthNum" name="birthNum" placeholder="birthNum" value="<%= member.birthNum %>">
-            </td>
-          </tr>
-          <tr class="tr-num">
-            <th>휴대폰</th>
-            <td>
-              <input id="phone" class="phone" name="phone" placeholder="phone" value="<%= member.phone %>">
-            </td>
-          </tr>
-        </table>
+        <div class="table">
+          <table class="input-box">
+            <tr class="tr-id">
+              <th>아이디</th>
+              <td><input id="userId" class="userId col" name="userId" value="<%= member.userId %>"></td>
+            </tr>
+            <tr class="tr-pwd">
+              <th>비밀번호</th>
+              <td>
+                <input id="password" class="password" name="password" type="password" placeholder="변경할 비밀번호">
+              </td>
+            </tr>
+            <tr class="tr-name">
+              <th>이름</th>
+              <td>
+                <input id="name" class="name" name="name" placeholder="name" value="<%= member.name %>">
+              </td>
+            </tr>
+            <tr class="tr-birth">
+              <th>생일</th>
+              <td>
+                <input id="birthNum" class="birthNum" name="birthNum" placeholder="birthNum" value="<%= member.birthNum %>">
+              </td>
+            </tr>
+            <tr class="tr-num">
+              <th>휴대폰</th>
+              <td>
+                <input id="phone" class="phone" name="phone" placeholder="phone" value="<%= member.phone %>">
+              </td>
+            </tr>
+          </table>
+        </div>
         <a href="#" id="deleteId">회원탈퇴</a>
         <div class="edit-box">
           <button class="edit" data-id="<%= member.userId %>">변경사항저장</button>
         </div>
       </form> 
-      <a href="/">메인</a>
     </div>
   </section>
   
@@ -117,48 +118,45 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
     });
 });
 
-  // 이미지 변경한 것을 보여주는 이벤트 리스너
-  const profileImageInput = document.getElementById('imgUrl');
-  const profileImage = document.getElementById('profileImage');
+      // 이미지 변경한 것을 보여주는 이벤트 리스너
+      const profileImageInput = document.getElementById('imgUrl');
+      const profileImage = document.getElementById('profileImage');
 
-    profileImageInput.addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
+      profileImageInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-      reader.onload = function(e) {
-        profileImage.src = e.target.result;
-      };
+        reader.onload = function (e) {
+          profileImage.src = e.target.result;
+        };
 
-      reader.readAsDataURL(file);
-  });
+        reader.readAsDataURL(file);
+      });
 
+      const deleteId = document.getElementById('deleteId').addEventListener('click', function (e) {
+        if (confirm('정말로 탈퇴하시겠습니까?')) {
+          const id = document.getElementById('userId').value;
+          console.log('회원아이디', id);
 
-const deleteId = document.getElementById('deleteId').addEventListener('click',  function(e){
-
-if(confirm("정말로 탈퇴하시겠습니까?")){
-  const id = document.getElementById('userId').value;
-  console.log('회원아이디',id)
-
-  const url = 'http://localhost:3000'
-  // 서버로 DELETE 요청 보내기
-  fetch(`${url}/delete/${id}`, {
-        method: 'DELETE'
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("회원 탈퇴가 완료되었습니다.");
-            window.location.href = "/"; // 메인 페이지로 이동
-        } else {
-            alert("회원 탈퇴에 실패했습니다.");
+          const url = 'http://localhost:3000';
+          // 서버로 DELETE 요청 보내기
+          fetch(`${url}/delete/${id}`, {
+            method: 'DELETE',
+          })
+            .then((response) => {
+              if (response.ok) {
+                alert('회원 탈퇴가 완료되었습니다.');
+                window.location.href = '/'; // 메인 페이지로 이동
+              } else {
+                alert('회원 탈퇴에 실패했습니다.');
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+              alert('회원 탈퇴에 실패했습니다.');
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("회원 탈퇴에 실패했습니다.");
-    });
-}
-})
-
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>
