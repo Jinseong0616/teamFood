@@ -3,25 +3,24 @@ ul,ol,li { list-style: none; padding: 0;}
 a { text-decoration: none; } 
 
 .content{width: 760px; margin: 0 auto; }
-main{padding: 20px 0; background-color: #f0f0f3; } 
+main{padding: 20px 0 30px; background-color: #f0f0f3; } 
 .restaurantMain {padding-top: 20px; background-color: white; border-radius: 10px;} 
 
-.restaurantInfo{padding: 0 10px;}
+.restaurantInfo{padding: 0 20px;}
 
-.restaurantInfo .infoImg{padding: 10px;margin-bottom: 25px; display: flex;}
+.restaurantInfo .infoImg{padding: 10px 0; margin-bottom: 25px; display: flex;}
 .restaurantInfo .infoImg img
 { 
     width: 50%;
     height: auto; 
     object-fit: cover;
-    /* margin-right: 5px; */
+    margin-right: 5px;
 }
 
-/* .restaurantInfo .infoImg img:last-child {
+.restaurantInfo .infoImg img:last-child {
   margin-right: 0;
-} */
+}
 
-.restaurantInfo .infoName {padding: 0 10px;}
 .restaurantInfo .infoName .infoShare{justify-content: end; align-items: center;}
 .restaurantInfo .infoName .infoShare a{margin-right: 25px;}
 .restaurantInfo .infoName h1{padding-left: 10px; font-size: 35px; font-weight: bold;}
