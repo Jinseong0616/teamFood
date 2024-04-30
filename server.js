@@ -610,7 +610,9 @@ const formatDate = (date) => {
 };
 
 
+
 //내가 쓴 리뷰 페이지
+
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
   const myReviews = await Review.findAll({ where: { userId: id } });
