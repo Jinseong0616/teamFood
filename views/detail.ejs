@@ -134,12 +134,12 @@
                 <strong><%= userId %></strong>
               </span>
               <span class="scoreInfo">
-                평균별점
-                <span class="avgScore"> <%= userAvgRatings[userId].avgRating.toFixed(1) %>점 </span>
+                평균별점 : <%= userAvgRatings[userId].avgRating.toFixed(1) %>점
                 평가
                 <span class="scoreCnt"><%= userAvgRatings[userId].reviewCount %>개</span>
               </span>
             </p>
+            
             <% for (let i = 0; i < reviews.length; i++) { %> <% if (reviews[i].userId === userId) { %>
             <div class="container">
               <div class="pointDetail">
