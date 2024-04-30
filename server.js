@@ -486,7 +486,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
   const newFiles = req.files;
   console.log(newStore);
 
-  // console.log(req.file.filename)  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
+  // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
   try {
     const existStore = await Store.findOne({
@@ -604,3 +604,20 @@ app.post('/findEmail', async (req,res)=>{
   
 })
 
+
+const formatDate = (date) => {
+  const d = new Date(date);
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+};
+
+app.get('/myReview/:id', async(req, res)=>{
+  const id = req.params.id
+  // console.log('없음 ? :',id)
+
+  const myReviews = await Review.findAll({ where: { userId: id } });
+
+  const myReviewsImg = await Image.findAll({ where: { userId: id } });
+  console.log('마이리뷰 없음?' , myReviews)
+
+  res.render('myReview.ejs',{myReviews,formatDate,myReviewsImg})
+})
