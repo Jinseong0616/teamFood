@@ -26,9 +26,8 @@
     <section class="sec row">
       <div class="col-1">
         <h1>Hello</h1>
-        <a href="#" id="deleteId">회원탈퇴</a>
         <a href="/editPw/<%= member.userId %>">비밀번호변경</a>
-        <li><a href="/myReview/<%= member.userId %>">작성한 리뷰</a></li>
+        <a href="/myReview/<%= member.userId %>">작성한 리뷰</a>
       </div>
       <div class="col">
         <!-- <h2>마이 페이지</h2> -->
@@ -60,7 +59,7 @@
           <table class="input-box">
             <tr class="tr-id">
               <th>아이디</th>
-              <td><input id="userId" class="userId col" name="userId"     value="<%= member.userId %>" readonly></td>
+              <td><input id="userId" class="userId col" name="userId"  value="<%= member.userId %>" readonly></td>
             </tr>
             
             <tr class="tr-name">
@@ -97,7 +96,6 @@
 
 const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('click', function(e){
     e.preventDefault()
-
     const editName = document.getElementById('name').value
     const editBirthNum = document.getElementById('birthNum').value
     const editPhone = document.getElementById('phone').value
@@ -121,6 +119,7 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
     }) 
     .then( r => r.text())
     .then( r => {
+      alert('회원 정보가 변경 되었습니다.')
         window.location.href="/"; 
     })
     .catch(err => { 
@@ -144,25 +143,30 @@ const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('clic
         reader.readAsDataURL(file);
       });
 
-      const deleteId = document.getElementById('deleteId').addEventListener('click', function (e) {
+      const deleteId = document.getElementById('deleteId')
+      deleteId.addEventListener('click', function (e) {
+        e.preventDefault()
         if (confirm('정말로 탈퇴하시겠습니까?')) {
           const id = document.getElementById('userId').value;
           console.log('회원아이디', id);
 
           const url = 'http://localhost:3000';
           // 서버로 DELETE 요청 보내기
-          fetch(`${url}/delete/${id}`, {
+          fetch(`/delete/${id}`, {
             method: 'DELETE',
+            headers: {
+            'Content-Type': 'application/json'
+          },
           })
-            .then((response) => {
-              if (response.ok) {
-                alert('회원 탈퇴가 완료되었습니다.');
-                window.location.href = '/'; // 메인 페이지로 이동
+            .then(response => response.json())
+            .then(data =>{
+              if (data) {
+                alert('정상적으로 탈퇴 되었습니다.')
+                window.location.href = '/login'; // 로그인 페이지로 이동
               } else {
                 alert('회원 탈퇴에 실패했습니다.');
               }
-            })
-            .catch((error) => {
+            }).catch((error) => {
               console.error('Error:', error);
               alert('회원 탈퇴에 실패했습니다.');
             });
