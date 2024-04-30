@@ -39,8 +39,25 @@
                     <input name="openTime" id="openTime" type="text" placeholder="영업 시간">
                 </div>
                 <div class="addItem">
-                    <strong>카테고리</strong>
-                    <input name="category" id="category" type="text" placeholder="카테고리 예( 한식, 분식, 파스타)">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="category" name="category">
+                          <span>카테고리</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><p class="dropdown-item" name="category" id="category">고기</p></li>
+                          <li><p class="dropdown-item" name="category" id="category">돈까스</p></li>
+                          <li><p class="dropdown-item" name="category">버거</p></li>
+                          <li><p class="dropdown-item" name="category">아시안</p></li>
+                          <li><p class="dropdown-item" name="category">양식</p></li>
+                          <li><p class="dropdown-item" name="category">일식</p></li>
+                          <li><p class="dropdown-item" name="category">족발 • 보쌈</p></li>
+                          <li><p class="dropdown-item" name="category">죽</p></li>
+                          <li><p class="dropdown-item" name="category">찌개</p></li>
+                          <li><p class="dropdown-item" name="category">치킨</p></li>
+                          <li><p class="dropdown-item" name="category">피자</p></li>
+                          <li><p class="dropdown-item" name="category">디저트</p></li>
+                        </ul>
+                      </div>
                 </div>
                 <div class="addItem">
                     <strong>매장 번호</strong>
@@ -77,6 +94,32 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 <script>
+    
+// 폼 전송 이벤트 핸들러
+document.querySelector("form").addEventListener("submit", function(event) {
+    // 카테고리 값을 가져옵니다.
+    const categoryValue = document.querySelector("button.btn span").textContent;
+    // 가져온 카테고리 값을 폼 데이터에 추가합니다.
+    const hiddenCategoryInput = document.createElement("input");
+    hiddenCategoryInput.type = "hidden";
+    hiddenCategoryInput.name = "category";
+    hiddenCategoryInput.value = categoryValue;
+    this.appendChild(hiddenCategoryInput);
+});
+
+
+
+const dropdown = document.querySelector(".dropdown-menu");
+const button = document.querySelector("button.btn span");
+
+dropdown.addEventListener("click", function(event) {
+    const listItem = event.target.closest("li");
+    if (listItem) {
+        button.textContent = listItem.textContent;
+    }
+});
+
+
     //  미리보기
  function previewImages(event) {
     var input = event.target;
