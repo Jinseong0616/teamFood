@@ -25,13 +25,9 @@
 
     <section>
       <div class="container-lg">
+        <h2 class="review-title">리뷰 작성하기</h2>
         <div class="review-box">
           <form action="/review" method="post" enctype="multipart/form-data">
-            <h2 class="review-title">리뷰 작성하기</h2>
-
-            <!-- 레스토랑 아이디 -->
-            <!--  -->
-
 
           <input id="userId" name="userId" value="<%= userId %>" type="hidden">
           <input id="restaurantId" name="restaurantId" value="<%= restaurantId %>" type="hidden">
@@ -55,8 +51,8 @@
                 placeholder="음식 서비스 등의 방문경험을 작성해주세요"
               ></textarea>
             </div>
+            <h3>음식 및 메뉴판 사진</h3>
             <div class="review-img">
-              <h3>음식 및 메뉴판 사진</h3>
               <div class="upload-img">
                 <input name="imgUrl" id="imgUrl" type="file" placeholder="리뷰사진" multiple />
               </div>

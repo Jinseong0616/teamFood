@@ -1,164 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/shopAdd.css">
-</head>
-<body>
-
-  <header>
-    <div class="header">
-      <a href="/">
-        <img src="/image/logo.PNG" alt="다이닝코드">
-      </a>
-    </div>
-  </header>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/shopAdd.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <a href="/">
+          <img src="/image/logo.PNG" alt="다이닝코드" />
+        </a>
+      </div>
+    </header>
 
     <div class="container addPage">
-        
-        <div class="addtitle">
-            <h2>식당 추가하기</h2>
-        </div>
+      <div class="addtitle">
+        <h2>식당 추가하기</h2>
+      </div>
 
-        <form action="/add" method="POST" enctype="multipart/form-data">
-            <div class="addForm">
-                <div class="addItem">
-                        <strong>음식점 이름</strong>
-                        <input name="restaurantName" id="restaurantName" type="text"  placeholder="음식점 이름">
-                </div>
-                <div class="addItem">
-                    <strong>음식점 주소</strong>
-                    <input name="restaurantAddress"  id="restaurantAddress" type="text" placeholder="음식점 주소">
-                </div>
-                <div class="addItem">
-                    <strong>영업 시간</strong>
-                    <input name="openTime" id="openTime" type="text" placeholder="영업 시간">
-                </div>
-                <div class="addItem">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="category" name="category">
-                          <span>카테고리</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><p class="dropdown-item" name="category" id="category">고기</p></li>
-                          <li><p class="dropdown-item" name="category" id="category">돈까스</p></li>
-                          <li><p class="dropdown-item" name="category">버거</p></li>
-                          <li><p class="dropdown-item" name="category">아시안</p></li>
-                          <li><p class="dropdown-item" name="category">중식</p></li>
-                          <li><p class="dropdown-item" name="category">양식</p></li>
-                          <li><p class="dropdown-item" name="category">일식</p></li>
-                          <li><p class="dropdown-item" name="category">족발 • 보쌈</p></li>
-                          <li><p class="dropdown-item" name="category">탕 • 찌개</p></li>
-                          <li><p class="dropdown-item" name="category">죽</p></li>
-                          <li><p class="dropdown-item" name="category">찌개</p></li>
-                          <li><p class="dropdown-item" name="category">치킨</p></li>
-                          <li><p class="dropdown-item" name="category">피자</p></li>
-                          <li><p class="dropdown-item" name="category">디저트</p></li>
-                        </ul>
-                      </div>
-                </div>
-                <div class="addItem">
-                    <strong>매장 번호</strong>
-                    <input name="callNumber" id="callNumber" type="text" placeholder="전화 번호">
-                </div>
-
-                <div class="addItem row align-items-center">
-                    <div class="col picCheck">
-                        <strong class="col">가게 사진 :</strong>
-                        <input name="imgUrl" id="imgUrl" type="file" class="form-control-file" onchange="previewImages(event)" placeholder="사진" multiple>
-                    </div>
-                    <div class="col-12 picPreview">
-                        <!-- 여기에 미리보기 이미지들이 표시됩니다. -->
-                    </div>
-                </div>
-                
-                
-                <div class="addItem">
-                  <input name="views" id="views" type="hidden" value="0" placeholder="조회수">
-              </div>
-              
-                <div class="addBtn row">
-                    <button type="reset" class="btn btn-dark col-4"><a href="/">취소하기</a></button>
-                    <button type="submit" class="btn btn-dark col-4">등록하기</button>
-                </div>
+      <form action="/add" method="POST" enctype="multipart/form-data">
+        <div class="addForm">
+          <div class="addItem">
+            <strong>음식점 이름</strong>
+            <input name="restaurantName" id="restaurantName" type="text" placeholder="음식점 이름" />
+          </div>
+          <div class="addItem">
+            <strong>음식점 주소</strong>
+            <input name="restaurantAddress" id="restaurantAddress" type="text" placeholder="음식점 주소" />
+          </div>
+          <div class="addItem">
+            <strong>영업 시간</strong>
+            <input name="openTime" id="openTime" type="text" placeholder="영업 시간" />
+          </div>
+          <div class="addItem">
+            <strong>카테고리</strong>
+            
+            <div class="dropdown">
+              <button class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="category" name="category">
+                <span>카테고리</span>
+              </button>
+              <ul class="dropdown-menu">
+                <li>고기</li>
+                <li>돈까스</li>
+                <li>버거</li>
+                <li>분식</li>
+                <li>아시안</li>
+                <li>양식</li>
+                <li>일식</li>
+                <li>족발 • 보쌈</li>
+                <li>죽</li>
+                <li>중식</li>
+                <li>탕 • 찌개</li>
+                <li>치킨</li>
+                <li>피자</li>
+                <li>디저트</li>
+              </ul>
             </div>
-        </form>
+          </div>
+
+          <div class="addItem">
+            <strong>매장 번호</strong>
+            <input name="callNumber" id="callNumber" type="text" placeholder="전화 번호" />
+          </div>
+
+          <div class="addItem row align-items-center">
+            <div class="col picCheck">
+              <strong class="col">가게 사진 :</strong>
+              <input
+                name="imgUrl"
+                id="imgUrl"
+                type="file"
+                class="form-control-file"
+                onchange="previewImages(event)"
+                placeholder="사진"
+                multiple
+              />
+            </div>
+            <div class="col-12 picPreview">
+              <!-- 여기에 미리보기 이미지들이 표시됩니다. -->
+            </div>
+          </div>
+
+
+          <div class="addItem">
+            <input name="views" id="views" type="hidden" value="0" placeholder="조회수" />
+          </div>
+
+          <div class="addBtn row">
+            <button type="reset" class="btn btn-dark col-4"><a href="/">취소하기</a></button>
+            <button type="submit" class="btn btn-dark col-4">등록하기</button>
+          </div>
+        </div>
+      </form>
     </div>
 
     <%- include('footer.ejs') %>
+  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
 
+  <script>
+    // 폼 전송 이벤트 핸들러
+    document.querySelector('form').addEventListener('submit', function (event) {
+      // 카테고리 값을 가져옵니다.
+      const categoryValue = document.querySelector('button.btn span').textContent;
+      // 가져온 카테고리 값을 폼 데이터에 추가합니다.
+      const hiddenCategoryInput = document.createElement('input');
+      hiddenCategoryInput.type = 'hidden';
+      hiddenCategoryInput.name = 'category';
+      hiddenCategoryInput.value = categoryValue;
+      this.appendChild(hiddenCategoryInput);
+    });
 
-    
-    
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    const dropdown = document.querySelector('.dropdown-menu');
+    const button = document.querySelector('button.btn span');
 
-<script>
-    
-// 폼 전송 이벤트 핸들러
-document.querySelector("form").addEventListener("submit", function(event) {
-    // 카테고리 값을 가져옵니다.
-    const categoryValue = document.querySelector("button.btn span").textContent;
-    // 가져온 카테고리 값을 폼 데이터에 추가합니다.
-    const hiddenCategoryInput = document.createElement("input");
-    hiddenCategoryInput.type = "hidden";
-    hiddenCategoryInput.name = "category";
-    hiddenCategoryInput.value = categoryValue;
-    this.appendChild(hiddenCategoryInput);
-});
-
-
-
-const dropdown = document.querySelector(".dropdown-menu");
-const button = document.querySelector("button.btn span");
-
-dropdown.addEventListener("click", function(event) {
-    const listItem = event.target.closest("li");
-    if (listItem) {
+    dropdown.addEventListener('click', function (event) {
+      const listItem = event.target.closest('li');
+      if (listItem) {
         button.textContent = listItem.textContent;
-    }
-});
-
+      }
+    });
 
     //  미리보기
- function previewImages(event) {
-    var input = event.target;
-    var preview = document.querySelector('.picPreview');
-    const MAX_FILES = 2
+    function previewImages(event) {
+      var input = event.target;
+      var preview = document.querySelector('.picPreview');
+      const MAX_FILES = 2;
 
-    if (input.files.length > MAX_FILES) {
-    alert(`최대 ${MAX_FILES}개의 파일만 업로드할 수 있습니다.`);
-    input.value = ''; // 선택한 파일 초기화
-    preview.innerHTML = '' // 미리보기 초기화
-    return ; // 함수 종료
-  }
+      if (input.files.length > MAX_FILES) {
+        alert(`최대 ${MAX_FILES}개의 파일만 업로드할 수 있습니다.`);
+        input.value = ''; // 선택한 파일 초기화
+        preview.innerHTML = ''; // 미리보기 초기화
+        return; // 함수 종료
+      }
 
-    // 이미지를 추가하기 전에 기존의 내용을 모두 지웁니다.
-    preview.innerHTML = '';
+      // 이미지를 추가하기 전에 기존의 내용을 모두 지웁니다.
+      preview.innerHTML = '';
 
-    if (input.files && input.files.length > 0) {
+      if (input.files && input.files.length > 0) {
         for (var i = 0; i < input.files.length; i++) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var image = document.createElement('img');
-                image.src = e.target.result;
-                image.style.maxWidth = '400px'; // 이미지의 최대 너비를 지정합니다.
-                image.style.maxHeight = '400px'; // 이미지의 최대 높이를 지정합니다.
-                preview.appendChild(image);
-            }
-            reader.readAsDataURL(input.files[i]);
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var image = document.createElement('img');
+            image.src = e.target.result;
+            image.style.maxWidth = '400px'; // 이미지의 최대 너비를 지정합니다.
+            image.style.maxHeight = '400px'; // 이미지의 최대 높이를 지정합니다.
+            preview.appendChild(image);
+          };
+          reader.readAsDataURL(input.files[i]);
         }
+      }
     }
-}
-
-
-</script>
-
-
-
-
+  </script>
 </html>

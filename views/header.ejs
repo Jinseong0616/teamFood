@@ -15,7 +15,7 @@
             <div class="col-3">
               <a href="/">
                 <h1 class="logo">
-                  <img class="logo-img" src="/image/logo.PNG" alt="다이닝코드" />
+                  <img class="logo-img" src="/image/logo.PNG" alt="yumyard" />
                 </h1>
               </a>
             </div>
@@ -25,7 +25,7 @@
               <button id="searchBtn"><i class="bi bi-search"></i></button>
             </div>
 
-            <div class="col-3 d-flex justify-content-end">
+            <div class="col-3 d-flex justify-content-end loginBar">
               <ul class="user d-flex justify-content-end">
                 <% if(userId) { %> 
                 <%if(name == "admin"){%>
@@ -37,19 +37,17 @@
                 <li><%= name %>님</li>
                 <li><a href="/logout">로그아웃</a></li>
                 <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
+                <li><a href="/editPw/<%= userId %>">비밀번호변경</a></li>
                 <li><a href="/myReview/<%= userId %>">작성한 리뷰</a></li>
               <%}%>
             <%}else{%>
               <li><a href="/login">로그인</li> 
               <li><a href="/join">회원가입</a></li> 
             <%}%>
-            
+          
           </ul>
         </div>
-
-               
         </form>
-
       </div>
     </header>
 
