@@ -33,7 +33,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Restaurant, Image, Favorite, Review, region } = db;
+const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -87,14 +87,15 @@ passport.use(
 app.get("/", async (req, res) => {
   
   const userId = req.isAuthenticated() ? req.user.userId : false;
+  const categories = await Category.findAll()
+
   
   const user = await User.findOne({where : {userId}})
-
   if(user){
-    res.render("index.ejs", { name : user.name , userId });
+    res.render("index.ejs", { name : user.name , userId,categories});
   }
   else {
-    res.render('index.ejs', {userId})
+    res.render('index.ejs', {userId, categories})
   }
   
 });
@@ -117,6 +118,7 @@ app.post("/login", (req, res) => {
     });
   })(req, res);
 });
+
 
 
 // 로그인 체크
@@ -250,7 +252,6 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
- 
 
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
@@ -277,9 +278,6 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
     res.status(500).send("서버 오류 발생");
   }
 });
-
-
-
 
 
 // 리뷰페이지
@@ -324,7 +322,6 @@ app.post('/checkId', async(req, res)=>{
 
   try {
     const existingMember = await User.findOne({ where: { userId: userId } });
-
       if (existingMember) {
           res.json({ exists: true }); 
       } else {
@@ -335,8 +332,6 @@ app.post('/checkId', async(req, res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
-
-
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -561,6 +556,10 @@ app.get("/findPassword/",(req,res)=>{
 })
 
 
+
+
+
+
 app.get('/findEmail', (req,res)=>{
   res.render('findEmail.ejs')
 })
@@ -582,43 +581,41 @@ app.post('/findEmail', async (req,res)=>{
   const {userId} = req.body;
   console.log(userId)
   const resetCode = Math.random().toString(36).substring(2, 15); // 비밀번호 재설정 코드 생성
-  
+
   const user =  await User.findOne({where : {userId: userId}})
   if(user){
-    bcrypt.hash(resetCode, 10, async function(err, hash) {
-      if (err) {
-        console.error('Hashing error:', err);
-      } else {
-        // DB에 해시화된 코드 저장 로직 (여기서는 생략)
-          console.log(user.password)
-          user.password = hash;
-          await user.save();
+  bcrypt.hash(resetCode, 10, async function(err, hash) {
+    if (err) {
+      console.error('Hashing error:', err);
+    } else {
+      // DB에 해시화된 코드 저장 로직 (여기서는 생략)
+        console.log(user.password)
+        user.password = hash;
+        await user.save();
 
-        // 이메일로 비밀번호 초기화 코드 발송
-        let mailOptions = {
-          from: userEmail,
-          to: userId,
-          subject: '비밀번호 초기화 코드',
-          text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
-        };
-        console.log(mailOptions); // mailOptions 객체 로그 출력
-  
-        transporter.sendMail(mailOptions, function(error, info){
-          if (error) {
-            console.log(error);
-            res.status(500).send('이메일을 보내는 데 실패했습니다.');
-          } else {
-            console.log('Email sent: ' + info.response);
-            res.redirect('/login')
-          }
-        });
-      }
+      // 이메일로 비밀번호 초기화 코드 발송
+      let mailOptions = {
+        from: userEmail,
+        to: userId,
+        subject: '비밀번호 초기화 코드',
+        text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
+      };
+      console.log(mailOptions); // mailOptions 객체 로그 출력
 
-    });
-  }
-  else {
-    res.json()
-  }
-  
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.status(500).send('이메일을 보내는 데 실패했습니다.');
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.redirect('/login')
+        }
+      });
+    }
+  });
+}
+else {
+  res.json()
+}
+
 })
-

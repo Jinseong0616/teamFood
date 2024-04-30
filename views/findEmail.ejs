@@ -25,7 +25,7 @@
           <table class="find-box">
             <tr class="find userid">
               <th>아이디</th>
-              <td><input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="userId" value="dragon3155@naver.com"></td>
+              <td><input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="userId" id="userId" value=""></td>
             </tr>
             <tr class="find name">
               <th>이름</th>
@@ -50,6 +50,7 @@
     let isIdValidated = false;
     
     const emailCode = document.getElementById('email')
+    
     emailCode.addEventListener('click',function(e){
       const inputId = document.getElementById('userId').value
       e.preventDefault()
