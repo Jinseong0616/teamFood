@@ -18,6 +18,7 @@
   </header>
 
   <main>
+
     <div class="container-lg">
       <div class="loginForm loginBtn">
         <form class="form-box" action="/findEmail" method="POST">
@@ -45,12 +46,34 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
   <script>
+    
+    let isIdValidated = false;
+    
     const emailCode = document.getElementById('email')
-    emailCode.addEventListener('click',function(){
-      alert('이메일이 발송 되었습니다.')
+    emailCode.addEventListener('click',function(e){
+      const inputId = document.getElementById('userId').value
+      e.preventDefault()
+      fetch('/checkId', {
+        method : 'POST',
+        headers : {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: inputId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.exists){
+          alert('이메일이 발송 되었습니다.')
+        }
+        else{
+          alert('올바른 이메일 주소를 입력해주세요.')
+        }
     })
-
-
+    .catch(err =>{
+      console.error('Error', error)
+      alert('서버 오류가 발생했습니다.')
+    })
+  })
   </script>
 </body>
 </html>

@@ -12,7 +12,9 @@ section{
 }
 
 .user li{padding: 0 10px;}
-
+.nav-ul {
+  align-items: center;
+}
 
 /* 비주얼 */
 .visual{
