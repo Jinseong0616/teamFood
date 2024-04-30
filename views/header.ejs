@@ -38,14 +38,20 @@
                 <li><a href="/logout">로그아웃</a></li>
                 <li><a href="/myPage/<%= userId %>">마이페이지</a></li>
                 <li><a href="/review/<%= userId %>">리뷰</a></li>
-                <% } %> <% } else { %>
-                <li><a href="/login">로그인</a></li>
-                <li><a href="/join">회원가입</a></li>
-                <% } %>
-              </ul>
-            </div>
-          </div>
+
+                <li><a href="/myReview/<%= userId %>">작성한 리뷰</a></li>
+              <%}%>
+            <%}else{%>
+              <li><a href="/login">로그인</li> 
+              <li><a href="/join">회원가입</a></li> 
+            <%}%>
+            
+          </ul>
+        </div>
+
+               
         </form>
+
       </div>
     </header>
 

@@ -32,39 +32,31 @@ h4{font-size: 24px; font-weight: 700; margin: 0;}
 .gender {margin-left: 0px;}
 
 
-.question {
+.dropdown{
+  padding: 0 10px;
+}
+
+ .question {
   padding: 0;
   font: 18px "inherit";
   width: 100%;
   border-radius: 5px;
   border: gray 0.5px solid;
+  text-align: left;
 }
 
 .question span{
-  text-align: left;
-  display: flex;
-  justify-content: flex-start;
   margin-left: 15px;
 }
 
-
-.answer {
-  background-color: white;
-  font-size: 18px;
-  line-height: 1.5;
-  transition: 0;
-  width: 100%;
-  max-height: 0;
-  overflow: hidden;
-  margin-bottom: 30px;
-  padding: 0;
-}
-
 .city_list {
+
+ background-color: white;
+  font-size: 18px;
+  width: 92%;
   border: gray 1px solid;
   max-height: 200px; /* 스크롤이 보일 최대 높이를 지정하세요 */
   overflow-y: auto; /* 세로 스크롤을 만듭니다. */
-  margin: 10px 0 0 0;
   padding-left: 10px;
   cursor: pointer;
 }

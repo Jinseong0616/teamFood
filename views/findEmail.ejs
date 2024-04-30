@@ -25,11 +25,11 @@
           <table class="find-box">
             <tr class="find userid">
               <th>아이디</th>
-              <td><input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="userId" id="userId" value=""></td>
-            </tr>
-            <tr class="find name">
-              <th>이름</th>
-              <td><input type="text" placeholder="이름" name="name"></td>
+
+           
+
+              <td><input type="text" placeholder="휴대전화번호 또는 이메일 입력" name="userId" id="userId"></td>
+
             </tr>
           </table>
           <div class="find-btn">
@@ -50,10 +50,12 @@
     let isIdValidated = false;
     
     const emailCode = document.getElementById('email')
-    
+
+
     emailCode.addEventListener('click',function(e){
-      const inputId = document.getElementById('userId').value
       e.preventDefault()
+      const inputId = document.getElementById('userId').value
+      
       fetch('/checkId', {
         method : 'POST',
         headers : {
@@ -65,6 +67,7 @@
       .then(data => {
         if(data.exists){
           alert('이메일이 발송 되었습니다.')
+          form.submit();
         }
         else{
           alert('올바른 이메일 주소를 입력해주세요.')

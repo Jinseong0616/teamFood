@@ -72,23 +72,23 @@
 
             <ul class="peopleGroup row">
               <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
                 <label class="form-check-label" for="flexCheckDefault"> 20대 </label>
               </div>
               <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
                 <label class="form-check-label" for="flexCheckDefault"> 30대 </label>
               </div>
               <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
                 <label class="form-check-label" for="flexCheckDefault"> 40대 </label>
               </div>
               <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
                 <label class="form-check-label" for="flexCheckDefault"> 50대 </label>
               </div>
               <div class="form-check col-6">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
                 <label class="form-check-label" for="flexCheckDefault"> 60대 이상 </label>
               </div>
 
@@ -104,31 +104,31 @@
               <ul class="categoryGroup row">
                 <li class="filterBtn col-6">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2" />
                     <label class="form-check-label" for="flexCheckDefault"> 한식 </label>
                   </div>
                 </li>
                 <li class="filterBtn col-6">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2" />
                     <label class="form-check-label" for="flexCheckDefault"> 일식 </label>
                   </div>
                 </li>
                 <li class="filterBtn col-6">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2" />
                     <label class="form-check-label" for="flexCheckDefault"> 중식 </label>
                   </div>
                 </li>
                 <li class="filterBtn col-6">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2" />
                     <label class="form-check-label" for="flexCheckDefault"> 아시안 </label>
                   </div>
                 </li>
                 <li class="filterBtn col-6">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2" />
                     <label class="form-check-label" for="flexCheckDefault"> 디저트 </label>
                   </div>
                 </li>
@@ -141,9 +141,11 @@
                 <div class="square" style="background-color: rgb(67, 163, 147)"></div>
                 <h4>지역</h4>
               </div>
-              <button class="question"><span>광역시도</span></button>
-              <div class="answer">
-                <ul class="city_list">
+              <div class="dropdown">
+                <button class="btn dropdown-toggle question" type="button" data-bs-toggle="dropdown">
+                  <span>광역시도</span>
+                </button>
+                <ul class="dropdown-menu city_list" data-popper-placement="bottom-start">
                   <li>서울</li>
                   <li>경기</li>
                   <li>인천</li>
@@ -252,25 +254,6 @@
   <script>
     let question = document.getElementsByClassName('question');
 
-    function questionOpen(question, answer) {
-      if (answer.style.maxHeight) {
-        answer.style.maxHeight = null;
-        question.classList.remove('on');
-      } else {
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-        question.classList.add('on');
-      }
-    }
-
-    function questionClose(i, item) {
-      for (let j = 0; j < question.length; j++) {
-        if (i != j) {
-          item[j].nextElementSibling.style.maxHeight = null;
-          item[j].classList.remove('on');
-        }
-      }
-    }
-
     for (let i = 0; i < question.length; i++) {
       question[i].addEventListener('click', function () {
         let answer = this.nextElementSibling;
@@ -281,7 +264,7 @@
     }
 
     const cityList = document.querySelector('.city_list');
-    const button = document.querySelector('button.question span');
+    const button = document.querySelector('.question span');
 
     cityList.addEventListener('click', function (event) {
       if (event.target.tagName === 'LI') {

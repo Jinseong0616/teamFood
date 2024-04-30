@@ -30,3 +30,16 @@ text-align: center;}
 
 
 
+.dropdown-menu {
+  border: gray 1px solid;
+  max-height: 200px; /* 스크롤이 보일 최대 높이를 지정하세요 */
+  overflow-y: auto; /* 세로 스크롤을 만듭니다. */
+  margin: 10px 0 0 0;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li{box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.1);}
+.dropdown-menu li:hover{background-color: rgb(204, 205, 206);}
+
+

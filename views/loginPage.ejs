@@ -72,52 +72,50 @@
     const loginBtn = document.getElementById('login')
     
     loginBtn.addEventListener('click', function(e){
+        e.preventDefault()
         const inputPassword = document.getElementById('password').value
         const inputUsername = document.getElementById('username').value
 
         if(!inputPassword && !inputUsername){
-            e.preventDefault()
+            
             alert('아이디와 비밀번호를 입력해주세요.')
             return;
         }
         else if(inputUsername && !inputPassword){
-            e.preventDefault()
+           
             alert('비밀번호를 입력해주세요.')
             return;
         }
         else if(!inputUsername && inputPassword){
-            e.preventDefault()
+        
             alert('아이디를 입력해주세요.')
             return;
         }
 
-        fetch('/loginCheck', {
+        fetch('/login', {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json'
             },
-            body : JSON.stringify({userId : inputUsername, password : inputPassword})
+            body : JSON.stringify({username : inputUsername, password : inputPassword})
         })
         .then(response => response.json())
         .then(data => {
             if(data.exists && data.passwordCorrect){
                 alert('로그인 되었습니다.')
+                window.location.href = '/'
             }
             else {
-                
                 alert('아이디 또는 비밀번호가 일치하지 않습니다.')
-                e.preventDefault()
+                
             }
         })
         .catch(err =>{
             console.error('Error', error)
-            e.preventDefault()
             alert('서버 오류가 발생했습니다.')
         })
     })
     
 </script>
-
-
 
 </html>
