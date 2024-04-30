@@ -16,7 +16,7 @@
       </a>
     </div>
   </header>
-
+<a href=""></a>
   <section class="sec">
     <div class="container-lg">
       <!-- <h2>마이 페이지</h2> -->
@@ -44,7 +44,7 @@
           <table class="input-box">
             <tr class="tr-id">
               <th>아이디</th>
-              <td><input id="userId" class="userId col" name="userId" value="<%= member.userId %>"></td>
+              <td><input id="userId" class="userId col" name="userId"     value="<%= member.userId %>" readonly></td>
             </tr>
             
             <tr class="tr-name">
@@ -81,7 +81,7 @@
 
 const edtBtn = document.getElementsByClassName('edit')[0].addEventListener('click', function(e){
     e.preventDefault()
-    
+
     const editName = document.getElementById('name').value
     const editBirthNum = document.getElementById('birthNum').value
     const editPhone = document.getElementById('phone').value
