@@ -4,7 +4,7 @@ ul,ol,li { list-style: none; }
 h3{text-align: center;}
 .review-box{display: flex; justify-content: center; align-items: center; margin: 30px 0 80px;}
 .review-box form{background-color: #f0f0f3; padding: 30px 50px; border-radius: 10px;}
-.review-title{text-align: center; padding-bottom: 30px; margin: 0;}
+.review-title{text-align: center; padding-top: 20px; margin: 0;}
 
 .select-star{text-align: center; margin: 0;}
 

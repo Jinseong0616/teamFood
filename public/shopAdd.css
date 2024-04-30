@@ -28,10 +28,19 @@ text-align: center;}
 .addBtn .btn{margin: 0 30px;}
 .addBtn .btn a{color: white;}
 
+.dropdown {
+  margin-bottom: 10px;
+}
 
+.dropdown .btn{
+  border-radius: 0;
+  width: 100%;
+  border: 1px gray solid;
+}
 
 .dropdown-menu {
   border: gray 1px solid;
+  width: 100%;
   max-height: 200px; /* 스크롤이 보일 최대 높이를 지정하세요 */
   overflow-y: auto; /* 세로 스크롤을 만듭니다. */
   margin: 10px 0 0 0;
