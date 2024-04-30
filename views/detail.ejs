@@ -22,9 +22,14 @@
         <div class="restaurantMain container">
           <div class="restaurantInfo">
             <div class="infoImg">
-              <% for(let i = 0 ; i < 2; i++) { %>
-              <img src="/test/<%= imgList[i].imgUrl %>" alt="음식점 사진" />
-              <% } %>
+              <%if(imgList.length == 1){%>
+                <img src="/test/<%= imgList[0].imgUrl %>" alt="음식점 사진" />
+              <%}else{%>
+                <% for(let i = 0 ; i < 2; i++) { %>
+                  <img src="/test/<%= imgList[i].imgUrl %>" alt="음식점 사진" />
+                  <% } %>
+              <%}%>
+              
             </div>
 
             <div class="infoName row justify-content-between">
@@ -37,7 +42,7 @@
 
             <div class="restaurantCategory">
               <a href="/지역구"><%= restaurant.restaurantAddress %></a>
-              <a href="/카테고리"><%= restaurant.restaurantCategory %></a>
+              <a href="/카테고리"><%= restaurant.category %></a>
             </div>
 
             <div class="restaurantRating">
@@ -72,7 +77,7 @@
               </li>
               <li class="category">
                 <!-- 태그 보류 -->
-                <i class="bi bi-tag"> 한식, 고기</i>
+                <i class="bi bi-tag"><%= restaurant.category %></i>
               </li>
               <li class="openTime">
                 <i class="bi bi-clock-history"> <%= restaurant.openTime %> </i>
@@ -125,7 +130,7 @@
           <div class="container userReview">
             <p class="personGrade">
               <span class="username">
-                <img src="<%=userId.imgUrl %>" alt="<%= userId %>" />
+                <img src="<%=userId.imgUrl %>" alt="" />
                 <strong><%= userId %></strong>
               </span>
               <span class="scoreInfo">
@@ -162,6 +167,7 @@
           </div>
           <% } %>
         </div>
+
         <% for (let userId in userAvgRatings) { %>
             <div class="container userReview">
                 <p class="personGrade">
