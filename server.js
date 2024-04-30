@@ -610,7 +610,9 @@ const formatDate = (date) => {
 };
 
 
+
 //내가 쓴 리뷰 페이지
+
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
   const myReviews = await Review.findAll({ where: { userId: id } });
@@ -623,8 +625,6 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  console.log(restaurantName[0].restaurantName)
-
   res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
 })
 
