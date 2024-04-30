@@ -107,37 +107,19 @@ app.get("/login", (req, res) => {
 //로그인
 app.post("/login", (req, res) => {
   passport.authenticate("local", (error, user, info) => {
+    console.log(error, user, info)
+
     if (error) return res.status(500).json(error); // 인증 과정에서 오류
-    if (!user) return res.send("로그인 실패");
+    if (!user) return res.status(401).json({ message: "로그인 실패" });
 
     req.logIn(user, (err) => {
       if (err) return next(err);
       req.session.userId = user.userId;
-      return res.redirect("/");
+      const passwordCorrect = user.password
+      return res.json({exists: true, passwordCorrect: passwordCorrect});
     });
   })(req, res);
 });
-
-
-// 로그인 체크
-app.post('/loginCheck', async (req,res)=>{
-  const { userId, password } = req.body;
-
-  try {
-      const existingMember = await User.findOne({ where: { userId: userId } });
-      if (existingMember) {
-          // 비밀번호 확인 (여기서는 예시로 plaintext 비교, 실제는 해싱된 비밀번호 비교 사용)
-          const passwordCorrect = existingMember.password === password;
-          res.json({ exists: true, passwordCorrect: passwordCorrect });
-      } else {
-          res.json({ exists: false }); 
-      }
-  } catch (error) {
-      console.log('검색 중 오류 발생', error);
-      res.status(500).send("서버 오류 발생");
-  }
-})
-
 
 
 passport.serializeUser((user, done) => {

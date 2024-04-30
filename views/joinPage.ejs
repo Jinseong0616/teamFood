@@ -23,33 +23,37 @@
             <h2>신규 회원가입</h2>
         </div>
 
-        <form action="/join" method="POST" enctype="multipart/form-data">
+        <form action="/join" method="POST" enctype="multipart/form-data" id="form-box">
             <div class="joinForm">
                 <div class="joinItem">
-                        <strong>이메일</strong>
+                        <strong>아이디</strong>
                         <div class="idCheck">
-                            <input name="userId" id="userId" type="text"  placeholder="회원 아이디" value="test">
+                            <input name="userId" id="userId" type="text"  placeholder="example@example.com (필수)">
                             <!-- <button type="button" id="checkIdBtn" class="check-btn">중복확인</button> -->
                         </div>
                         <span id="userIdValidation" class="validation-msg"></span>
                 </div>
                 <div class="joinItem">
                     <strong>비밀번호</strong>
-                    <input name="password"  id="password" type="password" placeholder="비밀번호">
+                    <input name="password"  id="password" type="password" placeholder="비밀번호 (필수)">
                     <span id="passwordValidation" class="validation-msg"></span>
                 </div>
-                
+                <div class="joinItem">
+                    <strong>비밀번호재확인</strong>
+                    <input name="rePassword"  id="rePassword" type="password" >
+                    <span id="rePasswordValidation" class="reValidation-msg"></span>
+                </div>
                 <div class="joinItem">
                     <strong>이름</strong>
-                    <input name="name" type="text" placeholder="이름 입력" value="홍길동">
+                    <input name="name" type="text" placeholder="이름 (필수)">
                 </div>
                 <div class="joinItem">
                     <strong>생년월일</strong>
-                    <input name="birthNum" placeholder="YYYY-MM-DD" value="2000-xx-xx">
+                    <input name="birthNum" placeholder="YYYY-MM-DD (필수)">
                 </div>
                 <div class="joinItem">
                     <strong>주소</strong>
-                    <input name="address" type="text" placeholder="주소" value="조선">
+                    <input name="address" type="text" placeholder="주소 (필수)">
                 </div>
                 <div class="joinItem row">
                     <strong>휴대폰</strong>
@@ -61,7 +65,7 @@
                 
                 <div class="joinItem row align-items-center">
                     <div class="col picCheck">
-                        <strong class="col">프로필 사진 :</strong>
+                        <strong class="col">프로필 사진 : (선택)</strong>
                         <input name="imgUrl" id="imgUrl" type="file" class="form-control-file" onchange="previewImage(event)">
                     </div>
                     <div class="col-12 picPreview">
@@ -83,8 +87,8 @@
 
         
   let isIdValidated = false;
-        
-  const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()`])[a-z\d!@#$%^&*()`]{8,}$/
+     
+  const passwordRegex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()`])[a-z\d!@#$%^&*()`]{8,}$/    
   /*
   (?=.*\d): 최소 한 개의 숫자가 포함되어야 합니다.
   (?=.*[@$!%*?&]): 최소 한 개의 특수 문자(@$!%*?& 중 하나)가 포함되어야 합니다.
@@ -94,12 +98,17 @@
   (?=.*[a-z]): 최소 한 개의 소문자가 포함되어야 합니다.
   */ 
 
+  function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+const form = document.getElementById('form-box')
+
   const userIdInput = document.getElementById('userId')
 
   userIdInput.addEventListener('change', function(e){
-    
-    //console.log(userId)
-    
+    e.preventDefault()
     const userId = userIdInput.value
         fetch('/checkId', {
           method: 'POST',
@@ -111,16 +120,16 @@
         .then(response => response.json())
         .then(data => {
           // 서버에서 받은 응답에 따라 처리
-          if (userId == '') {
+          if (!validateEmail(userId)) {
             document.getElementById('userIdValidation').textContent = '올바르지 않은 아이디 형식입니다.';
             document.getElementById('userIdValidation').classList.add('invalid');
             isIdValidated = false;
           } else if(data.exists) {
             document.getElementById('userIdValidation').textContent = '중복된 아이디입니다.';
             document.getElementById('userIdValidation').classList.add('invalid');
-            
             isIdValidated = false;
-          } else{
+
+          } else if(validateEmail(userId) && !data.exists) {
             document.getElementById('userIdValidation').textContent = '사용 가능한 아이디입니다!';
             document.getElementById('userIdValidation').classList.remove('invalid');
             isIdValidated = true;
@@ -132,9 +141,12 @@
         });
   })
 
+  // 비밀번호가 올바르지 않을 때 처리 코드
     const passwordInput = document.getElementById('password')
-    
+    const rePasswordInput = document.getElementById('rePassword')
+
     passwordInput.addEventListener('change', function(){
+        
         if(passwordRegex.test(passwordInput.value)){
             document.getElementById('passwordValidation').textContent = '올바른 비밀번호입니다.';
             document.getElementById('passwordValidation').classList.remove('invalid');
@@ -144,27 +156,42 @@
         }
     })
 
+    rePasswordInput.addEventListener('change', function(){
+        if(passwordInput.value == rePasswordInput.value){
+            document.getElementById('rePasswordValidation').textContent = '비밀번호가 일치합니다.';
+            document.getElementById('rePasswordValidation').classList.remove('invalid');
+        }
+        else{
+            document.getElementById('rePasswordValidation').textContent = '비밀번호가 일치하지 않습니다.';
+            document.getElementById('rePasswordValidation').classList.add('invalid');
+        }
+    })
 
+
+// 회원가입 오류 처리 구문
   document.getElementById('joinBtn').addEventListener('click', function(e) {
     
     if(isIdValidated && passwordRegex.test(passwordInput.value)){
+        form.submit()
         alert("환영합니다! 회원가입 되었습니다.")
     }
     else if(!isIdValidated && passwordRegex.test(passwordInput.value)){
         e.preventDefault()
-        alert('아이디를 확인해주세요.')
+        alert('아이디를 입력 해주세요.')
     } 
     else if(isIdValidated && !passwordRegex.test(passwordInput.value)){
         e.preventDefault()
-        alert('비밀번호를 확인해주세요')
+        alert('비밀번호를 입력 해주세요')
     }
     else {
         e.preventDefault()
-        alert('올바른 값을 입력해주세요.')
+        alert('아이디와 비밀번호를 입력해주세요.')
     }
 });
 
-//  미리보기
+
+
+//  프로필 사진 미리보기
   function previewImage(event) {
         var input = event.target;
         var preview = document.getElementById('preview');
