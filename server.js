@@ -85,7 +85,9 @@ passport.use(
 
 // 메인 페이지
 app.get("/", async (req, res) => {
+  
   const userId = req.isAuthenticated() ? req.user.userId : false;
+  
   const user = await User.findOne({where : {userId}})
 
   if(user){
