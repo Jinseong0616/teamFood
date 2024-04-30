@@ -14,6 +14,7 @@ section{
 .user li{padding: 0 10px;}
 .nav-ul {
   align-items: center;
+  justify-content: center;
 }
 
 /* 비주얼 */
