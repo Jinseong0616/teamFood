@@ -1,4 +1,90 @@
 
+ ul, li, ol{list-style: none;}
+
 .myReviewTitle{text-align: center;}
 
-.myReview-box{display: flex; justify-content: center;}
+/* .myReview-box li {
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+} */
+
+.myReview-box li .lookMyReviews{}
+
+.myReviews-img{
+  border-radius: 10px; 
+  width: 150px; height: 150px;
+  padding: 0;
+  margin: 10px;
+}
+
+.myReviews{padding: 0;}
+.myReviews li{cursor: pointer;}
+
+.myReviewImg{width: 100%; display: flex;}
+
+/* 별점 */
+.gradeRating{padding-left: 10px;}
+.bi-star-fill,
+.bi-star {
+  color: gold;
+  font-size: 36px;
+} 
+
+/* 리뷰내용 */
+.content p{
+  font-size: 18px;
+  font-family: inherit;
+  padding-left: 10px;
+}
+
+/* 내 리뷰 목록의 배경을 변경합니다. */
+.myReview-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 리뷰 아이템을 감싸는 컨테이너를 스타일링합니다. */
+.lookMyReviews {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* 리뷰 제목을 스타일링합니다. */
+.resTitle {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #333333;
+  padding-left: 10px; font-weight: 700;
+}
+
+/* 작성일을 스타일링합니다. */
+.createdAt {
+  color: #999999;
+  font-size: 0.9rem;
+  padding-left: 10px;
+  margin-top: 10px;
+}
+
+.createdAt p{margin: 0;}
+
+/* 내 리뷰 목록의 전체 너비를 조정합니다. */
+.container-lg {
+  width: 90%;
+}
+
+/* 모바일 화면에서 리뷰 아이템의 이미지를 가운데 정렬합니다. */
+@media (max-width: 768px) {
+  .myReviewImg {
+    text-align: center;
+  }
+}

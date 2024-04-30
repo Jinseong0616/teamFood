@@ -613,13 +613,20 @@ const formatDate = (date) => {
 
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
-  // console.log('없음 ? :',id)
 
   const myReviews = await Review.findAll({ where: { userId: id } });
+  // for(let i = 0; i < myReviews.length; i++){
+  //   console.log('리뷰 아이디: ', myReviews[i].dataValues.reviewId);
+  // }
 
-  const myReviewsImg = await Image.findAll({ where: { userId: id } });
-  console.log('마이리뷰 없음?' , myReviews)
+  const reviewIds = myReviews.map(review => review.dataValues.reviewId);
+  const reviewres = myReviews.map(review => review.dataValues.restaurantId);
+  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
+  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
+  
+  console.log(restaurantName[0].restaurantName)
 
-  res.render('myReview.ejs',{myReviews,formatDate,myReviewsImg})
+  res.render('myReview.ejs',{ myReviews, formatDate, myReviewsImg,restaurantName });
 })
+
 
