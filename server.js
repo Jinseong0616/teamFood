@@ -613,27 +613,20 @@ const formatDate = (date) => {
 //내가 쓴 리뷰 페이지
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
-  console.log('마이리뷰 없음?' , myReviews[0].reviewId)
-
   const myReviews = await Review.findAll({ where: { userId: id } });
+  // for(let i = 0; i < myReviews.length; i++){
+  //   console.log('리뷰 아이디: ', myReviews[i].dataValues.reviewId);
+  // }
+
+  const reviewIds = myReviews.map(review => review.dataValues.reviewId);
+  const reviewres = myReviews.map(review => review.dataValues.restaurantId);
+  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
+  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
+  
+  console.log(restaurantName[0].restaurantName)
 
   res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
 })
-
-//리뷰이미지 갖고오는 API
-app.get("/getReviewImage", async (req, res) => {
-
-  
-
-  let ImageList;
-
-  ImageList = await Image.findAll({ where: { city: selectedCity } });
-
-  // console.log(guList)
-
-  res.json(ImageList)
-})
-
 
 
 
