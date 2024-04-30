@@ -212,7 +212,11 @@ app.get("/detail/:id", async (req, res) => {
         reviewCount: userRatings[userId].reviewCount,
       };
     });
-    console.log(user.name)
+
+    // console.log('유저에버레지게이팅 여깄어요',userAvgRatings.avgRating)
+
+    //console.log(user.name)
+
     res.render("detail.ejs", {
       restaurant,
       reviews,
@@ -384,7 +388,8 @@ app.get("/search", async function (req, res) {
   
   let shops;
 
-  console.log("검색어는 ? ", searchKeyword);
+  //console.log("검색어는 ? ", searchKeyword);
+
   const user = await User.findOne({where : {userId}})
   
   try {
@@ -604,22 +609,35 @@ else {
 
 })
 
-
-
+//날짜 변환
 const formatDate = (date) => {
   const d = new Date(date);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
+
+//내가 쓴 리뷰 페이지
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
-  // console.log('없음 ? :',id)
+  console.log('마이리뷰 없음?' , myReviews[0].reviewId)
 
   const myReviews = await Review.findAll({ where: { userId: id } });
 
-  const myReviewsImg = await Image.findAll({ where: { userId: id } });
-  console.log('마이리뷰 없음?' , myReviews)
-
-  res.render('myReview.ejs',{myReviews,formatDate,myReviewsImg})
+  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
 })
+
+//리뷰이미지 갖고오는 API
+app.get("/getReviewImage", async (req, res) => {
+
+  
+
+  let ImageList;
+
+  ImageList = await Image.findAll({ where: { city: selectedCity } });
+
+  // console.log(guList)
+
+  res.json(ImageList)
+})
+
 
