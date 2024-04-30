@@ -118,6 +118,28 @@ app.post("/login", (req, res) => {
   })(req, res);
 });
 
+
+// 로그인 체크
+app.post('/loginCheck', async (req,res)=>{
+  const { userId, password } = req.body;
+
+  try {
+      const existingMember = await User.findOne({ where: { userId: userId } });
+      if (existingMember) {
+          // 비밀번호 확인 (여기서는 예시로 plaintext 비교, 실제는 해싱된 비밀번호 비교 사용)
+          const passwordCorrect = existingMember.password === password;
+          res.json({ exists: true, passwordCorrect: passwordCorrect });
+      } else {
+          res.json({ exists: false }); 
+      }
+  } catch (error) {
+      console.log('검색 중 오류 발생', error);
+      res.status(500).send("서버 오류 발생");
+  }
+})
+
+
+
 passport.serializeUser((user, done) => {
   process.nextTick(() => {
     // 세션 생성할 때 비밀번호가 들어가지 않음, user의  id와 이름만 알려주면 이 정보를 기록해주고
@@ -257,6 +279,9 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 });
 
 
+
+
+
 // 리뷰페이지
 app.get("/review/:restaurantId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
@@ -299,6 +324,7 @@ app.post('/checkId', async(req, res)=>{
 
   try {
     const existingMember = await User.findOne({ where: { userId: userId } });
+
       if (existingMember) {
           res.json({ exists: true }); 
       } else {
@@ -309,6 +335,8 @@ app.post('/checkId', async(req, res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
+
+
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -533,10 +561,6 @@ app.get("/findPassword/",(req,res)=>{
 })
 
 
-
-
-
-
 app.get('/findEmail', (req,res)=>{
   res.render('findEmail.ejs')
 })
@@ -554,42 +578,47 @@ let transporter = nodemailer.createTransport({
 const userEmail = 'ssorru0623@gmail.com'
 
 
-app.post('/findEmail', (req,res)=>{
+app.post('/findEmail', async (req,res)=>{
   const {userId} = req.body;
   console.log(userId)
   const resetCode = Math.random().toString(36).substring(2, 15); // 비밀번호 재설정 코드 생성
+  
+  const user =  await User.findOne({where : {userId: userId}})
+  if(user){
+    bcrypt.hash(resetCode, 10, async function(err, hash) {
+      if (err) {
+        console.error('Hashing error:', err);
+      } else {
+        // DB에 해시화된 코드 저장 로직 (여기서는 생략)
+          console.log(user.password)
+          user.password = hash;
+          await user.save();
 
-  bcrypt.hash(resetCode, 10, async function(err, hash) {
-    if (err) {
-      console.error('Hashing error:', err);
-    } else {
-      // DB에 해시화된 코드 저장 로직 (여기서는 생략)
-      const user =  await User.findOne({where : {userId: userId}})
-
-      if(user){
-        console.log(user.password)
-        user.password = hash;
-        await user.save();
+        // 이메일로 비밀번호 초기화 코드 발송
+        let mailOptions = {
+          from: userEmail,
+          to: userId,
+          subject: '비밀번호 초기화 코드',
+          text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
+        };
+        console.log(mailOptions); // mailOptions 객체 로그 출력
+  
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+            res.status(500).send('이메일을 보내는 데 실패했습니다.');
+          } else {
+            console.log('Email sent: ' + info.response);
+            res.redirect('/login')
+          }
+        });
       }
 
-      // 이메일로 비밀번호 초기화 코드 발송
-      let mailOptions = {
-        from: userEmail,
-        to: userId,
-        subject: '비밀번호 초기화 코드',
-        text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
-      };
-      console.log(mailOptions); // mailOptions 객체 로그 출력
-
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-          res.status(500).send('이메일을 보내는 데 실패했습니다.');
-        } else {
-          console.log('Email sent: ' + info.response);
-          res.redirect('/login')
-        }
-      });
-    }
-  });
+    });
+  }
+  else {
+    res.json()
+  }
+  
 })
+

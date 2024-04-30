@@ -1,126 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/detail.css">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/detail.css" />
+  </head>
 
-<%- include('header.ejs') %>
+  <%- include('header.ejs') %>
 
-<body>
-  <main>
-  <div class="content">
-    <div class="restaurantMain container">
-        <div class="restaurantInfo">
+  <body>
+    <main>
+      <div class="content">
+        <div class="restaurantMain container">
+          <div class="restaurantInfo">
             <div class="infoImg">
-                <% for(let i = 0 ; i < 2; i++) { %>
-                    <img src="/test/<%= imgList[i].imgUrl %>" alt="음식점 사진">
-               <% } %>
+              <% for(let i = 0 ; i < 2; i++) { %>
+              <img src="/test/<%= imgList[i].imgUrl %>" alt="음식점 사진" />
+              <% } %>
             </div>
+
             <div class="infoName row justify-content-between">
-                <h1 class="col"><%= restaurant.restaurantName %></h1>
-                <a href="/review/<%= restaurant.restaurantId %>">리뷰작성</a>
-                <button class="col-3 shareBtn"><i class="bi bi-share"></i> 공유</button>
+              <h1 class="col"><%= restaurant.restaurantName %></h1>
+              <a href="/review/<%= restaurant.restaurantId %>">리뷰작성</a>
+              <button class="col-3 shareBtn"><i class="bi bi-share"></i> 공유</button>
             </div>
+
             <div class="restaurantCategory">
-                <a href="/지역구"><%= restaurant.restaurantAddress %></a>
-                <a href="/카테고리"><%= restaurant.restaurantCategory %></a>
+              <a href="/지역구"><%= restaurant.restaurantAddress %></a>
+              <a href="/카테고리"><%= restaurant.restaurantCategory %></a>
             </div>
+
             <div class="restaurantRating">
-                <div class="gradeInfo row row-cols-auto">
-                    <div class="gradeRating col">
-                        <% 
-                        let totalRating = 0;
-                        for (let i = 0; i < reviews.length; i++) {
-                            totalRating += reviews[i].rating;
-                        }
-                        let avgRating = totalRating / reviews.length;
-
-                        for (let j = 1; j <= 5; j++) { %>
-                            <% if (j <= avgRating) { %>
-                                <i class="bi bi-star-fill"></i>
-                            <% } else { %>
-                                <i class="bi bi-star"></i>
-                            <% } %>
-                        <% } %>
-                    </div>
-                    <span class="totalScore col" ><%= avgRating.toFixed(1) %>점
-                    </span>
-                    <p class="col">(<%= reviews.length %>명의 평가)</p> 
+              <div class="gradeInfo row row-cols-auto">
+                <div class="gradeRating col">
+                  <% let totalRating = 0; 
+                  for (let i = 0; i < reviews.length; i++) 
+                  { totalRating += reviews[i].rating; }
+                  let avgRating = totalRating / reviews.length; 
+                  for (let j = 1; j <= 5; j++) { %> <% if (j <= avgRating)
+                  { %>
+                  <i class="bi bi-star-fill"></i>
+                  <% } else { %>
+                  <i class="bi bi-star"></i>
+                  <% } %> 
+                  <% } %>
                 </div>
+                <span class="totalScore col"><%= avgRating.toFixed(1) %>점 </span>
+                <p class="col">(<%= reviews.length %>명의 평가)</p>
+              </div>
             </div>
-        </div>
-        <div class="restaurantDetail">
+          </div>
+
+          <div class="restaurantDetail">
             <ul>
-                <li class="address row justify-content-between">
-                    <i class="col bi bi-geo-alt"><%= restaurant.restaurantAddress %></i>
-                    <button type="button" class="col-3 btn btn-info text-light">지도보기</button>
-                </li>
-                <li class="number">
-                    <i class="bi bi-journal"> <%= restaurant.callNumber %></i>
-                </li>
-                <li class="category">
-
-                    <!-- 태그 보류 -->
-                    <i class="bi bi-tag"> 한식, 고기</i>   
-                </li>
-                <li class="openTime">
-                    <i class="bi bi-clock-history"> <%= restaurant.openTime %> </i>
-                </li>
-                <li>
-                     <!-- 모달창 구현 -->
-                    <i class="bi bi-chat-left-text"> 폐업신고 · 정보수정 제안 </i>
-                </li>
+              <li class="address row justify-content-between">
+                <i class="col bi bi-geo-alt"><%= restaurant.restaurantAddress %></i>
+                <button type="button" class="col-3 btn btn-info text-light">지도보기</button>
+              </li>
+              <li class="number">
+                <i class="bi bi-journal"> <%= restaurant.callNumber %></i>
+              </li>
+              <li class="category">
+                <!-- 태그 보류 -->
+                <i class="bi bi-tag"> 한식, 고기</i>
+              </li>
+              <li class="openTime">
+                <i class="bi bi-clock-history"> <%= restaurant.openTime %> </i>
+              </li>
+              <li>
+                <!-- 모달창 구현 -->
+                <i class="bi bi-chat-left-text"> 폐업신고 · 정보수정 제안 </i>
+              </li>
             </ul>
+          </div>
         </div>
-    </div>
 
-    <section class="restaurantReviewPic container">
-        <h2>
+        <section class="restaurantReviewPic container">
+          <h2>
             <span class="text-primary"><%= restaurant.restaurantName %></span>
             <span>의 사진</span>
-        </h2>
-        <div class="photo-container">
+          </h2>
+          <div class="photo-container">
+            <div class="picGrid row row-cols-3 g-3">
+              <% for (let i = 1; i <= 9; i++) { %>
+              <div class="col">
+                <img src="imgUrl<%= i %>.jpg" alt="imgId <%= i %>" />
+              </div>
+              <% } %>
+            </div>
 
-                <div class="picGrid row row-cols-3 g-3">
-                    <% for (let i = 1; i <= 9; i++) { %>
-                        <div class="col">
-                            <img src="imgUrl<%= i %>.jpg" alt="imgId <%= i %>">
-                        </div>
-                    <% } %>
-                </div>
+            <div class="d-grid gap-2" role="group">
+              <button type="button" class="btn btn-secondary morePic">사진 더보기 ▼</button>
+            </div>
+          </div>
+        </section>
 
-                <div class="d-grid gap-2" role="group">
-                    <button type="button" class="btn btn-secondary morePic">사진 더보기 ▼</button>
-                </div>
-        </div>  
-    </section>
-
-    <div class="restaurantReview container">
-        <div class="reviewCount">
+        <div class="restaurantReview container">
+          <div class="reviewCount">
             <p><%= reviews.length %>건의 방문자 평가</p>
             <div class="gradeInfo">
-                <div class="gradeRating">
-                    <span class="totalScore"><%= avgRating.toFixed(1) %>점</span>
-                    <% 
-                    for (let i = 0; i < reviews.length; i++) {
-                        totalRating += reviews[i].rating;
-                    }
-                    for (let j = 1; j <= 5; j++) { %>
-                        <% if (j <= avgRating) { %>
-                            <i class="bi bi-star-fill"></i>
-                        <% } else { %>
-                            <i class="bi bi-star"></i>
-                        <% } %>
-                    <% } %>
-                </div>
+              <div class="gradeRating">
+                <span class="totalScore"><%= avgRating.toFixed(1) %>점</span>
+                <% for (let i = 0; i < reviews.length; i++) { totalRating += reviews[i].rating; } for (let j = 1; j <=
+                5; j++) { %> <% if (j <= avgRating) { %>
+                <i class="bi bi-star-fill"></i>
+                <% } else { %>
+                <i class="bi bi-star"></i>
+                <% } %> <% } %>
+              </div>
             </div>
-        </div>
+          </div>
 
+          <% for (let userId in userAvgRatings) { %>
+          <div class="container userReview">
+            <p class="personGrade">
+              <span class="username">
+                <img src="<%=userId.imgUrl %>" alt="<%= userId %>" />
+                <strong><%= userId %></strong>
+              </span>
+              <span class="scoreInfo">
+                평균별점
+                <span class="avgScore"> <%= userAvgRatings[userId].avgRating.toFixed(1) %>점 </span>
+                평가
+                <span class="scoreCnt"><%= userAvgRatings[userId].reviewCount %>개</span>
+              </span>
+            </p>
+            <% for (let i = 0; i < reviews.length; i++) { %> <% if (reviews[i].userId === userId) { %>
+            <div class="container">
+              <div class="pointDetail">
+                <div class="restaurantRating">
+                  <% for (let j = 1; j <= 5; j++) { %> <% if (j <= reviews[i].rating) { %>
+                  <i class="bi bi-star-fill"></i>
+                  <% } else { %>
+                  <i class="bi bi-star"></i>
+                  <% } %> <% } %>
+                  <span class="totalScore"><%= reviews[i].rating %>점</span>
+                </div>
+              </div>
+              <div class="reviewContent"><%= reviews[i].content %></div>
+              <div class="userReviewPic">
+                <div class="picGrid row row-cols-4 g-3">
+                  <% for (let j = 1; j <= 4; j++) { %>
+                  <div class="col">
+                    <img src="<%= %>" alt="reviewPic <%= j %>" />
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <% } %> <% } %>
+          </div>
+          <% } %>
+        </div>
         <% for (let userId in userAvgRatings) { %>
             <div class="container userReview">
                 <p class="personGrade">
@@ -181,5 +220,3 @@
 
 
 </html>
-
-

@@ -29,8 +29,14 @@
     
     <section class="visual">
       <div class="select">
-        <p>당신을 위한</p>
-             <h1>추천 맛집</h1>
+        <% if(userId) { %> 
+          <p><%= name %> 님을 위한</p>
+          <h1>추천 맛집</h1>
+        <% } else { %>
+          <p>회원님을 위한</p>
+          <h1>추천 맛집</h1>
+        <% } %>
+
         <button id="openModal">지역 선택</button>
       </div>
 
