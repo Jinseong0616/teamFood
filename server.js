@@ -623,8 +623,6 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  console.log(restaurantName[0].restaurantName)
-
   res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
 })
 
