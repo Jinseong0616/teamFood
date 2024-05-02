@@ -4,15 +4,23 @@ a{text-decoration: none;}
 .header { padding: 20px 0 20px; border-bottom: gray solid 1px; text-align: center;} 
 .header img { width: 300px; } 
 
+section{margin: 0 auto;}
 .sec{margin-top: 50px;}
 
+.leftBar{padding-top: 75px; margin-right: 10px;}
+
+.leftBar, .rightBar{
+  border: 1px grey solid;
+  border-radius: 5px;
+}
+
 h2{
-  margin-bottom: 30px;
+  margin: 30px 0;
   text-align: center;
 }
 
 
-.profile-img{margin: 0 auto; width: 596px; display: flex; justify-content: space-between;}
+.profile-img{margin: 0 70px; width: 550px; display: flex; justify-content: space-between;}
 
 
 .img-edit{
@@ -52,7 +60,7 @@ h2{
 
 .input-box tr input{width: 400px; height: 40px;}
 .input-box th{width: 100px;}
-.input-box td{padding: 24px 48px;}
+.input-box td{padding: 24px 95px 24px 0}
 
 
 
