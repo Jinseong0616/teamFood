@@ -27,10 +27,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
-
-
-
 // db
 const db = require("./models");
 const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db;
@@ -85,19 +81,18 @@ passport.use(
 
 // 메인 페이지
 app.get("/", async (req, res) => {
-  
   const userId = req.isAuthenticated() ? req.user.userId : false;
+
+  console.log(userId)
   const categories = await Category.findAll()
 
-  
-  const user = await User.findOne({where : {userId}})
-  if(user){
-    res.render("index.ejs", { name : user.name , userId,categories});
-  }
-  else {
-    res.render('index.ejs', {userId, categories})
-  }
-  
+  if(userId){
+    const user = await User.findOne({where : {userId}})
+    if(user){
+      return res.render("index.ejs", { name : user.name , userId, categories});
+      }
+    }
+    res.render('index.ejs', {userId : false , categories})
 });
 
 // 로그인페이지
@@ -186,8 +181,6 @@ app.get("/detail/:id", async (req, res) => {
 
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    const user = await User.findOne({ where: { userId: userId } });
-
     // 레스토랑 리뷰의 해당 유저의 사진 가져오기
     // const reviewPic = await Image.findOne({ where: { reviewId: id } });
 
@@ -215,15 +208,16 @@ app.get("/detail/:id", async (req, res) => {
     // console.log('유저에버레지게이팅 여깄어요',userAvgRatings.avgRating)
 
     //console.log(user.name)
+    if(userId){
+      const user = await User.findOne({ where: { userId: userId } });
+      if(user){
+        return res.render("detail.ejs", {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+      }
+    }
+    res.render('detail.ejs', {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
 
-    res.render("detail.ejs", {
-      restaurant,
-      reviews,
-      userAvgRatings,
-      imgList: imgUrl,
-      userId,
-      name : user.name
-    });
+    
+   
   } catch (error) {
     console.error("에러 발생:", error);
     res.status(500).send("서버 에러");
@@ -324,16 +318,22 @@ app.post('/checkId', async(req, res)=>{
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
 
-  const member = await User.findOne({ where: { userId: id } }); // 회원 정보
-  const memImg = await Image.findOne({ where: { userId: id } });
-  
-  res.render('myPage.ejs',{member,memImg})
+  if(id){
+    const member = await User.findOne({ where: { userId: id } }); // 회원 정보
+    const memImg = await Image.findOne({ where: { userId: id } });
+    res.render('myPage.ejs',{member,memImg})
+  }
+  else {
+    res.render('myPage.ejs')
+  }
 })
   
 // 회원 수정
 app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const { id } = req.params;
   const newInfo = JSON.parse(req.body.data);
+  let member
+  let imgFile
   console.log(newInfo)
 
   // newInfo.password
@@ -341,10 +341,11 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   // const hashPassword = await bcrypt.hash(newInfo.password, 10)
   // newInfo.password = hashPassword
   const newFile = req.file;
-
-  const member = await User.findOne({ where: { userId: id } });
-  let imgFile = await Image.findOne({ where: { userId: id } });
-
+  if(id){
+     member = await User.findOne({ where: { userId: id } });
+     imgFile = await Image.findOne({ where: { userId: id } });
+  }
+  
   if (member) {
     Object.keys(newInfo).forEach((prop) => {
       member[prop] = newInfo[prop];
@@ -385,7 +386,8 @@ app.get("/region", async (req, res) => {
 // 검색 기능
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-
+  
+  
   const searchKeyword = req.query.keyword;
   const region = req.query.region;
   
@@ -393,7 +395,7 @@ app.get("/search", async function (req, res) {
 
   //console.log("검색어는 ? ", searchKeyword);
 
-  const user = await User.findOne({where : {userId}})
+  
   
   try {
      if (region && searchKeyword) {
@@ -461,12 +463,14 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
-    if(user){
-      res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+    if(userId){
+      const user = await User.findOne({where : {userId}})
+      if(user){
+        return res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+      }
     }
-    else {
-      res.render("search.ejs", { shops, userId}); // 검색 결과를 클라이언트에게 전달합니다.
-    }
+      res.render("search.ejs", { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
@@ -526,19 +530,27 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
 
 // 회원탈퇴
 app.delete("/delete/:id", async function (req, res) {
-  const id = req.params.id;
+  const {id} = req.params;
   console.log("아이디 : ", id);
 
+  if(!id){
+    return res.status(400).send("ID 가 제공되지 않았습니다.");
+  }
+
   try {
-    await User.destroy({ where: { userId: id } });
-    console.log("잘처리됨");
-    res.sendStatus(200);
+    const deleted = await User.destroy({ where: { userId: id } });
+    console.log('deleted 인가요?',deleted);
+    if(deleted > 0){
+      res.json({data : '회원 탈퇴 성공'});
+    } else {
+      res.status(404).send("해당 ID를 가진 사용자를 찾을 수 없습니다.");
+    }
+    
   } catch (error) {
     console.error("처리중 오류 발생", error);
     res.status(500).send("서버 오류 발생");
   }
 });
-
 
 
 
@@ -610,7 +622,9 @@ const formatDate = (date) => {
 };
 
 
+
 //내가 쓴 리뷰 페이지
+
 app.get('/myReview/:id', async(req, res)=>{
   const id = req.params.id
   const myReviews = await Review.findAll({ where: { userId: id } });
@@ -623,8 +637,6 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  console.log(restaurantName[0].restaurantName)
-
   res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
 })
 
