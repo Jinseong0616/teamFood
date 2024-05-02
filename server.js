@@ -1,6 +1,7 @@
 // 1. 모듈 - require
 const express = require('express')
-const path = require('path')
+const cors = require('cors')
+
 const app = express()
 const session = require('express-session')
 const passport = require('passport')
@@ -8,7 +9,6 @@ const LocalStrategy = require('passport-local')
 const multer = require('multer')
 const {Op} = require('sequelize')
 const nodemailer = require("nodemailer");
-
 
 const bcrypt = require('bcrypt')
 
@@ -34,12 +34,16 @@ const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
 
-const port = 3000;
+const port = 8080;
 
 // 2. use, set
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
+
+// React
+app.use(express.static('path/to/react-team/public'))
+app.use(cors())
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,7 +53,7 @@ app.listen(port, () => {
   console.log("접속 성공! - http://localhost:" + port);
 });
 
-app.use(passport.initialize());
+app.use(passport.initialize()); 
 
 app.use(
   session({
@@ -82,17 +86,17 @@ passport.use(
 // 메인 페이지
 app.get("/", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-
-  console.log(userId)
   const categories = await Category.findAll()
+
 
   if(userId){
     const user = await User.findOne({where : {userId}})
     if(user){
-      return res.render("index.ejs", { name : user.name , userId, categories});
+      return res.render( 'index.ejs', { name : user.name , userId, categories});
       }
     }
     res.render('index.ejs', {userId : false , categories})
+    
 });
 
 // 로그인페이지
@@ -320,9 +324,14 @@ app.get("/myPage/:id", async (req, res) => {
 
   if(id){
     const member = await User.findOne({ where: { userId: id } }); // 회원 정보
-    const memImg = await Image.findOne({ where: { userId: id } });
-    res.render('myPage.ejs',{member,memImg})
-  }
+      const memImg = await Image.findOne({ where: 
+        { 
+          userId: id, 
+          restaurantId : null, 
+          reviewId : null } 
+      });
+      res.render('myPage.ejs',{member,memImg})
+    }
   else {
     res.render('myPage.ejs')
   }
@@ -539,6 +548,8 @@ app.delete("/delete/:id", async function (req, res) {
 
   try {
     const deleted = await User.destroy({ where: { userId: id } });
+     await Image.destroy({where : {userId : id}})
+
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -637,7 +648,7 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg})
+  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg, restaurantName})
 })
 
 
@@ -658,9 +669,9 @@ app.put('/editPw/:id', async (req,res)=>{
   const hashPassword = await bcrypt.hash(newInfo, 10)
   member.password = hashPassword
   await member.save()
-
   res.json({ message: "비밀번호가 성공적으로 변경되었습니다." })
 
 })
+
 
 
