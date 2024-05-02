@@ -675,3 +675,16 @@ app.put('/editPw/:id', async (req,res)=>{
 
 
 
+app.get("/api", async (req, res) => {
+    const userId = req.isAuthenticated() ? req.user.userId : false;
+      const categories = await Category.findAll()
+    
+    
+      if(userId){
+        const user = await User.findOne({where : {userId}})
+        if(user){
+          return res.json( { name : user.name , userId, categories});
+          }
+        }
+        res.json({userId : false , categories})
+  });
