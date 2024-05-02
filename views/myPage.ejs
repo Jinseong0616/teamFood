@@ -23,13 +23,16 @@
       </div>
     </header>
 
-    <section class="sec row">
-      <div class="col-1">
-        <h1>Hello</h1>
-        <a href="/editPw/<%= member.userId %>">비밀번호변경</a>
-        <a href="/myReview/<%= member.userId %>">작성한 리뷰</a>
+    <section class="sec row d-flex justify-content-center">
+      <div class="col-1 leftBar">
+        <ul>
+          <li><a href="/editPw/<%= member.userId %>">비밀번호변경</a></li>
+          <li><a href="/myReview/<%= member.userId %>">작성한 리뷰</a></li>
+          <li><a href="#" id="deleteId">회원탈퇴</a></li>
+        </ul>
+
       </div>
-      <div class="col">
+      <div class="col-5 rightBar">
         <!-- <h2>마이 페이지</h2> -->
         <form action="/edit" , method="post" enctype="multipart/form-data">
           <h2>내정보</h2>
@@ -43,15 +46,15 @@
             </div>
 
             <% if(memImg){ %>
-            <div class="person-circle">
-              <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="이미지변경" />
-            </div>
+              <div class="person-circle">
+                <img id="profileImage" name="profileImage" src="/users/<%= memImg.imgUrl %>" alt="이미지변경" />
+              </div>
             <% } else { %>
-            <div class="person-circle">
-              <img id="profileImage" name="profileImage" src="/test/Pic.jpg" alt="기본이미지" />
-            </div>
+              <div class="person-circle">
+                <img id="profileImage" name="profileImage" src="/test/Pic.jpg" alt="기본이미지" />
+              </div>
 
-          <% } %>
+            <% } %>
         </div> 
         
 
@@ -82,7 +85,6 @@
             </tr>
           </table>
         </div>
-        <a href="#" id="deleteId">회원탈퇴</a>
         <div class="edit-box">
           <button class="edit" data-id="<%= member.userId %>">변경사항저장</button>
         </div>
