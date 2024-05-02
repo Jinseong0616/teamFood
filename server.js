@@ -677,16 +677,16 @@ app.put('/editPw/:id', async (req,res)=>{
 
 
 
-app.get("/api", async (req, res) => {
+app.get("/api/categories", async (req, res) => {
     const userId = req.isAuthenticated() ? req.user.userId : false;
       const categories = await Category.findAll()
     
-    
       if(userId){
         const user = await User.findOne({where : {userId}})
+
         if(user){
-          return res.json( { name : user.name , userId, categories});
+          return res.json( { message : '사용자있음', name : user.name , userId, categories});
           }
         }
-        res.json({userId : false , categories})
+        res.json({message : '사용자없음', userId : false , categories})
   });
