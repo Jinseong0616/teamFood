@@ -1,7 +1,6 @@
 // 1. 모듈 - require
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
 const session = require('express-session')
 const passport = require('passport')
@@ -34,10 +33,12 @@ const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
 
-const port = 8080;
+const port = 9090;
+
 
 // 2. use, set
 app.set("view engine", "ejs");
+app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 
@@ -648,7 +649,8 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg, restaurantName})
+
+  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg,restaurantName})
 })
 
 

@@ -11,76 +11,38 @@
 <body>
   <main>
     <section class="container-lg">
-
-        <h1 class="myReviewTitle">내 리뷰 목록</h1>
-        <div class="myReview-box">
-            <ul class="myReviews">
-                <% for(let i = 0; i < myReviews.length; i++) { %>
-                <li>
-                  <div class="lookMyReviews">
-                    <div class="resName">
-                      <% for(let j = 0; j < restaurantName.length; j++) { %>
-                        <% if (restaurantName[j].restaurantId === myReviews[i].restaurantId) {%>
-                          <h2 class="resTitle">
-                            <a href="/detail/<%=restaurantName[j].restaurantId %>"><%= restaurantName[j].restaurantName %></a>
-                          </h2>                         
-                        <% } %>
-                      <% } %>  
-                    </div>
-                    <!-- 리뷰 이미지 -->
-                    <div class="myReviewImg ">
-                        <% for(let j = 0; j < myReviewsImg.length; j++) { %>
-                            <% if (myReviewsImg[j].reviewId === myReviews[i].reviewId) { %>
-                                <img src="/reviews/<%=myReviewsImg[j].imgUrl %>" alt="Review Image" class="myReviews-img">
-                            <% } %>
-                        <% } %>
-                    </div>
-                    <!-- 리뷰 내용 -->
-                    <div class="content">
-                      <p><%= myReviews[i].content %></p>
-                    </div>
-                    <!-- 리뷰 평점 -->
-                    <div class="gradeRating col">
-                        <% let rating = myReviews[i].rating; %>
-                        <% for (let j = 0; j < rating; j++) { %>
-                        <i class="bi bi-star-fill"></i>
-                        <% } %>
-                        <% for (let j = rating; j < 5; j++) { %>
-                        <i class="bi bi-star"></i>
-                        <% } %>
-                    </div>
-                    <div class="createdAt">
-                      <p>작성일 : <%= formatDate(myReviews[i].createdAt)%></p>
-                    </div>
-                  </div>
-                </li>
-                <% } %>
-            </ul>
-        </div>
-
+      <h2 class="myReviewTitle">내 리뷰 목록</h2>
+      
+      <div class="myReview-box">
+        <ul class="myReviews">
+          <% for(let i = 0; i < myReviews.length; i++) { %>
+            <li>
+              <!-- 인덱스 i에 해당하는 리뷰의 이미지를 가져옵니다. -->
+              <% for(let j=0; j< myReviews[i].)
+              <div class="myReviewImg">
+                <img src="" alt="Review Image">
+              </div>
+              <div class="content">
+                <p><%= myReviews[i].rating %></p>
+                <p><%= myReviews[i].content %></p>
+                <p>작성일 : <%= formatDate(myReviews[i].createdAt)%></p>
+              </div>
+            </li>
+          <% } %>
+        </ul>        
+      
+      </div>
     </section>
-</main>
-
-  
+  </main>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-  const reviewItems = document.querySelectorAll(".lookMyReviews");
 
-  reviewItems.forEach(function(item) {
-    // 각 리뷰 아이템에 클릭 이벤트 리스너 추가
-    item.addEventListener("click", function() {
-      // 클릭한 리뷰 아이템 안에서 h2.resTitle 아래의 첫 번째 a 태그(href) 가져오기
-      const anchorTag = item.querySelector("h2.resTitle a");
-      
-      // 가져온 href 속성값으로 이동
-      if (anchorTag) {
-        window.location.href = anchorTag.href;
-      }
-    });
-  });
-});
+<script>
+
 
 </script>
+
+
+
+
 </html>
