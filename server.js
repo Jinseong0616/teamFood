@@ -84,21 +84,7 @@ passport.use(
   })
 );
 
-// 메인 페이지
-app.get("/", async (req, res) => {
-  const userId = req.isAuthenticated() ? req.user.userId : false;
-  const categories = await Category.findAll()
 
-
-  if(userId){
-    const user = await User.findOne({where : {userId}})
-    if(user){
-      return res.render( 'index.ejs', { name : user.name , userId, categories});
-      }
-    }
-    res.render('index.ejs', {userId : false , categories})
-    
-});
 
 // 로그인페이지
 app.get("/login", (req, res) => {
@@ -111,17 +97,18 @@ app.post("/login", (req, res) => {
     
     if (error) return res.status(500).json(error); // 인증 과정에서 오류
     if (!user) return res.status(401).json({ message: "로그인 실패" });
-
+    console.log(error, user, info)
     req.logIn(user, (err) => {
       if (err) return next(err);
       req.session.userId = user.userId;
+      req.session.name = user.name;
+      console.log('req : ', req.session.userId)
+      console.log('req : ', req.session.name)
       const passwordCorrect = user.password
-      return res.json({exists: true, passwordCorrect: passwordCorrect});
+      return res.json({exists: true, passwordCorrect: passwordCorrect, userId : req.session.userId, name : req.session.name});
     });
   })(req, res);
 });
-
-
 
 
 
@@ -238,12 +225,13 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
-
+  console.log(newMember)
+  console.log(newFile)
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
 
     if (member) {
-      return res.send("중복입니다.");
+      return res.json("중복입니다.");
     }
 
     let hashPassword = await bcrypt.hash(newMember.password, 10);
@@ -258,7 +246,7 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
         imgUrl: newFile.filename,
       });
     }
-    res.redirect("/login");
+    res.json({message : '성공'});
   } catch (error) {
     console.log("검색 중 오류 발생", error);
     res.status(500).send("서버 오류 발생");
@@ -322,7 +310,7 @@ app.post('/checkId', async(req, res)=>{
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
-
+  console.log(id)
   if(id){
     const member = await User.findOne({ where: { userId: id } }); // 회원 정보
       const memImg = await Image.findOne({ where: 
@@ -331,10 +319,10 @@ app.get("/myPage/:id", async (req, res) => {
           restaurantId : null, 
           reviewId : null } 
       });
-      res.render('myPage.ejs',{member,memImg})
+      res.json({member, memImg})
     }
   else {
-    res.render('myPage.ejs')
+    res.json({error : '에러'})
   }
 })
   
@@ -476,10 +464,10 @@ app.get("/search", async function (req, res) {
     if(userId){
       const user = await User.findOne({where : {userId}})
       if(user){
-        return res.render("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+        return res.json("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
       }
     }
-      res.render("search.ejs", { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
+      res.json("search.ejs", { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
     
   } catch (error) {
     console.error(error);
@@ -677,7 +665,7 @@ app.put('/editPw/:id', async (req,res)=>{
 
 
 
-app.get("/api/categories", async (req, res) => {
+app.get("/", async (req, res) => {
     const userId = req.isAuthenticated() ? req.user.userId : false;
       const categories = await Category.findAll()
     
