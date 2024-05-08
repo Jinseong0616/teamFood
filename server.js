@@ -464,10 +464,10 @@ app.get("/search", async function (req, res) {
     if(userId){
       const user = await User.findOne({where : {userId}})
       if(user){
-        return res.json("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+        return res.json( { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
       }
     }
-      res.json("search.ejs", { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
+      res.json( { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
     
   } catch (error) {
     console.error(error);
