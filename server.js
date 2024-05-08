@@ -1,7 +1,6 @@
 // 1. 모듈 - require
 const express = require('express')
 const cors = require('cors')
-const router = express.Router()
 const app = express()
 const session = require('express-session')
 const passport = require('passport')
@@ -45,6 +44,10 @@ app.use(express.static(__dirname + "/uploads"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// React
+app.use(express.static('path/to/react-team/public'))
+app.use(cors())
 
 // 3. listen
 app.listen(port, () => {
@@ -112,17 +115,18 @@ app.post("/login", (req, res) => {
     
     if (error) return res.status(500).json(error); // 인증 과정에서 오류
     if (!user) return res.status(401).json({ message: "로그인 실패" });
-
+    console.log(error, user, info)
     req.logIn(user, (err) => {
       if (err) return next(err);
       req.session.userId = user.userId;
+      req.session.name = user.name;
+      console.log('req : ', req.session.userId)
+      console.log('req : ', req.session.name)
       const passwordCorrect = user.password
-      return res.json({exists: true, passwordCorrect: passwordCorrect});
+      return res.json({exists: true, passwordCorrect: passwordCorrect, userId : req.session.userId, name : req.session.name});
     });
   })(req, res);
 });
-
-
 
 
 
@@ -239,12 +243,13 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
-
+  console.log(newMember)
+  console.log(newFile)
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
 
     if (member) {
-      return res.send("중복입니다.");
+      return res.json("중복입니다.");
     }
 
     let hashPassword = await bcrypt.hash(newMember.password, 10);
@@ -259,7 +264,7 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
         imgUrl: newFile.filename,
       });
     }
-    res.redirect("/login");
+    res.json({message : '성공'});
   } catch (error) {
     console.log("검색 중 오류 발생", error);
     res.status(500).send("서버 오류 발생");
@@ -323,14 +328,19 @@ app.post('/checkId', async(req, res)=>{
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
-
+  console.log(id)
   if(id){
     const member = await User.findOne({ where: { userId: id } }); // 회원 정보
-    const memImg = await Image.findOne({ where: { userId: id } });
-    res.render('myPage.ejs',{member,memImg})
-  }
+      const memImg = await Image.findOne({ where: 
+        { 
+          userId: id, 
+          restaurantId : null, 
+          reviewId : null } 
+      });
+      res.json({member, memImg})
+    }
   else {
-    res.render('myPage.ejs')
+    res.json({error : '에러'})
   }
 })
   
@@ -665,3 +675,16 @@ app.put('/editPw/:id', async (req,res)=>{
 })
 
 
+app.get("/", async (req, res) => {
+    const userId = req.isAuthenticated() ? req.user.userId : false;
+      const categories = await Category.findAll()
+    
+      if(userId){
+        const user = await User.findOne({where : {userId}})
+
+        if(user){
+          return res.json( { message : '사용자있음', name : user.name , userId, categories});
+          }
+        }
+        res.json({message : '사용자없음', userId : false , categories})
+  });
