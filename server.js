@@ -220,7 +220,7 @@ app.get("/detail/:id", async (req, res) => {
         return res.render("detail.ejs", {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
       }
     }
-    res.render('detail.ejs', {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
+    res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
 
     
    
