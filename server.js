@@ -85,24 +85,24 @@ passport.use(
 );
 
 // 메인 페이지
-app.get("/", async (req, res) => {
-  try {
-    const userId = req.isAuthenticated() ? req.user.userId : false;
-    //console.log(userId);
+// app.get("/", async (req, res) => {
+//   try {
+//     const userId = req.isAuthenticated() ? req.user.userId : false;
+//     //console.log(userId);
 
-    const categories = await Category.findAll();
-    let user = null;
+//     const categories = await Category.findAll();
+//     let user = null;
     
-    if (userId) {
-      user = await User.findOne({ where: { userId } });
-    }
+//     if (userId) {
+//       user = await User.findOne({ where: { userId } });
+//     }
 
-    res.status(200).json({ userId, name: user ? user.name : null, categories });
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     res.status(200).json({ userId, name: user ? user.name : null, categories });
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 // 로그인페이지
 app.get("/login", (req, res) => {
@@ -550,6 +550,7 @@ app.delete("/delete/:id", async function (req, res) {
 
   try {
     const deleted = await User.destroy({ where: { userId: id } });
+    await Image.destroy({where : {userId : id}})
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -614,7 +615,7 @@ app.post('/findEmail', async (req,res)=>{
           res.status(500).send('이메일을 보내는 데 실패했습니다.');
         } else {
           console.log('Email sent: ' + info.response);
-          res.redirect('/login')
+          res.json({message : '이메일 성공'})
         }
       });
     }
