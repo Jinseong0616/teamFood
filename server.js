@@ -183,6 +183,7 @@ app.get("/detail/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
+
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
@@ -221,7 +222,7 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.render("detail.ejs", {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
@@ -404,7 +405,7 @@ app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const searchKeyword = req.query.keyword;
   const region = req.query.region;
-
+  console.log(region)
   try {
     let shops;
 
