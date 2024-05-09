@@ -16,6 +16,7 @@ const bcrypt = require('bcrypt')
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
 const uploadReview = multer({ dest: "uploads/reviews" }); // 리뷰
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -85,24 +86,24 @@ passport.use(
 );
 
 // 메인 페이지
-app.get("/", async (req, res) => {
-  try {
-    const userId = req.isAuthenticated() ? req.user.userId : false;
-    //console.log(userId);
+// app.get("/", async (req, res) => {
+//   try {
+//     const userId = req.isAuthenticated() ? req.user.userId : false;
+//     //console.log(userId);
 
-    const categories = await Category.findAll();
-    let user = null;
+//     const categories = await Category.findAll();
+//     let user = null;
     
-    if (userId) {
-      user = await User.findOne({ where: { userId } });
-    }
+//     if (userId) {
+//       user = await User.findOne({ where: { userId } });
+//     }
 
-    res.status(200).json({ userId, name: user ? user.name : null, categories });
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     res.status(200).json({ userId, name: user ? user.name : null, categories });
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 // 로그인페이지
 app.get("/login", (req, res) => {
@@ -187,13 +188,14 @@ app.get("/detail/:id", async (req, res) => {
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
-    // 레스토랑에 대한 리뷰 가져오기
+    // 레스토랑에 대한 전체 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
 
+    // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    // 레스토랑 리뷰의 해당 유저의 사진 가져오기
-    // const reviewPic = await Image.findOne({ where: { reviewId: id } });
+    // // 레스토랑 리뷰의 해당 유저의 사진 가져오기
+    // const reviewPic = await Image.findOne({ where: { reviewId:  , restaurantId : id} });
 
     // 회원별로 작성한 리뷰에 대한 평균별점 계산
     const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
@@ -222,7 +224,11 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
+<<<<<<< HEAD
         return res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+=======
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
+>>>>>>> 5674a61793c4463108883199d3d77df7cad03c3d
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
@@ -551,6 +557,7 @@ app.delete("/delete/:id", async function (req, res) {
 
   try {
     const deleted = await User.destroy({ where: { userId: id } });
+    await Image.destroy({where : {userId : id}})
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -615,7 +622,7 @@ app.post('/findEmail', async (req,res)=>{
           res.status(500).send('이메일을 보내는 데 실패했습니다.');
         } else {
           console.log('Email sent: ' + info.response);
-          res.redirect('/login')
+          res.json({message : '이메일 성공'})
         }
       });
     }
@@ -649,7 +656,7 @@ app.get('/myReview/:id', async(req, res)=>{
   const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
   const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  res.render('myReview.ejs',{myReviews,formatDate, myReviewsImg,restaurantName})
+  res.json({myReviews,formatDate, myReviewsImg,restaurantName})
 })
 
 
