@@ -16,6 +16,7 @@ const bcrypt = require('bcrypt')
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
 const uploadReview = multer({ dest: "uploads/reviews" }); // 리뷰
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -186,13 +187,14 @@ app.get("/detail/:id", async (req, res) => {
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
-    // 레스토랑에 대한 리뷰 가져오기
+    // 레스토랑에 대한 전체 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
 
+    // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    // 레스토랑 리뷰의 해당 유저의 사진 가져오기
-    // const reviewPic = await Image.findOne({ where: { reviewId: id } });
+    // // 레스토랑 리뷰의 해당 유저의 사진 가져오기
+    // const reviewPic = await Image.findOne({ where: { reviewId:  , restaurantId : id} });
 
     // 회원별로 작성한 리뷰에 대한 평균별점 계산
     const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
@@ -221,7 +223,7 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.render("detail.ejs", {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
