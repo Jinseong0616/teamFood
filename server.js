@@ -9,12 +9,14 @@ const multer = require('multer')
 const {Op} = require('sequelize')
 const nodemailer = require("nodemailer");
 
+
 const bcrypt = require('bcrypt')
 
 // 이미지 디렉토리 설정
 const uploadStore = multer({ dest: "uploads/store" }); // 스토어
 const uploadUser = multer({ dest: "uploads/users" }); // 회원
 const uploadReview = multer({ dest: "uploads/reviews" }); // 리뷰
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/test"); // 파일이 저장될 경로
@@ -35,26 +37,25 @@ const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db
 
 const port = 9090;
 
-
 // 2. use, set
 app.set("view engine", "ejs");
 app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // React
 app.use(express.static('path/to/react-team/public'))
 app.use(cors())
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // 3. listen
 app.listen(port, () => {
   console.log("접속 성공! - http://localhost:" + port);
 });
 
-app.use(passport.initialize()); 
+app.use(passport.initialize());
 
 app.use(
   session({
@@ -84,11 +85,29 @@ passport.use(
   })
 );
 
+// 메인 페이지
+// app.get("/", async (req, res) => {
+//   try {
+//     const userId = req.isAuthenticated() ? req.user.userId : false;
+//     //console.log(userId);
 
+//     const categories = await Category.findAll();
+//     let user = null;
+    
+//     if (userId) {
+//       user = await User.findOne({ where: { userId } });
+//     }
+
+//     res.status(200).json({ userId, name: user ? user.name : null, categories });
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 // 로그인페이지
 app.get("/login", (req, res) => {
-  res.render("loginPage.ejs");
+  res.send("loginPage.ejs");
 });
 
 //로그인
@@ -168,13 +187,14 @@ app.get("/detail/:id", async (req, res) => {
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
-    // 레스토랑에 대한 리뷰 가져오기
+    // 레스토랑에 대한 전체 리뷰 가져오기
     const reviews = await Review.findAll({ where: { restaurantId: id } });
 
+    // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    // 레스토랑 리뷰의 해당 유저의 사진 가져오기
-    // const reviewPic = await Image.findOne({ where: { reviewId: id } });
+    // // 레스토랑 리뷰의 해당 유저의 사진 가져오기
+    // const reviewPic = await Image.findOne({ where: { reviewId:  , restaurantId : id} });
 
     // 회원별로 작성한 리뷰에 대한 평균별점 계산
     const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
@@ -203,10 +223,10 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.render("detail.ejs", {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
       }
     }
-    res.render('detail.ejs', {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
+    res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
 
     
    
@@ -369,7 +389,7 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 app.get("/region", async (req, res) => {
   const selectedCity = req.query.city;
   
-  // console.log(selectedCity)
+  //console.log(selectedCity)
 
   let guList;
 
@@ -384,19 +404,13 @@ app.get("/region", async (req, res) => {
 // 검색 기능
 app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-  
-  
   const searchKeyword = req.query.keyword;
   const region = req.query.region;
-  
-  let shops;
 
-  //console.log("검색어는 ? ", searchKeyword);
-
-  
-  
   try {
-     if (region && searchKeyword) {
+    let shops;
+
+    if (region && searchKeyword) {
       // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
       shops = await Store.findAll({
         where: {
@@ -423,7 +437,7 @@ app.get("/search", async function (req, res) {
           },
         ]
       });
-    }else if(searchKeyword){
+    } else if (searchKeyword) {
       shops = await Store.findAll({
         where: {
           [Op.or]: [
@@ -451,7 +465,7 @@ app.get("/search", async function (req, res) {
           },
         ],
       });
-    }else {
+    } else {
       shops = await Store.findAll({
         include: [
           {
@@ -461,14 +475,15 @@ app.get("/search", async function (req, res) {
         ],
       });
     }
-    if(userId){
-      const user = await User.findOne({where : {userId}})
-      if(user){
-        return res.json("search.ejs", { shops, userId, name : user.name}); // 검색 결과를 클라이언트에게 전달합니다.
+
+    if (userId) {
+      const user = await User.findOne({ where: { userId } });
+      if (user) {
+        return res.status(200).json({ shops, userId, name: user.name });
       }
     }
-      res.json("search.ejs", { shops, userId : false}); // 검색 결과를 클라이언트에게 전달합니다.
     
+    res.status(200).json({ shops, userId: false });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
@@ -538,8 +553,7 @@ app.delete("/delete/:id", async function (req, res) {
 
   try {
     const deleted = await User.destroy({ where: { userId: id } });
-     await Image.destroy({where : {userId : id}})
-
+    await Image.destroy({where : {userId : id}})
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -604,7 +618,7 @@ app.post('/findEmail', async (req,res)=>{
           res.status(500).send('이메일을 보내는 데 실패했습니다.');
         } else {
           console.log('Email sent: ' + info.response);
-          res.redirect('/login')
+          res.json({message : '이메일 성공'})
         }
       });
     }
@@ -663,10 +677,10 @@ app.put('/editPw/:id', async (req,res)=>{
   const hashPassword = await bcrypt.hash(newInfo, 10)
   member.password = hashPassword
   await member.save()
+
   res.json({ message: "비밀번호가 성공적으로 변경되었습니다." })
 
 })
-
 
 
 app.get("/", async (req, res) => {
