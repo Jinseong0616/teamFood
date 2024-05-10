@@ -281,7 +281,7 @@ app.get("/review/:restaurantId", async function (req, res) {
 
 
   console.log(userId, restaurantId)
-  res.render("review.ejs",{userId, restaurantId});
+  res.json({userId, restaurantId});
 });
 
 
@@ -304,7 +304,8 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
       });
     }
   }
-  res.redirect(`/detail/${newReview.restaurantId}`)
+  // res.redirect(`/detail/${newReview.restaurantId}`)
+  res.status(200).json({message : "등록 성공!"});
 
 })
 
@@ -521,7 +522,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
     }
 
     if (!newFiles || newFiles.length === 0) {
-      return res.status(400).send("파일이 업로드되지 않았습니다.");
+      return res.status(400).json({ error: "음식점 사진이 업로드되지 않았습니다. 사진을 첨부해주세요." });
     }
     const addStore = await Store.create(newStore);
 
@@ -533,8 +534,9 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
         });
       }
     }
-    //res.status(200).send("등록 성공!");
-    res.redirect("/");
+    res.status(200).json({message : "등록 성공!"});
+    // res.redirect("/");
+    //res.json({message : '성공'});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "음식점 등록 실패" });
@@ -639,20 +641,24 @@ const formatDate = (date) => {
 
 //내가 쓴 리뷰 페이지
 
-app.get('/myReview/:id', async(req, res)=>{
-  const id = req.params.id
-  const myReviews = await Review.findAll({ where: { userId: id } });
-  // for(let i = 0; i < myReviews.length; i++){
-  //   console.log('리뷰 아이디: ', myReviews[i].dataValues.reviewId);
-  // }
+app.get('/myReview/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  const reviewIds = myReviews.map(review => review.dataValues.reviewId);
-  const reviewres = myReviews.map(review => review.dataValues.restaurantId);
-  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
-  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
-  
-  res.json({myReviews,formatDate, myReviewsImg,restaurantName})
-})
+    const myReviews = await Review.findAll({ where: { userId: id } });
+
+    const reviewIds = myReviews.map(review => review.dataValues.reviewId);
+    const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
+    const restaurantIds = myReviews.map(review => review.dataValues.restaurantId);
+    const restaurantName = await Store.findAll({ where: { restaurantId: restaurantIds } });
+
+    res.json({ myReviews, myReviewsImg, restaurantName });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: "error" });
+  }
+});
+
 
 
 
