@@ -281,7 +281,7 @@ app.get("/review/:restaurantId", async function (req, res) {
 
 
   console.log(userId, restaurantId)
-  res.render("review.ejs",{userId, restaurantId});
+  res.json({userId, restaurantId});
 });
 
 
@@ -304,7 +304,8 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
       });
     }
   }
-  res.redirect(`/detail/${newReview.restaurantId}`)
+  // res.redirect(`/detail/${newReview.restaurantId}`)
+  res.status(200).json({message : "등록 성공!"});
 
 })
 
