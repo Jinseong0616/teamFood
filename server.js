@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const multer = require('multer')
@@ -50,6 +51,8 @@ app.use(express.static(__dirname + "/uploads"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser())
 
 // React
 app.use(express.static('path/to/react-team/public'))
@@ -127,8 +130,11 @@ app.post("/login", (req, res) => {
       req.session.userId = user.userId;
       req.session.name = user.name;
 
+      console.log(user);
       const passwordCorrect = user.password
       return res.json({exists: true, passwordCorrect: passwordCorrect, userId : req.session.userId, name : req.session.name});
+
+      
     });
   })(req, res);
 });
@@ -656,6 +662,9 @@ app.put('/editPw/:id', async (req,res)=>{
 // 메인 페이지
 app.get("/", async (req, res) => {
     const userId = req.isAuthenticated() ? req.user.userId : false;
+
+    console.log(userId)
+    
       const categories = await Category.findAll()
     
       if(userId){
@@ -690,3 +699,42 @@ app.delete('/deleteReview/:reviewId', async (req,res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
+
+
+app.put('/editReview/:reviewId', uploadReview.array("imgUrl"),  async (req,res)=>{  
+  const { reviewId } = req.params;
+  const newInfo = req.body;
+  console.log('리뷰아이디', reviewId);
+  console.log('정보들', newInfo.content);
+
+  const newFiles = req.files;
+  console.log(newFiles)
+  const review = await Review.findOne({ where: { reviewId: reviewId } });
+  if (!review) {
+    return res.status(404).send('리뷰를 찾을 수 없습니다.');
+  }
+
+  Object.keys(newInfo).forEach((prop) => {
+    review[prop] = newInfo[prop];
+  });
+  await review.save();
+
+  // 새 파일이 있을 경우 기존 이미지 파일들을 삭제하고 새 파일로 대체합니다.
+  if (newFiles && newFiles.length > 0) {
+    // 기존 이미지 파일 정보 삭제
+    await Image.destroy({ where: { reviewId: reviewId } });
+    
+    // 새 이미지 파일 정보 저장
+    for (let file of newFiles) {
+      await Image.create({
+        reviewId: reviewId,
+        // 파일 이름 또는 다른 필요한 정보를 여기에 추가
+        imgUrl: file.filename,
+      });
+    }
+  }
+
+  res.send('리뷰가 성공적으로 업데이트 되었습니다.');
+});
+
+
