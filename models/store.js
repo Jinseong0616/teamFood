@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Store.hasMany(models.Image,{
         foreignKey: 'restaurantId'
+      }),
+      Store.hasMany(models.Review,{
+        foreignKey: 'restaurantId'
       })
     }
   }
