@@ -278,7 +278,7 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 app.get("/review/:restaurantId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const {restaurantId} = req.params
-
+  
 
   console.log(userId, restaurantId)
   res.render("review.ejs",{userId, restaurantId});
@@ -304,7 +304,7 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
       });
     }
   }
-  res.redirect(`/detail/${newReview.restaurantId}`)
+  res.json(newReview.restaurantId)
 
 })
 
