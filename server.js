@@ -223,7 +223,7 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
@@ -284,20 +284,6 @@ app.get("/review/:restaurantId", async function (req, res) {
   res.json({userId, restaurantId});
 });
 
-// 마이 리뷰 페이지 디테일
-app.get("/detailReview/:reviewId", async function (req, res) {
-  const userId = req.isAuthenticated() ? req.user.userId : false;
-  const {reviewId} = req.params
-  const review = await Review.findOne({where : {reviewId : reviewId}})
-  const restaurant = await Store.findOne({where : {restaurantId : review.restaurantId}})
-  const img = await Image.findAll({where : {reviewId : reviewId}})
-  
-  console.log(userId, review, restaurant, img)
-
-  res.json({userId, review, restaurant, img});
-});
-
-
 
 // 리뷰 작성
 app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
@@ -341,6 +327,7 @@ app.post('/checkId', async(req, res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
+
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -557,6 +544,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
   }
 });
 
+
 // 회원탈퇴
 app.delete("/delete/:id", async function (req, res) {
   const {id} = req.params;
@@ -651,7 +639,25 @@ const formatDate = (date) => {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
+// 찜 목록
+app.get('/favorite/:userId', async(req, res)=>{
+  
+  try {
+    const {userId} = req.params;
+  
+  const myFavorites = await Favorite.findAll({where : {userId : userId}})
 
+  const favoirteIds = myFavorites.map(favorite => favorite.dataValues.saveId)
+  const restaurantImg = await Image.findAll({where : {saveId : favoirteIds}})
+  const restaurantIds = myFavorites.map(favorite => favorite.dataValues.restaurantId)
+  const restaurantName = await Store.findAll({where : {restaurantId : restaurantIds}})
+  res.json({myFavorites, restaurantName, restaurantImg})
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: "error" });
+  }
+})
 
 //내가 쓴 리뷰 페이지
 
@@ -675,6 +681,21 @@ app.get('/myReview/:id', async (req, res) => {
 
 
 
+// 내가 쓴 리뷰 수정
+app.get('/myReviewEdit/reviewId', async (req, res)=>{
+  const {reviewId} = req.params;
+  console.log(reviewId)
+
+  if(reviewId){
+    const review = await Review.findOne({where : {reviewId : reviewId}}); // 리뷰 정보
+    const reviewImg = await Image.findAll({where : {reviewId : reviewId}})
+    res.json({review, reviewImg})
+  } else{
+    res.json({error : '에러러'})
+  }
+
+})
+
 
 // 비밀번호 변경 페이지
 app.get('/editPw/:id', async (req,res)=>{
@@ -697,40 +718,18 @@ app.put('/editPw/:id', async (req,res)=>{
 
 })
 
-// 메인 페이지
+
 app.get("/", async (req, res) => {
     const userId = req.isAuthenticated() ? req.user.userId : false;
-      const categories = await Category.findAll()
-    
-      if(userId){
-        const user = await User.findOne({where : {userId}})
+    const categories = await Category.findAll()
+  
+    if(userId){
+      const user = await User.findOne({where : {userId}})
 
-        if(user){
-          return res.json( { message : '사용자있음', name : user.name , userId, categories});
-          }
+      if(user){
+        return res.json( { message : '사용자있음', name : user.name , userId, categories});
         }
-        res.json({message : '사용자없음', userId : false , categories})
+      }
+      res.json({message : '사용자없음', userId : false , categories})
   });
 
-
-app.delete('/deleteReview/:reviewId', async (req,res)=>{
-  const {reviewId} = req.body;
-  console.log(reviewId)
-  if(!reviewId){
-    return res.status(400).send("ID 가 제공되지 않았습니다.");
-  }
-  
-  try{
-    const deleted = await Review.destroy({where : {reviewId : reviewId}})
-    await Image.destroy({where: {reviewId: reviewId}})
-    if(deleted > 0){
-      res.json({data : '리뷰 삭제 성공'});
-    } else {
-      res.status(404).send("리뷰 삭제 실패");
-    }
-  }
-  catch(err){
-    console.error("처리중 오류 발생", error);
-    res.status(500).send("서버 오류 발생");
-  }
-})
