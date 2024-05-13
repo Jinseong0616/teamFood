@@ -288,10 +288,11 @@ app.get("/review/:restaurantId", async function (req, res) {
 app.get("/detailReview/:reviewId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const {reviewId} = req.params
+
   const review = await Review.findOne({where : {reviewId : reviewId}})
   const restaurant = await Store.findOne({where : {restaurantId : review.restaurantId}})
   const img = await Image.findAll({where : {reviewId : reviewId}})
-  
+
   console.log(userId, review, restaurant, img)
 
   res.json({userId, review, restaurant, img});
@@ -730,7 +731,7 @@ app.delete('/deleteReview/:reviewId', async (req,res)=>{
     }
   }
   catch(err){
-    console.error("처리중 오류 발생", error);
+    console.error("처리중 오류 발생", err);
     res.status(500).send("서버 오류 발생");
   }
 })
