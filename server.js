@@ -303,15 +303,6 @@ res.json({userId, review, restaurant, img});
 });
 
 
-
-
-
-
-
-
-
-
-
 // 리뷰 작성
 app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
   const newReview = req.body
@@ -692,3 +683,41 @@ app.delete('/deleteReview/:reviewId', async (req,res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
+
+app.put('/editReview/:reviewId', uploadReview.array("imgUrl"), async (req, res) => {
+  const { reviewId } = req.params;
+  const newInfo = req.body;
+  console.log('리뷰아이디', reviewId);
+  console.log('정보들', newInfo);
+
+  const newFiles = req.files;
+  console.log(newInfo.content)
+
+  const review = await Review.findOne({ where: { reviewId: reviewId } });
+  if (!review) {
+    return res.status(404).send('리뷰를 찾을 수 없습니다.');
+  }
+
+  Object.keys(newInfo).forEach((prop) => {
+    review[prop] = newInfo[prop];
+  });
+  await review.save();
+
+  // 새 파일이 있을 경우 기존 이미지 파일들을 삭제하고 새 파일로 대체합니다.
+  if (newFiles && newFiles.length > 0) {
+    // 기존 이미지 파일 정보 삭제
+    await Image.destroy({ where: { reviewId: reviewId } });
+    
+    // 새 이미지 파일 정보 저장
+    for (let file of newFiles) {
+      await Image.create({
+        reviewId: reviewId,
+        // 파일 이름 또는 다른 필요한 정보를 여기에 추가
+        fileName: file.filename,
+        filePath: file.path
+      });
+    }
+  }
+
+  res.send('리뷰가 성공적으로 업데이트 되었습니다.');
+});
