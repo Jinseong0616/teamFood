@@ -6,9 +6,14 @@ const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const multer = require('multer')
-const {Op} = require('sequelize')
+const {Op, Sequelize} = require('sequelize')
 const nodemailer = require("nodemailer");
 
+
+const sequelize = new Sequelize('FOOD', 'foodMaster', 'korea1234', {
+  dialect: 'mysql',
+  host: 'teamfood.crsmg6yq43zm.us-east-2.rds.amazonaws.com'
+});
 
 const bcrypt = require('bcrypt')
 
@@ -30,7 +35,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db;
+const { User, Store, Image, Favorite, Review, region,Category } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -121,8 +126,7 @@ app.post("/login", (req, res) => {
       if (err) return next(err);
       req.session.userId = user.userId;
       req.session.name = user.name;
-      console.log('req : ', req.session.userId)
-      console.log('req : ', req.session.name)
+
       const passwordCorrect = user.password
       return res.json({exists: true, passwordCorrect: passwordCorrect, userId : req.session.userId, name : req.session.name});
     });
@@ -218,17 +222,11 @@ app.get("/detail/:id", async (req, res) => {
       };
     });
 
-    // console.log('유저에버레지게이팅 여깄어요',userAvgRatings.avgRating)
-
-    //console.log(user.name)
+  
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-<<<<<<< HEAD
-        return res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
-=======
         return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
->>>>>>> 5674a61793c4463108883199d3d77df7cad03c3d
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
@@ -250,8 +248,7 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
-  console.log(newMember)
-  console.log(newFile)
+
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
 
@@ -284,8 +281,6 @@ app.get("/review/:restaurantId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const {restaurantId} = req.params
 
-
-  console.log(userId, restaurantId)
   res.render("review.ejs",{userId, restaurantId});
 });
 
@@ -297,7 +292,6 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
 
   const addReview = await Review.create(newReview)
 
-  console.log(addReview)
 
   if (newFiles) {
     for (const file of newFiles) {
@@ -317,7 +311,6 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
 // 아이디 중복확인
 app.post('/checkId', async(req, res)=>{
   const userId = req.body.userId
-  console.log(userId)
 
   try {
     const existingMember = await User.findOne({ where: { userId: userId } });
@@ -335,7 +328,6 @@ app.post('/checkId', async(req, res)=>{
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(id)
   if(id){
     const member = await User.findOne({ where: { userId: id } }); // 회원 정보
       const memImg = await Image.findOne({ where: 
@@ -357,16 +349,11 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const newInfo = JSON.parse(req.body.data);
   let member
   let imgFile
-  console.log(newInfo)
 
-  // newInfo.password
-  
-  // const hashPassword = await bcrypt.hash(newInfo.password, 10)
-  // newInfo.password = hashPassword
   const newFile = req.file;
   if(id){
-     member = await User.findOne({ where: { userId: id } });
-     imgFile = await Image.findOne({ where: { userId: id } });
+    member = await User.findOne({ where: { userId: id } });
+    imgFile = await Image.findOne({ where: { userId: id } });
   }
   
   if (member) {
@@ -393,14 +380,10 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 //지역 불러오기 API
 app.get("/region", async (req, res) => {
   const selectedCity = req.query.city;
-  
-  //console.log(selectedCity)
 
   let guList;
 
   guList = await region.findAll({ where: { city: selectedCity } });
-
-  // console.log(guList)
 
   res.json(guList)
 })
@@ -411,75 +394,42 @@ app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const searchKeyword = req.query.keyword;
   const region = req.query.region;
-  console.log(region)
   try {
     let shops;
 
+    let query = `SELECT Stores.*, avg_reviews.avg_rating, avg_reviews.review_count, avg_reviews.content , Images.imgUrl
+    FROM Stores
+    LEFT OUTER JOIN (
+        SELECT restaurantId, content, AVG(rating) AS avg_rating, COUNT(rating) AS review_count
+        FROM Reviews
+        GROUP BY restaurantId
+    ) AS avg_reviews ON Stores.restaurantId = avg_reviews.restaurantId
+    LEFT OUTER JOIN (
+        SELECT restaurantId, imgUrl
+        FROM Images
+        WHERE (restaurantId, imgId) IN (
+            SELECT restaurantId, MIN(imgId) AS imageId
+            FROM Images
+            GROUP BY restaurantId
+        )
+    ) AS Images ON Stores.restaurantId = Images.restaurantId`;
+
+
     if (region && searchKeyword) {
-      // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
-      shops = await Store.findAll({
-        where: {
-          restaurantAddress: {
-            [Op.like]: `%${region}%`
-          },
-          [Op.or]: [
-            {
-              restaurantName: {
-                [Op.like]: `%${searchKeyword}%`
-              }
-            },
-            {
-              category: {
-                [Op.like]: `%${searchKeyword}%`
-              }
-            }
-          ]
-        },
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ]
-      });
+      query += ` WHERE Stores.restaurantAddress LIKE :region AND (Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword)`;
     } else if (searchKeyword) {
-      shops = await Store.findAll({
-        where: {
-          [Op.or]: [
-            {
-              restaurantName: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-            {
-              category: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-            {
-              restaurantAddress: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-          ],
-        },
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ],
-      });
-    } else {
-      shops = await Store.findAll({
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ],
-      });
+      query += ` WHERE Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword`;
+    } else if (region) {
+      query += ` WHERE Stores.restaurantAddress LIKE :region`;
     }
+
+    shops = await sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: {
+        region: `%${region}%`,
+        keyword: `%${searchKeyword}%`
+      }
+    });
 
     if (userId) {
       const user = await User.findOne({ where: { userId } });
@@ -487,17 +437,12 @@ app.get("/search", async function (req, res) {
         return res.status(200).json({ shops, userId, name: user.name });
       }
     }
-    
     res.status(200).json({ shops, userId: false });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
   }
 });
-
-
-
-
 
 
 // 음식점 추가하기
@@ -511,7 +456,6 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
 
   // 파일 업로드
   const newFiles = req.files;
-  console.log(newStore);
 
   // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
