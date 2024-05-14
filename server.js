@@ -721,3 +721,61 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl"), async (req, res) 
 
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
+
+
+//찜하기 조회 API
+app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  const zzim = await Favorite.findOne({
+    where :{
+      userId : userId,
+      restaurantId : restaurantId
+    }
+  })
+
+  if (zzim) {
+    res.json({ zzim: true });
+  } else {
+    res.json({ zzim: false });
+  }
+
+})
+
+
+//찜 하기
+app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  try {
+    const zzim = await Favorite.create({
+      userId,
+      restaurantId
+    })
+    res.json(zzim)  
+  } catch (error) {
+    res.status(500).json({error : "찜 등록 실패"})
+  }
+
+})
+
+
+//찜 삭제
+app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  try {
+    await Favorite.destroy(
+      {where:{
+        userId,
+        restaurantId
+      }}
+    )
+    res.json("찜 목록 삭제됨")  
+  } catch (error) {
+    res.status(500).json({error : "찜 삭제 실패"})
+  }
+
+})
+
+
