@@ -3,12 +3,18 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const session = require('express-session')
+const cookieParser = require('cookie-parser');
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const multer = require('multer')
-const {Op} = require('sequelize')
+const {Op, Sequelize} = require('sequelize')
 const nodemailer = require("nodemailer");
 
+
+const sequelize = new Sequelize('FOOD', 'foodMaster', 'korea1234', {
+  dialect: 'mysql',
+  host: 'teamfood.crsmg6yq43zm.us-east-2.rds.amazonaws.com'
+});
 
 const bcrypt = require('bcrypt')
 
@@ -30,7 +36,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Restaurant, Image, Favorite, Review, region,Category } = db;
+const { User, Store, Image, Favorite, Review, region,Category } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -45,6 +51,8 @@ app.use(express.static(__dirname + "/uploads"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser())
 
 // React
 app.use(express.static('path/to/react-team/public'))
@@ -85,25 +93,20 @@ passport.use(
   })
 );
 
-// 메인 페이지
-// app.get("/", async (req, res) => {
-//   try {
-//     const userId = req.isAuthenticated() ? req.user.userId : false;
-//     //console.log(userId);
+//메인페이지
+app.get("/", async (req, res) => {
+  const userId = req.isAuthenticated() ? req.user.userId : false;
+    const categories = await Category.findAll()
+  
+    if(userId){
+      const user = await User.findOne({where : {userId}})
 
-//     const categories = await Category.findAll();
-//     let user = null;
-    
-//     if (userId) {
-//       user = await User.findOne({ where: { userId } });
-//     }
-
-//     res.status(200).json({ userId, name: user ? user.name : null, categories });
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+      if(user){
+        return res.json( { message : '사용자있음', name : user.name , userId, categories});
+        }
+      }
+      res.json({message : '사용자없음', userId : false , categories})
+});
 
 // 로그인페이지
 app.get("/login", (req, res) => {
@@ -121,10 +124,12 @@ app.post("/login", (req, res) => {
       if (err) return next(err);
       req.session.userId = user.userId;
       req.session.name = user.name;
-      console.log('req : ', req.session.userId)
-      console.log('req : ', req.session.name)
+
+      console.log(user);
       const passwordCorrect = user.password
       return res.json({exists: true, passwordCorrect: passwordCorrect, userId : req.session.userId, name : req.session.name});
+
+      
     });
   })(req, res);
 });
@@ -184,6 +189,7 @@ app.get("/detail/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
+
     // 레스토랑 정보 가져오기
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
@@ -217,9 +223,7 @@ app.get("/detail/:id", async (req, res) => {
       };
     });
 
-    // console.log('유저에버레지게이팅 여깄어요',userAvgRatings.avgRating)
-
-    //console.log(user.name)
+  
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
@@ -245,8 +249,7 @@ app.get("/join", async function (req, res) {
 app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
   const newMember = req.body;
   const newFile = req.file;
-  console.log(newMember)
-  console.log(newFile)
+
   try {
     const member = await User.findOne({ where: { userId: newMember.userId } });
 
@@ -275,13 +278,28 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 
 
 // 리뷰페이지
-app.get("/review/:restaurantId", async function (req, res) {
+// app.get("/review/:restaurantId", async function (req, res) {
+//   const userId = req.isAuthenticated() ? req.user.userId : false;
+//   const {restaurantId} = req.params
+
+//   res.render("review.ejs",{userId, restaurantId});
+// });
+
+
+
+// 마이 리뷰 페이지 디테일
+app.get("/detailReview/:reviewId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-  const {restaurantId} = req.params
+  const {reviewId} = req.params
 
+  const review = await Review.findOne({where : {reviewId : reviewId}})
+  const restaurant = await Store.findOne({where : {restaurantId : review.restaurantId}})
+  const img = await Image.findAll({where : {reviewId : reviewId}})
 
-  console.log(userId, restaurantId)
-  res.json({userId, restaurantId});
+  console.log(userId, review, restaurant, img)
+
+res.json({userId, review, restaurant, img});
+
 });
 
 
@@ -292,7 +310,6 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
 
   const addReview = await Review.create(newReview)
 
-  console.log(addReview)
 
   if (newFiles) {
     for (const file of newFiles) {
@@ -313,7 +330,6 @@ app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
 // 아이디 중복확인
 app.post('/checkId', async(req, res)=>{
   const userId = req.body.userId
-  console.log(userId)
 
   try {
     const existingMember = await User.findOne({ where: { userId: userId } });
@@ -332,7 +348,6 @@ app.post('/checkId', async(req, res)=>{
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(id)
   if(id){
     const member = await User.findOne({ where: { userId: id } }); // 회원 정보
       const memImg = await Image.findOne({ where: 
@@ -354,16 +369,11 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const newInfo = JSON.parse(req.body.data);
   let member
   let imgFile
-  console.log(newInfo)
 
-  // newInfo.password
-  
-  // const hashPassword = await bcrypt.hash(newInfo.password, 10)
-  // newInfo.password = hashPassword
   const newFile = req.file;
   if(id){
-     member = await User.findOne({ where: { userId: id } });
-     imgFile = await Image.findOne({ where: { userId: id } });
+    member = await User.findOne({ where: { userId: id } });
+    imgFile = await Image.findOne({ where: { userId: id } });
   }
   
   if (member) {
@@ -390,14 +400,10 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 //지역 불러오기 API
 app.get("/region", async (req, res) => {
   const selectedCity = req.query.city;
-  
-  //console.log(selectedCity)
 
   let guList;
 
   guList = await region.findAll({ where: { city: selectedCity } });
-
-  // console.log(guList)
 
   res.json(guList)
 })
@@ -408,75 +414,42 @@ app.get("/search", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
   const searchKeyword = req.query.keyword;
   const region = req.query.region;
-
   try {
     let shops;
 
+    let query = `SELECT Stores.*, avg_reviews.avg_rating, avg_reviews.review_count, avg_reviews.content , Images.imgUrl
+    FROM Stores
+    LEFT OUTER JOIN (
+        SELECT restaurantId, content, AVG(rating) AS avg_rating, COUNT(rating) AS review_count
+        FROM Reviews
+        GROUP BY restaurantId
+    ) AS avg_reviews ON Stores.restaurantId = avg_reviews.restaurantId
+    LEFT OUTER JOIN (
+        SELECT restaurantId, imgUrl
+        FROM Images
+        WHERE (restaurantId, imgId) IN (
+            SELECT restaurantId, MIN(imgId) AS imageId
+            FROM Images
+            GROUP BY restaurantId
+        )
+    ) AS Images ON Stores.restaurantId = Images.restaurantId`;
+
+
     if (region && searchKeyword) {
-      // 가게 이름 또는 지역 카테고리에 검색어가 포함되어 있는 가게를 찾습니다.
-      shops = await Store.findAll({
-        where: {
-          restaurantAddress: {
-            [Op.like]: `%${region}%`
-          },
-          [Op.or]: [
-            {
-              restaurantName: {
-                [Op.like]: `%${searchKeyword}%`
-              }
-            },
-            {
-              category: {
-                [Op.like]: `%${searchKeyword}%`
-              }
-            }
-          ]
-        },
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ]
-      });
+      query += ` WHERE Stores.restaurantAddress LIKE :region AND (Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword)`;
     } else if (searchKeyword) {
-      shops = await Store.findAll({
-        where: {
-          [Op.or]: [
-            {
-              restaurantName: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-            {
-              category: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-            {
-              restaurantAddress: {
-                [Op.like]: `%${searchKeyword}%`,
-              },
-            },
-          ],
-        },
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ],
-      });
-    } else {
-      shops = await Store.findAll({
-        include: [
-          {
-            model: Image,
-            attributes: ["imgUrl"],
-          },
-        ],
-      });
+      query += ` WHERE Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword`;
+    } else if (region) {
+      query += ` WHERE Stores.restaurantAddress LIKE :region`;
     }
+
+    shops = await sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: {
+        region: `%${region}%`,
+        keyword: `%${searchKeyword}%`
+      }
+    });
 
     if (userId) {
       const user = await User.findOne({ where: { userId } });
@@ -484,7 +457,6 @@ app.get("/search", async function (req, res) {
         return res.status(200).json({ shops, userId, name: user.name });
       }
     }
-    
     res.status(200).json({ shops, userId: false });
   } catch (error) {
     console.error(error);
@@ -492,9 +464,26 @@ app.get("/search", async function (req, res) {
   }
 });
 
+// 조회수 증가
+app.post('/increaseViews/:restaurantId', async (req, res) => {
+  const { restaurantId } = req.params;
 
+  try {
+    const result = await Store.update(
+      { views: sequelize.literal('views + 1') },
+      { where: { restaurantId: restaurantId } }
+    );
 
-
+    if (result[0] === 1) {
+      res.status(200).json({ message: '조회수가 증가되었습니다.' });
+    } else {
+      res.status(404).json({ message: '해당 식당을 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '서버 오류로 조회수를 증가시키지 못했습니다.' });
+  }
+});
 
 
 // 음식점 추가하기
@@ -508,7 +497,6 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
 
   // 파일 업로드
   const newFiles = req.files;
-  console.log(newStore);
 
   // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
@@ -537,7 +525,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
     }
     res.status(200).json({message : "등록 성공!"});
     // res.redirect("/");
-    //res.json({message : '성공'});
+//res.json({message : '성공'});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "음식점 등록 실패" });
@@ -661,24 +649,20 @@ app.get('/favorite/:userId', async(req, res)=>{
 
 //내가 쓴 리뷰 페이지
 
-app.get('/myReview/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
+app.get('/myReview/:id', async(req, res)=>{
+  const id = req.params.id
+  const myReviews = await Review.findAll({ where: { userId: id } });
+  // for(let i = 0; i < myReviews.length; i++){
+  //   console.log('리뷰 아이디: ', myReviews[i].dataValues.reviewId);
+  // }
 
-    const myReviews = await Review.findAll({ where: { userId: id } });
-
-    const reviewIds = myReviews.map(review => review.dataValues.reviewId);
-    const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
-    const restaurantIds = myReviews.map(review => review.dataValues.restaurantId);
-    const restaurantName = await Store.findAll({ where: { restaurantId: restaurantIds } });
-
-    res.json({ myReviews, myReviewsImg, restaurantName });
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ message: "error" });
-  }
-});
-
+  const reviewIds = myReviews.map(review => review.dataValues.reviewId);
+  const reviewres = myReviews.map(review => review.dataValues.restaurantId);
+  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
+  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
+  
+  res.json({myReviews,formatDate, myReviewsImg,restaurantName})
+})
 
 
 // 내가 쓴 리뷰 수정
@@ -732,4 +716,65 @@ app.get("/", async (req, res) => {
       }
       res.json({message : '사용자없음', userId : false , categories})
   });
+
+
+app.delete('/deleteReview/:reviewId', async (req,res)=>{
+  const {reviewId} = req.body;
+  console.log(reviewId)
+  if(!reviewId){
+    return res.status(400).send("ID 가 제공되지 않았습니다.");
+  }
+  
+  try{
+    const deleted = await Review.destroy({where : {reviewId : reviewId}})
+    await Image.destroy({where: {reviewId: reviewId}})
+    if(deleted > 0){
+      res.json({data : '리뷰 삭제 성공'});
+    } else {
+      res.status(404).send("리뷰 삭제 실패");
+    }
+  }
+  catch(err){
+    console.error("처리중 오류 발생", error);
+    res.status(500).send("서버 오류 발생");
+  }
+})
+
+app.put('/editReview/:reviewId', uploadReview.array("imgUrl"), async (req, res) => {
+  const { reviewId } = req.params;
+  const newInfo = req.body;
+  console.log('리뷰아이디', reviewId);
+  console.log('정보들', newInfo);
+
+  const newFiles = req.files;
+  console.log(newInfo.content)
+
+  const review = await Review.findOne({ where: { reviewId: reviewId } });
+  if (!review) {
+    return res.status(404).send('리뷰를 찾을 수 없습니다.');
+  }
+
+  Object.keys(newInfo).forEach((prop) => {
+    review[prop] = newInfo[prop];
+  });
+  await review.save();
+
+  // 새 파일이 있을 경우 기존 이미지 파일들을 삭제하고 새 파일로 대체합니다.
+  if (newFiles && newFiles.length > 0) {
+    // 기존 이미지 파일 정보 삭제
+    await Image.destroy({ where: { reviewId: reviewId } });
+    
+    // 새 이미지 파일 정보 저장
+    for (let file of newFiles) {
+      await Image.create({
+        reviewId: reviewId,
+        // 파일 이름 또는 다른 필요한 정보를 여기에 추가
+        fileName: file.filename,
+        filePath: file.path
+      });
+    }
+  }
+
+  res.send('리뷰가 성공적으로 업데이트 되었습니다.');
+});
 
