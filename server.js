@@ -793,7 +793,11 @@ app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   } catch (error) {
     res.status(500).json({error : "찜 삭제 실패"})
   }
-
 })
 
+// 찜 리스트
+app.get('/zzimList/users/:userId', (req,res)=>{
+  const {userId} = req.params;
+  
+})
 
