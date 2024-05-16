@@ -296,20 +296,20 @@ app.get("/detailReview/:reviewId", async function (req, res) {
   const restaurant = await Store.findOne({where : {restaurantId : review.restaurantId}})
   const img = await Image.findAll({where : {reviewId : reviewId}})
 
-  console.log(userId, review, restaurant, img)
-
 res.json({userId, review, restaurant, img});
 
 });
 
 
 // 리뷰 작성
-app.post('/review',uploadReview.array("imgUrl"), async function(req, res){
+app.post('/review',uploadReview.array("imgUrl", 10), async function(req, res){
   const newReview = req.body
+
+  console.log(newReview)
   const newFiles = req.files
 
+  console.log(newFiles)
   const addReview = await Review.create(newReview)
-
 
   if (newFiles) {
     for (const file of newFiles) {
@@ -369,7 +369,7 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const newInfo = JSON.parse(req.body.data);
   let member
   let imgFile
-
+  console.log(newInfo)
   const newFile = req.file;
   if(id){
     member = await User.findOne({ where: { userId: id } });
@@ -494,10 +494,10 @@ app.get("/add", async function (req, res) {
 // 음식점 추가하기
 app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
   const newStore = req.body;
-
+  console.log(newStore)
   // 파일 업로드
   const newFiles = req.files;
-
+  console.log(newFiles.filename)
   // multer를 통해 파일의 변경된 이름 가져옴 req.file.filename
 
   try {
@@ -658,10 +658,11 @@ app.get('/myReview/:id', async(req, res)=>{
 
   const reviewIds = myReviews.map(review => review.dataValues.reviewId);
   const reviewres = myReviews.map(review => review.dataValues.restaurantId);
-  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
-  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
   
-  res.json({myReviews,formatDate, myReviewsImg,restaurantName})
+  const myReviewsImg = await Image.findAll({ where: { reviewId: reviewIds } });
+
+  const restaurantName = await Store.findAll({where : {restaurantId : reviewres}})
+  res.json({myReviews, formatDate, myReviewsImg, restaurantName})
 })
 
 
@@ -740,41 +741,121 @@ app.delete('/deleteReview/:reviewId', async (req,res)=>{
   }
 })
 
-app.put('/editReview/:reviewId', uploadReview.array("imgUrl"), async (req, res) => {
+app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, res) => {
   const { reviewId } = req.params;
-  const newInfo = req.body;
-  console.log('리뷰아이디', reviewId);
-  console.log('정보들', newInfo);
-
+  console.log(reviewId)
+  const newInfo = JSON.parse(req.body.data);
   const newFiles = req.files;
-  console.log(newInfo.content)
+
+  console.log('정보들 : ', newInfo);
+  // console.log('삭제할 이미지 : ' , deletedImages)
+  console.log('이미지 파일 : ', newFiles)
 
   const review = await Review.findOne({ where: { reviewId: reviewId } });
   if (!review) {
     return res.status(404).send('리뷰를 찾을 수 없습니다.');
   }
-
+  
   Object.keys(newInfo).forEach((prop) => {
     review[prop] = newInfo[prop];
   });
   await review.save();
 
-  // 새 파일이 있을 경우 기존 이미지 파일들을 삭제하고 새 파일로 대체합니다.
+ if(newInfo.deletedImages && newInfo.deletedImages.length > 0){
+  for(let deleteFile of newInfo.deletedImages){
+    console.log(deleteFile)
+    await Image.destroy({where : {imgUrl : deleteFile}})
+  }
+
+  // 삭제 파일과 새로운 파일이 같이 존재할 때
   if (newFiles && newFiles.length > 0) {
-    // 기존 이미지 파일 정보 삭제
-    await Image.destroy({ where: { reviewId: reviewId } });
-    
     // 새 이미지 파일 정보 저장
     for (let file of newFiles) {
       await Image.create({
+        userId : newInfo.userId,
         reviewId: reviewId,
-        // 파일 이름 또는 다른 필요한 정보를 여기에 추가
-        fileName: file.filename,
-        filePath: file.path
+        restaurantId: newInfo.restaurantId,
+        imgUrl: file.filename  
       });
     }
   }
+ }
 
+  // 삭제 파일은 없고 새로운 파일만 존재할 때
+  else if (newFiles && newFiles.length > 0) {
+    // 새 이미지 파일 정보 저장
+    for (let file of newFiles) {
+      await Image.create({
+        userId : newInfo.userId,
+        reviewId: reviewId,
+        restaurantId: newInfo.restaurantId,
+        imgUrl: file.filename  
+      });
+    }
+  }
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
+
+
+
+//찜하기 조회 API
+app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  const zzim = await Favorite.findOne({
+    where :{
+      userId : userId,
+      restaurantId : restaurantId
+    }
+  })
+
+  if (zzim) {
+    res.json({ zzim: true });
+  } else {
+    res.json({ zzim: false });
+  }
+
+})
+
+
+//찜 하기
+app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  try {
+    const zzim = await Favorite.create({
+      userId,
+      restaurantId
+    })
+    res.json(zzim)  
+  } catch (error) {
+    res.status(500).json({error : "찜 등록 실패"})
+  }
+
+})
+
+
+//찜 삭제
+app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
+  const {userId,restaurantId} = req.params;
+
+  try {
+    await Favorite.destroy(
+      {where:{
+        userId,
+        restaurantId
+      }}
+    )
+    res.json("찜 목록 삭제됨")  
+  } catch (error) {
+    res.status(500).json({error : "찜 삭제 실패"})
+  }
+})
+
+// 찜 리스트
+app.get('/zzimList/users/:userId', (req,res)=>{
+  const {userId} = req.params;
+  
+})
+
 
