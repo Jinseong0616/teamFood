@@ -859,8 +859,9 @@ app.get('/zzimList/users/:userId', (req,res)=>{
 })
 
 // 1:1 문의 목록
-app.get('/complain/:name', (req,res)=>{
-  const {name} = params;
+app.get('/complain/admin/:userId', (req,res)=>{
+  const {userId} = req.params;
+  
   
 })
 
