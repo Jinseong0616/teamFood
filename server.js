@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Image, Favorite, Review, region,Category } = db;
+const { User, Store, Image, Favorite, Review, region,Category, Complain, Response } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -858,10 +858,20 @@ app.get('/zzimList/users/:userId', async(req, res)=>{
   }
 })
 
-// 1:1 문의 목록
-app.get('/complain/admin/:userId', (req,res)=>{
+// 1:1 문의하기
+app.post('/complain/users/:userId', async (req,res)=>{
   const {userId} = req.params;
-  
-  
+  const newInfo = req.body;
+  console.log(newInfo)
+  try{
+    const complain = await Complain.create(newInfo)
+    res.json({message : "성공" });
+  }
+
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생')
+  }
+
 })
 
