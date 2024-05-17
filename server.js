@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Image, Favorite, Review, region,Category } = db;
+const { User, Store, Image, Favorite, Review, region, Category, Complain, Response } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -798,6 +798,12 @@ app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
 // 찜 리스트
 app.get('/zzimList/users/:userId', (req,res)=>{
   const {userId} = req.params;
+  
+})
+
+// 1:1 문의 목록
+app.get('/complain/:name', (req,res)=>{
+  const {name} = params;
   
 })
 
