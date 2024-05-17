@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
-const { User, Store, Image, Favorite, Review, region, Category, Complain, Response } = db;
+const { User, Store, Image, Favorite, Review, region,Category } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
 // 포트
@@ -627,25 +627,6 @@ const formatDate = (date) => {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
-// 찜 목록
-app.get('/favorite/:userId', async(req, res)=>{
-  
-  try {
-    const {userId} = req.params;
-  
-  const myFavorites = await Favorite.findAll({where : {userId : userId}})
-
-  const favoirteIds = myFavorites.map(favorite => favorite.dataValues.saveId)
-  const restaurantImg = await Image.findAll({where : {saveId : favoirteIds}})
-  const restaurantIds = myFavorites.map(favorite => favorite.dataValues.restaurantId)
-  const restaurantName = await Store.findAll({where : {restaurantId : restaurantIds}})
-  res.json({myFavorites, restaurantName, restaurantImg})
-
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ message: "error" });
-  }
-})
 
 //내가 쓴 리뷰 페이지
 
@@ -838,7 +819,7 @@ app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
 //찜 삭제
 app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   const {userId,restaurantId} = req.params;
-
+  console.log('삭제 안됨?', userId, restaurantId)
   try {
     await Favorite.destroy(
       {where:{
@@ -852,10 +833,29 @@ app.delete('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   }
 })
 
-// 찜 리스트
-app.get('/zzimList/users/:userId', (req,res)=>{
-  const {userId} = req.params;
+
+// 찜 목록
+app.get('/zzimList/users/:userId', async(req, res)=>{
+  const userId = req.params.userId;
+  console.log('찜  유저아이디',userId)
+  try {
   
+    const myFavorites = await Favorite.findAll({where : {userId : userId}})
+    console.log('내가 찜한거 : ', myFavorites)
+    const restaurantIds = myFavorites.map(favorite => favorite.dataValues.restaurantId)
+    const restaurantImg = await Image.findAll({where: {restaurantId: restaurantIds}});
+    const restaurantName = await Store.findAll({where : {restaurantId : restaurantIds}})
+
+    console.log("1", myFavorites)
+    console.log("2", restaurantName)
+    console.log("3", restaurantImg)
+    res.json({myFavorites, restaurantName, restaurantImg})
+
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: "error" });
+  }
 })
 
 // 1:1 문의 목록
