@@ -227,7 +227,7 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
@@ -343,6 +343,7 @@ app.post('/checkId', async(req, res)=>{
     res.status(500).send("서버 오류 발생");
   }
 })
+
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -463,6 +464,27 @@ app.get("/search", async function (req, res) {
   }
 });
 
+// 조회수 증가
+app.post('/increaseViews/:restaurantId', async (req, res) => {
+  const { restaurantId } = req.params;
+
+  try {
+    const result = await Store.update(
+      { views: sequelize.literal('views + 1') },
+      { where: { restaurantId: restaurantId } }
+    );
+
+    if (result[0] === 1) {
+      res.status(200).json({ message: '조회수가 증가되었습니다.' });
+    } else {
+      res.status(404).json({ message: '해당 식당을 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '서버 오류로 조회수를 증가시키지 못했습니다.' });
+  }
+});
+
 
 // 음식점 추가하기
 app.get("/add", async function (req, res) {
@@ -509,6 +531,7 @@ app.post("/add", upload.array("imgUrl", 2), async function (req, res) {
     res.status(500).json({ message: "음식점 등록 실패" });
   }
 });
+
 
 // 회원탈퇴
 app.delete("/delete/:id", async function (req, res) {
@@ -604,7 +627,25 @@ const formatDate = (date) => {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
+// 찜 목록
+app.get('/favorite/:userId', async(req, res)=>{
+  
+  try {
+    const {userId} = req.params;
+  
+  const myFavorites = await Favorite.findAll({where : {userId : userId}})
 
+  const favoirteIds = myFavorites.map(favorite => favorite.dataValues.saveId)
+  const restaurantImg = await Image.findAll({where : {saveId : favoirteIds}})
+  const restaurantIds = myFavorites.map(favorite => favorite.dataValues.restaurantId)
+  const restaurantName = await Store.findAll({where : {restaurantId : restaurantIds}})
+  res.json({myFavorites, restaurantName, restaurantImg})
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: "error" });
+  }
+})
 
 //내가 쓴 리뷰 페이지
 
@@ -624,6 +665,21 @@ app.get('/myReview/:id', async(req, res)=>{
   res.json({myReviews, formatDate, myReviewsImg, restaurantName})
 })
 
+
+// 내가 쓴 리뷰 수정
+app.get('/myReviewEdit/reviewId', async (req, res)=>{
+  const {reviewId} = req.params;
+  console.log(reviewId)
+
+  if(reviewId){
+    const review = await Review.findOne({where : {reviewId : reviewId}}); // 리뷰 정보
+    const reviewImg = await Image.findAll({where : {reviewId : reviewId}})
+    res.json({review, reviewImg})
+  } else{
+    res.json({error : '에러러'})
+  }
+
+})
 
 
 // 비밀번호 변경 페이지
@@ -647,19 +703,19 @@ app.put('/editPw/:id', async (req,res)=>{
 
 })
 
-// 메인 페이지
+
 app.get("/", async (req, res) => {
     const userId = req.isAuthenticated() ? req.user.userId : false;
-      const categories = await Category.findAll()
-    
-      if(userId){
-        const user = await User.findOne({where : {userId}})
+    const categories = await Category.findAll()
+  
+    if(userId){
+      const user = await User.findOne({where : {userId}})
 
-        if(user){
-          return res.json( { message : '사용자있음', name : user.name , userId, categories});
-          }
+      if(user){
+        return res.json( { message : '사용자있음', name : user.name , userId, categories});
         }
-        res.json({message : '사용자없음', userId : false , categories})
+      }
+      res.json({message : '사용자없음', userId : false , categories})
   });
 
 
@@ -739,6 +795,7 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   }
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
+
 
 
 //찜하기 조회 API
