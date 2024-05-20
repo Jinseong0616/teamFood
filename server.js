@@ -856,12 +856,10 @@ app.get('/zzimList/users/:userId', async(req, res)=>{
   }
 })
 
-// 1:1 문의하기
+// 사용자 1:1 문의하기
 app.post('/complain/users/:userId', async (req,res)=>{
-  const {userId} = req.params;
   const newInfo = req.body;
   console.log(newInfo)
-  console.log(userId)
   try{
     const complain = await Complain.create(newInfo)
     res.json({message : "성공" });
@@ -870,6 +868,20 @@ app.post('/complain/users/:userId', async (req,res)=>{
   catch(err){
     console.log(err)
     res.status(500).send('서버 오류 발생')
+  }
+})
+
+// 사용자 컴플래인 목록
+app.get('/complainList/users/:userId', async (req, res)=>{
+  const {userId} = req.params;
+  console.log(userId)
+  try {
+    const complains = await Complain.findAll({where : {userId : userId}})
+    console.log('컴플래인 : ', complains)
+    res.json({complains})
+  } catch (error) {
+    console.error("처리중 오류 발생", error);
+    res.status(500).send("서버 오류 발생");
   }
 })
 
@@ -887,29 +899,36 @@ app.get('/complainList/admin', async (req,res)=>{
   }
 })
 
-// 문의 내역 디테일 페이지
-app.get('/complainDetail/users/:userId', async(req, res)=>{
+// 관리자 문의 내역 디테일 페이지
+app.get('/complainDetailPost/admin/:userId', async(req, res)=>{
   const {userId} = req.params;
-
-  const complain = await Complain.findOne({where : {userId}})
-
+  
+  try{
+    const complain = await Complain.findOne({where : {userId}})
   res.json({complain : complain})
 
-
-})
-
-
-// 사용자 컴플래인 목록
-app.get('/complainList/users/:userId', async (req, res)=>{
-  const {userId} = req.params;
-  console.log(userId)
-  try {
-    const complains = await Complain.findAll({where : {userId : userId}})
-    console.log('컴플래인 : ', complains)
-    res.json({complains})
-  } catch (error) {
-    console.error("처리중 오류 발생", error);
-    res.status(500).send("서버 오류 발생");
+  }
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생');
   }
 })
+
+app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
+  const newInfo = req.body
+  console.log(newInfo);
+  try{
+    const answer = await Response.create(newInfo)
+    res.json({message : "성공" });
+  }
+
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생')
+  }
+
+})
+
+
+
 

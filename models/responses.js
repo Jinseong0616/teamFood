@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Responses',
+    modelName: 'Response',
+    id : false
   });
   return Responses;
 };
