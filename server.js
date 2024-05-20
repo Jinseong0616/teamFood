@@ -875,3 +875,28 @@ app.post('/complain/users/:userId', async (req,res)=>{
   }
 })
 
+// 1:1 문의내역 가져오기
+app.get('/complainList/admin', async (req,res)=>{
+  
+  try{
+    const complainList = await Complain.findAll()
+    res.json({complainList : complainList});
+  }
+
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생')
+  }
+})
+
+app.get('/complainDetail/users/:userId', async(req, res)=>{
+  const {userId} = req.params;
+
+  const complain = await Complain.findOne({where : {userId}})
+
+  res.json({complain : complain})
+
+
+})
+
+
