@@ -777,8 +777,6 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
 
-
-
 //찜하기 조회 API
 app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   const {userId,restaurantId} = req.params;
@@ -875,7 +873,7 @@ app.post('/complain/users/:userId', async (req,res)=>{
   }
 })
 
-// 1:1 문의내역 가져오기
+// 관리자 1:1 문의내역 가져오기
 app.get('/complainList/admin', async (req,res)=>{
   
   try{
@@ -889,6 +887,7 @@ app.get('/complainList/admin', async (req,res)=>{
   }
 })
 
+// 문의 내역 디테일 페이지
 app.get('/complainDetail/users/:userId', async(req, res)=>{
   const {userId} = req.params;
 
@@ -899,4 +898,18 @@ app.get('/complainDetail/users/:userId', async(req, res)=>{
 
 })
 
+
+// 사용자 컴플래인 목록
+app.get('/complainList/users/:userId', async (req, res)=>{
+  const {userId} = req.params;
+  console.log(userId)
+  try {
+    const complains = await Complain.findAll({where : {userId : userId}})
+    console.log('컴플래인 : ', complains)
+    res.json({complains})
+  } catch (error) {
+    console.error("처리중 오류 발생", error);
+    res.status(500).send("서버 오류 발생");
+  }
+})
 
