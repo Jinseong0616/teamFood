@@ -914,6 +914,8 @@ app.get('/complainDetailPost/admin/:userId', async(req, res)=>{
   }
 })
 
+
+// 관리자 디테일 페이지 문의 답변
 app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
   const newInfo = req.body
   console.log(newInfo);
