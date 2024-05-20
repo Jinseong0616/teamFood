@@ -919,8 +919,13 @@ app.get('/complainDetailPost/admin/:userId', async(req, res)=>{
 app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
   const newInfo = req.body
   console.log(newInfo);
+  console.log(newInfo.complainId)
   try{
     const answer = await Response.create(newInfo)
+    const complain = await Complain.update(
+      {status : "처리 완료"},
+      {where : {complainId : newInfo.complainId}}
+      );
     res.json({message : "성공" });
   }
 
