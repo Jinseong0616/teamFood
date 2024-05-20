@@ -863,6 +863,7 @@ app.post('/complain/users/:userId', async (req,res)=>{
   const {userId} = req.params;
   const newInfo = req.body;
   console.log(newInfo)
+  console.log(userId)
   try{
     const complain = await Complain.create(newInfo)
     res.json({message : "성공" });
@@ -872,6 +873,5 @@ app.post('/complain/users/:userId', async (req,res)=>{
     console.log(err)
     res.status(500).send('서버 오류 발생')
   }
-
 })
 

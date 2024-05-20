@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Complains',
+    modelName: 'Complain',
     id : false
   });
   return Complains;
