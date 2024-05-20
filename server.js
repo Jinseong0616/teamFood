@@ -930,5 +930,25 @@ app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
 })
 
 
-
-
+// 컴플레인 디테일
+app.get('/complainDetail/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  
+  try {
+    const complainList = await Complain.findOne({ where: { userId } });
+    
+    if (!complainList) {
+      return res.status(404).json({ error: 'Complain not found' });
+    }
+    
+    console.log(complainList);
+    
+    const response = await Response.findAll({ where: { complainId: complainList.dataValues.complainId } });
+    console.log('리스폰스 :', response);
+    
+    res.json({ complainList });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
