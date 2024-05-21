@@ -9,6 +9,7 @@ const LocalStrategy = require('passport-local')
 const multer = require('multer')
 const {Op, Sequelize} = require('sequelize')
 const nodemailer = require("nodemailer");
+const cron = require('node-cron');
 
 
 const sequelize = new Sequelize('FOOD', 'foodMaster', 'korea1234', {
@@ -75,6 +76,7 @@ app.use(
 );
 
 app.use(passport.session());
+
 
 passport.use(
   new LocalStrategy(async (username, pw, done) => {
@@ -955,3 +957,91 @@ app.get('/complainDetail/users/:complainId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// 컴플레인 디테일 views 값 보내기
+app.put('/complainDetail/views/:complainId', async (req, res) => {
+  const { complainId } = req.params;
+  const newInfo = req.body;
+  console.log(complainId)
+  try {
+    const complainList = await Complain.update(
+      { views : newInfo.views},
+      {where: { complainId : complainId }}
+    );
+    console.log(complainList);
+    
+    res.json({message : "성공" });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// 자정에 삭제되게 설정
+cron.schedule('0 0 * * *', async () => {
+  console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
+
+  try {
+    const now = new Date();
+    const complainsToDelete = await Complain.findAll({
+      where: {
+        status: '처리 완료',
+        views: {
+          [Op.gte]: 1  // views가 1 이상인 경우
+        },
+        createdAt: {
+          [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
+        }
+      }
+    });
+
+    complainsToDelete.forEach(complain => {
+      setTimeout(async () => {
+        try {
+          await Complain.destroy({ where: { id: complain.complainId } });
+          console.log(complain.complainId)
+          console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
+        } catch (error) {
+          console.error('문의 삭제 중 오류 발생:', error);
+        }
+      }, 60 * 60 * 1000); // 2분 후
+    });
+  } catch (error) {
+    console.error('문의 삭제 중 오류 발생:', error);
+  }
+});
+
+
+// // 컴플레인 삭제
+// (async () => {
+//   console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
+
+//   try {
+//     const now = new Date();
+//     const complainsToDelete = await Complain.findAll({
+//       where: {
+//         status: '처리 완료',
+        
+//         createdAt: {
+//           [Op.lt]: new Date(now.getTime() - 1*60*1000)  // 1분 이전
+//         }
+//       }
+//     });
+
+//     console.log(`삭제할 문의 수: ${complainsToDelete.length}`);
+
+//     complainsToDelete.forEach(complain => {
+//       setTimeout(async () => {
+//         try {
+//           await Complain.destroy({ where: { complainId: complain.complainId } });
+//           console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
+//         } catch (error) {
+//           console.error('문의 삭제 중 오류 발생:', error);
+//         }
+//       },  1 * 60 * 1000); // 60분 후
+//     });
+//   } catch (error) {
+//     console.error('문의 삭제 중 오류 발생:', error);
+//   }
+// })();

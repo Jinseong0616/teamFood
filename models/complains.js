@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     complainCategory: DataTypes.STRING,
     title : DataTypes.STRING,
     content: DataTypes.STRING,
-    status: DataTypes.STRING
+    status: DataTypes.STRING,
+    views:DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Complain',
