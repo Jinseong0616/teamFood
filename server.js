@@ -900,11 +900,11 @@ app.get('/complainList/admin', async (req,res)=>{
 })
 
 // 관리자 문의 내역 디테일 페이지
-app.get('/complainDetailPost/admin/:userId', async(req, res)=>{
-  const {userId} = req.params;
+app.get('/complainDetailPost/admin/:complainId', async(req, res)=>{
+  const {complainId} = req.params;
   
   try{
-    const complain = await Complain.findOne({where : {userId}})
+    const complain = await Complain.findOne({where : {complainId}})
   res.json({complain : complain})
 
   }
@@ -938,16 +938,14 @@ app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
 
 
 // 컴플레인 디테일
-app.get('/complainDetail/users/:userId', async (req, res) => {
-  const { userId } = req.params;
-  
+app.get('/complainDetail/users/:complainId', async (req, res) => {
+  const { complainId } = req.params;
+  console.log(complainId)
   try {
-    const complainList = await Complain.findOne({ where: { userId } });
+    const complainList = await Complain.findOne({ where: { complainId } });
     console.log(complainList);
     
-    const complainId = complainList.dataValues.complainId;
-    console.log('컴플레인 아이디:', complainId);
-
+  
     const responseContent = await Response.findOne({ where: { complainId: complainId} });
     console.log('리스폰스 :', responseContent);
     
