@@ -795,7 +795,6 @@ app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   } else {
     res.json({ zzim: false });
   }
-
 })
 
 
@@ -803,7 +802,7 @@ app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
 app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   const {userId,restaurantId} = req.params;
 
-  try {
+  try{
     const zzim = await Favorite.create({
       userId,
       restaurantId
@@ -812,6 +811,9 @@ app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   } catch (error) {
     res.status(500).json({error : "찜 등록 실패"})
   }
+  
+
+  
 
 })
 
