@@ -777,8 +777,6 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
 
-
-
 //찜하기 조회 API
 app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   const {userId,restaurantId} = req.params;
@@ -860,9 +858,8 @@ app.get('/zzimList/users/:userId', async(req, res)=>{
   }
 })
 
-// 1:1 문의하기
+// 사용자 1:1 문의하기
 app.post('/complain/users/:userId', async (req,res)=>{
-  const {userId} = req.params;
   const newInfo = req.body;
   console.log(newInfo)
   try{
@@ -874,6 +871,89 @@ app.post('/complain/users/:userId', async (req,res)=>{
     console.log(err)
     res.status(500).send('서버 오류 발생')
   }
+})
+
+// 사용자 컴플래인 목록
+app.get('/complainList/users/:userId', async (req, res)=>{
+  const {userId} = req.params;
+  console.log(userId)
+  try {
+    const complains = await Complain.findAll({where : {userId : userId}})
+    console.log('컴플래인 : ', complains)
+    res.json({complains})
+  } catch (error) {
+    console.error("처리중 오류 발생", error);
+    res.status(500).send("서버 오류 발생");
+  }
+})
+
+// 관리자 1:1 문의내역 가져오기
+app.get('/complainList/admin', async (req,res)=>{
+  
+  try{
+    const complainList = await Complain.findAll()
+    res.json({complainList : complainList});
+  }
+
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생')
+  }
+})
+
+// 관리자 문의 내역 디테일 페이지
+app.get('/complainDetailPost/admin/:complainId', async(req, res)=>{
+  const {complainId} = req.params;
+  
+  try{
+    const complain = await Complain.findOne({where : {complainId}})
+  res.json({complain : complain})
+
+  }
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생');
+  }
+})
+
+
+// 관리자 디테일 페이지 문의 답변
+app.post('/complainDetailPost/admin/:adminId', async (req,res) =>{
+  const newInfo = req.body
+  console.log(newInfo);
+  console.log(newInfo.complainId)
+  try{
+    const answer = await Response.create(newInfo)
+    const complain = await Complain.update(
+      {status : "처리 완료"},
+      {where : {complainId : newInfo.complainId}}
+      );
+    res.json({message : "성공" });
+  }
+
+  catch(err){
+    console.log(err)
+    res.status(500).send('서버 오류 발생')
+  }
 
 })
 
+
+// 컴플레인 디테일
+app.get('/complainDetail/users/:complainId', async (req, res) => {
+  const { complainId } = req.params;
+  console.log(complainId)
+  try {
+    const complainList = await Complain.findOne({ where: { complainId } });
+    console.log(complainList);
+    
+  
+    const responseContent = await Response.findOne({ where: { complainId: complainId} });
+    console.log('리스폰스 :', responseContent);
+    
+    res.json({ complainList, responseContent });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
