@@ -199,9 +199,7 @@ app.get("/detail/:id", async (req, res) => {
     // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    // // 레스토랑 리뷰의 해당 유저의 사진 가져오기
-    // const reviewPic = await Image.findOne({ where: { reviewId:  , restaurantId : id} });
-
+    
     // 회원별로 작성한 리뷰에 대한 평균별점 계산
     const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
 
@@ -227,18 +225,51 @@ app.get("/detail/:id", async (req, res) => {
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name, reviewPic});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
       }
     }
     res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
 
-    
-   
   } catch (error) {
     console.error("에러 발생:", error);
     res.status(500).send("서버 에러");
   }
 });
+
+//유저 평점 정보 갖고오기 API
+app.get("/userRating/userId/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userAvgRatings = await Review.findAll({
+      attributes: [
+        'userId',
+        [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating'],
+        [Sequelize.fn('COUNT', Sequelize.col('rating')), 'rating_count']
+      ],
+      where: {
+        userId: userId
+      },
+      group: ['userId']
+    });
+
+    if (userAvgRatings.length > 0) {
+      res.json(userAvgRatings[0]);
+    } else {
+      res.status(404).json({ error: 'No ratings found for this user.' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+})
+
+
+
+
+
+
+
 
 // 회원가입 페이지
 app.get("/join", async function (req, res) {
