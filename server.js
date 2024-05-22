@@ -37,6 +37,7 @@ const upload = multer({ storage: storage });
 
 // db
 const db = require("./models");
+const { default: axios } = require('axios');
 const { User, Store, Image, Favorite, Review, region,Category, Complain, Response } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
@@ -978,43 +979,8 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 });
 
 
-// 자정에 삭제되게 설정
-cron.schedule('0 0 * * *', async () => {
-  console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
-
-  try {
-    const now = new Date();
-    const complainsToDelete = await Complain.findAll({
-      where: {
-        status: '처리 완료',
-        views: {
-          [Op.gte]: 1  // views가 1 이상인 경우
-        },
-        createdAt: {
-          [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
-        }
-      }
-    });
-
-    complainsToDelete.forEach(complain => {
-      setTimeout(async () => {
-        try {
-          await Complain.destroy({ where: { id: complain.complainId } });
-          console.log(complain.complainId)
-          console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
-        } catch (error) {
-          console.error('문의 삭제 중 오류 발생:', error);
-        }
-      }, 60 * 60 * 1000); // 2분 후
-    });
-  } catch (error) {
-    console.error('문의 삭제 중 오류 발생:', error);
-  }
-});
-
-
-// // 컴플레인 삭제
-// (async () => {
+// // 자정에 삭제되게 설정
+// cron.schedule('0 0 * * *', async () => {
 //   console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
 
 //   try {
@@ -1022,26 +988,127 @@ cron.schedule('0 0 * * *', async () => {
 //     const complainsToDelete = await Complain.findAll({
 //       where: {
 //         status: '처리 완료',
-        
+//         views: {
+//           [Op.gte]: 1  // views가 1 이상인 경우
+//         },
 //         createdAt: {
-//           [Op.lt]: new Date(now.getTime() - 1*60*1000)  // 1분 이전
+//           [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
 //         }
 //       }
 //     });
 
-//     console.log(`삭제할 문의 수: ${complainsToDelete.length}`);
-
 //     complainsToDelete.forEach(complain => {
 //       setTimeout(async () => {
 //         try {
-//           await Complain.destroy({ where: { complainId: complain.complainId } });
+//           await Complain.destroy({ where: { id: complain.complainId } });
+//           console.log(complain.complainId)
 //           console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
 //         } catch (error) {
 //           console.error('문의 삭제 중 오류 발생:', error);
 //         }
-//       },  1 * 60 * 1000); // 60분 후
+//       }, 60 * 60 * 1000); // 2분 후
 //     });
 //   } catch (error) {
 //     console.error('문의 삭제 중 오류 발생:', error);
 //   }
-// })();
+// });
+
+
+// 컴플레인 삭제
+(async () => {
+  console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
+
+  try {
+    const now = new Date();
+    const complainsToDelete = await Complain.findAll({
+      where: {
+        status: '처리 완료',
+        
+        createdAt: {
+          [Op.lt]: new Date(now.getTime() - 1*60*1000)  // 1분 이전
+        }
+      }
+    });
+
+    console.log(`삭제할 문의 수: ${complainsToDelete.length}`);
+
+    complainsToDelete.forEach(complain => {
+      setTimeout(async () => {
+        try {
+          await Complain.destroy({ where: { complainId: complain.complainId } });
+          console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
+        } catch (error) {
+          console.error('문의 삭제 중 오류 발생:', error);
+        }
+      },  1 * 60 * 1000); // 60분 후
+    });
+  } catch (error) {
+    console.error('문의 삭제 중 오류 발생:', error);
+  }
+})();
+
+
+const REST_API_KEY = '3ce68a4b4fe0845cf10e27373e9d893f';
+const REDIRECT_URI = 'http://localhost:3000/auth';
+
+app.get('/auth', async (req,res)=>{
+  const code = req.query.code;
+  console.log('Authorization code:', code);
+
+  try {
+    const response = await axios.post(
+      'https://kauth.kakao.com/oauth/token',
+      new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: REST_API_KEY,
+        redirect_uri: REDIRECT_URI,
+        code,
+      }).toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      }
+    );
+    const { access_token } = response.data;
+    console.log('access_token : ',access_token)
+      // 액세스 토큰을 사용하여 사용자 정보 요청
+    const userInfo = await axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      console.log('User info:', userInfo.data);
+      res.json(userInfo.data, access_token); // 사용자 정보를 클라이언트에 반환
+    } catch (error) {
+      console.error('Error fetching access token or user info:', error.response ? error.response.data : error.message);
+      res.status(500).json({ error: 'Failed to fetch access token or user info' });
+    }
+});
+
+
+app.post('/kakaoLogout', async (req,res)=>{
+  const access_token = req.body.access_token;
+  console.log(access_token)
+  try {
+    const response = await axios.post(
+      'https://kapi.kakao.com/v1/user/logout',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    console.log('Logout response:', response.data);
+    res.json({ message: 'Successfully logged out' });
+  } catch (error) {
+    console.error(`Logout error: ${error}`);
+    if (error.response) {
+      console.error(`Error response data: ${error.response.data}`);
+    }
+    res.status(500).json({ error: 'Failed to logout' });
+  }
+
+})
