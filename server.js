@@ -1084,6 +1084,7 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 const REST_API_KEY = '3ce68a4b4fe0845cf10e27373e9d893f';
 const REDIRECT_URI = 'http://localhost:3000/auth';
 
+// 카카오 로그인 API  
 app.get('/auth', async (req,res)=>{
   const code = req.query.code;
   console.log('Authorization code:', code);
@@ -1109,7 +1110,7 @@ app.get('/auth', async (req,res)=>{
     const userInfo = await axios.get('https://kapi.kakao.com/v2/user/me', {
         headers: {
           Authorization: `Bearer ${access_token}`,
-        },
+        },  
       });
 
       console.log('User info:', userInfo.data);
@@ -1120,5 +1121,5 @@ app.get('/auth', async (req,res)=>{
     }
 });
 
-
+app.put('/storeEdit/')
 
