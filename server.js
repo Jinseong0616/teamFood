@@ -1113,7 +1113,7 @@ app.get('/auth', async (req,res)=>{
       });
 
       console.log('User info:', userInfo.data);
-      res.json(userInfo.data, access_token); // 사용자 정보를 클라이언트에 반환
+      res.json({userInfo : userInfo.data, access_token : access_token}); // 사용자 정보를 클라이언트에 반환
     } catch (error) {
       console.error('Error fetching access token or user info:', error.response ? error.response.data : error.message);
       res.status(500).json({ error: 'Failed to fetch access token or user info' });
@@ -1121,27 +1121,4 @@ app.get('/auth', async (req,res)=>{
 });
 
 
-app.post('/kakaoLogout', async (req,res)=>{
-  const access_token = req.body.access_token;
-  console.log(access_token)
-  try {
-    const response = await axios.post(
-      'https://kapi.kakao.com/v1/user/logout',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-    console.log('Logout response:', response.data);
-    res.json({ message: 'Successfully logged out' });
-  } catch (error) {
-    console.error(`Logout error: ${error}`);
-    if (error.response) {
-      console.error(`Error response data: ${error.response.data}`);
-    }
-    res.status(500).json({ error: 'Failed to logout' });
-  }
 
-})
