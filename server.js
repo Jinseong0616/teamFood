@@ -185,7 +185,7 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// 세부 페이지 (** *기능구현만 일단 해놓은 상태 ***)
+// 세부 페이지 
 app.get("/detail/:id", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
 
@@ -311,14 +311,6 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 });
 
 
-// 리뷰페이지
-// app.get("/review/:restaurantId", async function (req, res) {
-//   const userId = req.isAuthenticated() ? req.user.userId : false;
-//   const {restaurantId} = req.params
-
-//   res.render("review.ejs",{userId, restaurantId});
-// });
-
 
 
 // 마이 리뷰 페이지 디테일
@@ -390,6 +382,7 @@ app.get("/myPage/:id", async (req, res) => {
           restaurantId : null, 
           reviewId : null } 
       });
+      console.log(memImg)
       res.json({member, memImg})
     }
   else {
@@ -407,7 +400,11 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   const newFile = req.file;
   if(id){
     member = await User.findOne({ where: { userId: id } });
-    imgFile = await Image.findOne({ where: { userId: id } });
+    imgFile = await Image.findOne({ where: { 
+      userId: id,
+      restaurantId : null, 
+      reviewId : null 
+    } });
   }
   
   if (member) {
@@ -1082,7 +1079,7 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 
 
 const REST_API_KEY = '3ce68a4b4fe0845cf10e27373e9d893f';
-const REDIRECT_URI = 'http://localhost:3000/auth';
+const REDIRECT_URI = 'http://220.88.106.44:3000/auth';
 
 // 카카오 로그인 API  
 app.get('/auth', async (req,res)=>{
