@@ -391,6 +391,16 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   let imgFile
   console.log(newInfo)
   const newFile = req.file;
+
+
+  if(!newInfo.memImg){
+    await Image.destroy({where : {
+      userId : id,
+      restaurantId : null, 
+      reviewId : null 
+    }})
+  }
+
   if(id){
     member = await User.findOne({ where: { userId: id } });
     imgFile = await Image.findOne({ where: { 
