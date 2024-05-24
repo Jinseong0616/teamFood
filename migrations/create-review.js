@@ -15,9 +15,19 @@ module.exports = {
       restaurantId: {
         type: Sequelize.INTEGER
       },
+      taste:{
+        type: Sequelize.STRING
+      },
+      price : {
+        type: Sequelize.STRING
+      },
+      service :{
+        type: Sequelize.STRING
+      },
       content: {
         type: Sequelize.STRING
       },
+
       rating: {
         type: Sequelize.INTEGER
       },

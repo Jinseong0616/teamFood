@@ -311,8 +311,6 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
 });
 
 
-
-
 // 마이 리뷰 페이지 디테일
 app.get("/detailReview/:reviewId", async function (req, res) {
   const userId = req.isAuthenticated() ? req.user.userId : false;
@@ -576,6 +574,7 @@ app.delete("/delete/:id", async function (req, res) {
   try {
     const deleted = await User.destroy({ where: { userId: id } });
     await Image.destroy({where : {userId : id}})
+    await Review.destroy({where : {userId : id}})
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -1079,7 +1078,7 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 
 
 const REST_API_KEY = '3ce68a4b4fe0845cf10e27373e9d893f';
-const REDIRECT_URI = 'http://220.88.106.44:3000/auth';
+const REDIRECT_URI = 'http://localhost:3000/auth';
 
 // 카카오 로그인 API  
 app.get('/auth', async (req,res)=>{
