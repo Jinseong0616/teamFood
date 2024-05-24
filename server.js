@@ -1145,19 +1145,25 @@ app.get('/shopInfo/:restaurantId', async (req, res)=>{
 
 app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) => {
   const { restaurantId } = req.params;
-  const {storeInfo, storeImg} = req.body;
+  const {storeInfo, storeImg, storeImgId} = req.body;
   const newFiles = req.files;
   console.log('vkdlf',newFiles)
   console.log('스토어',storeInfo)
   console.log('스토어사진', storeImg)
+  console.log('아이디', storeImgId)
   try {
     const updatedStore = await Store.update(storeInfo, {
       where: { restaurantId: restaurantId }
     });
+    if(storeImgId != undefined){
+      const deletedImg = await Image.destroy({where : {imgId : storeImgId}})
+    }
 
-    // const updatedImg = await Image.update(storeImg,{
-    //   where : {imgId : imgId}
-    // });
+    if(newFiles != []){
+      for(const file of newFiles){
+        const createImg = await Image.create({restaurantId, imgUrl: file.filename,})
+      }
+    }
 
     if (updatedStore[0] === 0) {
       // 업데이트된 행이 없을 경우
