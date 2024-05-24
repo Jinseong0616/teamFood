@@ -270,10 +270,6 @@ app.get("/userRating/userId/:userId", async (req, res) => {
 
 
 
-
-
-
-
 // 회원가입 페이지
 app.get("/join", async function (req, res) {
   res.render("joinPage.ejs");
@@ -762,6 +758,7 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   // console.log('삭제할 이미지 : ' , deletedImages)
   console.log('이미지 파일 : ', newFiles)
 
+  // 리뷰만
   const review = await Review.findOne({ where: { reviewId: reviewId } });
   if (!review) {
     return res.status(404).send('리뷰를 찾을 수 없습니다.');
@@ -772,6 +769,7 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   });
   await review.save();
 
+  // 사진
  if(newInfo.deletedImages && newInfo.deletedImages.length > 0){
   for(let deleteFile of newInfo.deletedImages){
     console.log(deleteFile)
@@ -791,7 +789,6 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
     }
   }
  }
-
   // 삭제 파일은 없고 새로운 파일만 존재할 때
   else if (newFiles && newFiles.length > 0) {
     // 새 이미지 파일 정보 저장
@@ -806,6 +803,8 @@ app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, re
   }
   res.send('리뷰가 성공적으로 업데이트 되었습니다.');
 });
+
+
 
 //찜하기 조회 API
 app.get('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
