@@ -185,7 +185,7 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// 세부 페이지 
+// 세부 페이지 (** *기능구현만 일단 해놓은 상태 ***)
 app.get("/detail/:id", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
 
@@ -197,23 +197,41 @@ app.get("/detail/:id", async (req, res) => {
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
     // 레스토랑에 대한 전체 리뷰 가져오기
-    const reviews = await Review.findAll({ 
-      where: { restaurantId: id },
-      order: [['createdAt', 'DESC']]
-    });
+    const reviews = await Review.findAll({ where: { restaurantId: id } });
 
     // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
+    
+    // 회원별로 작성한 리뷰에 대한 평균별점 계산
+    const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
+
+    reviews.forEach((review) => {
+      if (!(review.userId in userRatings)) {
+        userRatings[review.userId] = { totalRating: 0, reviewCount: 0 };
+      }
+      userRatings[review.userId].totalRating += review.rating;
+      userRatings[review.userId].reviewCount++;
+    });
+
+    // 각 회원별 평균별점 계산
+    const userAvgRatings = {};
+    Object.keys(userRatings).forEach((userId) => {
+      userAvgRatings[userId] = {
+        avgRating:
+          userRatings[userId].totalRating / userRatings[userId].reviewCount,
+        reviewCount: userRatings[userId].reviewCount,
+      };
+    });
 
   
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.json( {restaurant, reviews,  imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
       }
     }
-    res.status(200).json({restaurant, reviews,  imgList: imgUrl,userId : false})
+    res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
 
   } catch (error) {
     console.error("에러 발생:", error);
@@ -232,31 +250,14 @@ app.get("/userRating/userId/:userId", async (req, res) => {
         [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating'],
         [Sequelize.fn('COUNT', Sequelize.col('rating')), 'rating_count']
       ],
-      include: [{
-        model: User,
-        attributes: ['name'],
-        required: false
-      }],
       where: {
         userId: userId
       },
-      group: ['Review.userId']
-    });
-
-    const memImg = await Image.findOne({ 
-      where:{ 
-        userId: userId, 
-        restaurantId : null, 
-        reviewId : null } 
+      group: ['userId']
     });
 
     if (userAvgRatings.length > 0) {
-      const averageRating = userAvgRatings[0].get('average_rating');
-      const ratingCount = userAvgRatings[0].get('rating_count');
-      const userName = userAvgRatings[0].User.name
-      const imgUrl = memImg ? memImg.imgUrl : null;
-
-      res.json({ userId, userName, average_rating: averageRating, rating_count: ratingCount, imgUrl: imgUrl });
+      res.json(userAvgRatings[0]);
     } else {
       res.status(404).json({ error: 'No ratings found for this user.' });
     }
@@ -304,6 +305,16 @@ app.post("/join", uploadUser.single("imgUrl"), async function (req, res) {
     res.status(500).send("서버 오류 발생");
   }
 });
+
+
+// 리뷰페이지
+// app.get("/review/:restaurantId", async function (req, res) {
+//   const userId = req.isAuthenticated() ? req.user.userId : false;
+//   const {restaurantId} = req.params
+
+//   res.render("review.ejs",{userId, restaurantId});
+// });
+
 
 
 // 마이 리뷰 페이지 디테일
@@ -375,7 +386,6 @@ app.get("/myPage/:id", async (req, res) => {
           restaurantId : null, 
           reviewId : null } 
       });
-      console.log(memImg)
       res.json({member, memImg})
     }
   else {
@@ -403,11 +413,7 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
 
   if(id){
     member = await User.findOne({ where: { userId: id } });
-    imgFile = await Image.findOne({ where: { 
-      userId: id,
-      restaurantId : null, 
-      reviewId : null 
-    } });
+    imgFile = await Image.findOne({ where: { userId: id } });
   }
   
   if (member) {
@@ -579,7 +585,6 @@ app.delete("/delete/:id", async function (req, res) {
   try {
     const deleted = await User.destroy({ where: { userId: id } });
     await Image.destroy({where : {userId : id}})
-    await Review.destroy({where : {userId : id}})
     console.log('deleted 인가요?',deleted);
     if(deleted > 0){
       res.json({data : '회원 탈퇴 성공'});
@@ -1088,7 +1093,6 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 const REST_API_KEY = '3ce68a4b4fe0845cf10e27373e9d893f';
 const REDIRECT_URI = 'http://localhost:3000/auth';
 
-// 카카오 로그인 API  
 app.get('/auth', async (req,res)=>{
   const code = req.query.code;
   console.log('Authorization code:', code);
@@ -1114,7 +1118,7 @@ app.get('/auth', async (req,res)=>{
     const userInfo = await axios.get('https://kapi.kakao.com/v2/user/me', {
         headers: {
           Authorization: `Bearer ${access_token}`,
-        },  
+        },
       });
 
       console.log('User info:', userInfo.data);
@@ -1125,5 +1129,62 @@ app.get('/auth', async (req,res)=>{
     }
 });
 
-app.put('/storeEdit/')
+// 가게 정보
+app.get('/shopInfo/:restaurantId', async (req, res)=>{
+  const {restaurantId} = req.params;
+  console.log(restaurantId)
+
+  try {
+    const storeInfo = await Store.findOne({where : {restaurantId : restaurantId}})
+    const storeImg = await Image.findAll({ 
+      where: { 
+        restaurantId: restaurantId, 
+        userId: null,
+        reviewId : null
+      }
+    });
+    console.log('storeInfo : ',storeInfo)
+    console.log('storeImg : ',storeImg )
+    res.json({storeInfo, storeImg})
+  } catch (error) {
+    res.json({error : '에러러'})
+  }
+
+})
+
+app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) => {
+  const { restaurantId } = req.params;
+  const {storeInfo, storeImg, storeImgId} = req.body;
+  const newFiles = req.files;
+  console.log('vkdlf',newFiles)
+  console.log('스토어',storeInfo)
+  console.log('스토어사진', storeImg)
+  console.log('아이디', storeImgId)
+  try {
+    const updatedStore = await Store.update(storeInfo, {
+      where: { restaurantId: restaurantId }
+    });
+    if(storeImgId != undefined){
+      const deletedImg = await Image.destroy({where : {imgId : storeImgId}})
+    }
+
+    if(newFiles != []){
+      for(const file of newFiles){
+        const createImg = await Image.create({restaurantId, imgUrl: file.filename,})
+      }
+    }
+
+    if (updatedStore[0] === 0) {
+      // 업데이트된 행이 없을 경우
+      res.status(404).json({ error: '가게를 찾을 수 없습니다.' });
+    } else {
+      res.status(200).json({ message: '가게 정보가 수정되었습니다.' });
+    }
+  } catch (error) {
+    console.error('Error updating store:', error);
+    res.status(500).json({ error: '서버 오류' });
+  }
+});
+
+
 
