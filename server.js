@@ -400,20 +400,26 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
   let member
   let imgFile
   console.log(newInfo)
-  const newFile = req.file;
 
+  const newFile = req.file;
+  console.log(newFile)
 
   if(!newInfo.memImg){
-    await Image.destroy({where : {
-      userId : id,
-      restaurantId : null, 
-      reviewId : null 
-    }})
+    await Image.destroy({where : 
+      {
+        userId : id,
+        restaurantId : null,
+        reviewId : null
+      }})
   }
 
   if(id){
     member = await User.findOne({ where: { userId: id } });
-    imgFile = await Image.findOne({ where: { userId: id } });
+    imgFile = await Image.findOne({ where: { 
+      userId: id,
+      restaurantId : null,
+      reviewId : null
+    } });
   }
   
   if (member) {
@@ -426,7 +432,9 @@ app.put("/edit/:id", uploadUser.single("imgUrl"), async (req, res) => {
       if (imgFile && member) {
         imgFile.imgUrl = newFile.filename;
         await imgFile.save();
-      } else if(!imgFile && member) {
+      } 
+      
+      else if(!imgFile && member) {
         await Image.create({
           userId: id,
           imgUrl: newFile.filename,
