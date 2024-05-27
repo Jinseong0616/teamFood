@@ -193,7 +193,7 @@ app.get("/logout", (req, res) => {
   });
 });
 
-// 세부 페이지 (** *기능구현만 일단 해놓은 상태 ***)
+// 세부 페이지 
 app.get("/detail/:id", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
 
@@ -205,41 +205,23 @@ app.get("/detail/:id", async (req, res) => {
     const restaurant = await Store.findOne({ where: { restaurantId: id } });
 
     // 레스토랑에 대한 전체 리뷰 가져오기
-    const reviews = await Review.findAll({ where: { restaurantId: id } });
+    const reviews = await Review.findAll({ 
+      where: { restaurantId: id },
+      order: [['createdAt', 'DESC']]
+    });
 
     // 레스토랑 사진
     const imgUrl = await Image.findAll({ where: { restaurantId: id } });
 
-    
-    // 회원별로 작성한 리뷰에 대한 평균별점 계산
-    const userRatings = {}; // 각 회원별 평균별점과 리뷰 개수를 저장할 객체
-
-    reviews.forEach((review) => {
-      if (!(review.userId in userRatings)) {
-        userRatings[review.userId] = { totalRating: 0, reviewCount: 0 };
-      }
-      userRatings[review.userId].totalRating += review.rating;
-      userRatings[review.userId].reviewCount++;
-    });
-
-    // 각 회원별 평균별점 계산
-    const userAvgRatings = {};
-    Object.keys(userRatings).forEach((userId) => {
-      userAvgRatings[userId] = {
-        avgRating:
-          userRatings[userId].totalRating / userRatings[userId].reviewCount,
-        reviewCount: userRatings[userId].reviewCount,
-      };
-    });
 
   
     if(userId){
       const user = await User.findOne({ where: { userId: userId } });
       if(user){
-        return res.json( {restaurant, reviews, userAvgRatings, imgList: imgUrl,userId, name : user.name});
+        return res.json( {restaurant, reviews,  imgList: imgUrl,userId, name : user.name});
       }
     }
-    res.status(200).json({restaurant, reviews, userAvgRatings, imgList: imgUrl,userId : false})
+    res.status(200).json({restaurant, reviews,  imgList: imgUrl,userId : false})
 
   } catch (error) {
     console.error("에러 발생:", error);
@@ -258,14 +240,31 @@ app.get("/userRating/userId/:userId", async (req, res) => {
         [Sequelize.fn('AVG', Sequelize.col('rating')), 'average_rating'],
         [Sequelize.fn('COUNT', Sequelize.col('rating')), 'rating_count']
       ],
+      include: [{
+        model: User,
+        attributes: ['name'],
+        required: false
+      }],
       where: {
         userId: userId
       },
-      group: ['userId']
+      group: ['Review.userId']
+    });
+
+    const memImg = await Image.findOne({ 
+      where:{ 
+        userId: userId, 
+        restaurantId : null, 
+        reviewId : null } 
     });
 
     if (userAvgRatings.length > 0) {
-      res.json(userAvgRatings[0]);
+      const averageRating = userAvgRatings[0].get('average_rating');
+      const ratingCount = userAvgRatings[0].get('rating_count');
+      const userName = userAvgRatings[0].User.name
+      const imgUrl = memImg ? memImg.imgUrl : null;
+
+      res.json({ userId, userName, average_rating: averageRating, rating_count: ratingCount, imgUrl: imgUrl });
     } else {
       res.status(404).json({ error: 'No ratings found for this user.' });
     }
