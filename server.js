@@ -11,7 +11,7 @@ const {Op, Sequelize} = require('sequelize')
 const nodemailer = require("nodemailer");
 const cron = require('node-cron');
 
-
+const bodyParser = require('body-parser')
 const sequelize = new Sequelize('FOOD', 'foodMaster', 'korea1234', {
   dialect: 'mysql',
   host: 'teamfood.crsmg6yq43zm.us-east-2.rds.amazonaws.com'
@@ -56,6 +56,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser())
 
+app.use(bodyParser.json());
 // React
 app.use(express.static('path/to/react-team/public'))
 app.use(cors())
@@ -76,9 +77,16 @@ app.use(
   })
 );
 
+
+
+
+const coolsms = require("coolsms-node-sdk").default;
+const messageService = new coolsms("NCSBJU8AXDTQTXVV", "FOVJMTVQGRWCJTD2TEKVBYGA6EIJFVUC");
+
+
+
+
 app.use(passport.session());
-
-
 passport.use(
   new LocalStrategy(async (username, pw, done) => {
     let result = await User.findOne({ where: { userId: username } });
@@ -96,19 +104,19 @@ passport.use(
   })
 );
 
-//메인페이지
+// 메인페이지
 app.get("/", async (req, res) => {
   const userId = req.isAuthenticated() ? req.user.userId : false;
-    const categories = await Category.findAll()
-  
-    if(userId){
-      const user = await User.findOne({where : {userId}})
+  const categories = await Category.findAll()
 
-      if(user){
-        return res.json( { message : '사용자있음', name : user.name , userId, categories});
-        }
+  if(userId){
+    const user = await User.findOne({where : {userId}})
+
+    if(user){
+      return res.json( { message : '사용자있음', name : user.name , userId, categories});
       }
-      res.json({message : '사용자없음', userId : false , categories})
+    }
+    res.json({message : '사용자없음', userId : false , categories})
 });
 
 // 로그인페이지
@@ -374,6 +382,22 @@ app.post('/checkId', async(req, res)=>{
   }
 })
 
+app.post('/checkPhone', async(req, res)=>{
+  const phone = req.body.phone
+
+  try {
+    const existingMember = await User.findOne({ where: { phone: phone } });
+      if (existingMember) {
+          res.json({ exists: true }); 
+      } else {
+          res.json({ exists: false }); 
+      }
+  } catch (error) {
+    console.log('검색 중 오류 발생', error)
+    res.status(500).send("서버 오류 발생");
+  }
+})
+
 
 // 마이페이지
 app.get("/myPage/:id", async (req, res) => {
@@ -625,7 +649,6 @@ let transporter = nodemailer.createTransport({
 // 메세지를 보낼 이메일
 const userEmail = 'ssorru0623@gmail.com'
 
-
 app.post('/findEmail', async (req,res)=>{
   const {userId} = req.body;
   console.log(userId)
@@ -733,19 +756,6 @@ app.put('/editPw/:id', async (req,res)=>{
 })
 
 
-app.get("/", async (req, res) => {
-    const userId = req.isAuthenticated() ? req.user.userId : false;
-    const categories = await Category.findAll()
-  
-    if(userId){
-      const user = await User.findOne({where : {userId}})
-
-      if(user){
-        return res.json( { message : '사용자있음', name : user.name , userId, categories});
-        }
-      }
-      res.json({message : '사용자없음', userId : false , categories})
-  });
 
 
 app.delete('/deleteReview/:reviewId', async (req,res)=>{
@@ -770,6 +780,7 @@ app.delete('/deleteReview/:reviewId', async (req,res)=>{
   }
 })
 
+// 리뷰 수정
 app.put('/editReview/:reviewId', uploadReview.array("imgUrl", 10), async(req, res) => {
   const { reviewId } = req.params;
   console.log(reviewId)
@@ -860,10 +871,6 @@ app.post('/zzim/users/:userId/restaurantId/:restaurantId',async(req,res)=>{
   } catch (error) {
     res.status(500).json({error : "찜 등록 실패"})
   }
-  
-
-  
-
 })
 
 
@@ -1029,39 +1036,6 @@ app.put('/complainDetail/views/:complainId', async (req, res) => {
 });
 
 
-// // 자정에 삭제되게 설정
-// cron.schedule('0 0 * * *', async () => {
-//   console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
-
-//   try {
-//     const now = new Date();
-//     const complainsToDelete = await Complain.findAll({
-//       where: {
-//         status: '처리 완료',
-//         views: {
-//           [Op.gte]: 1  // views가 1 이상인 경우
-//         },
-//         createdAt: {
-//           [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
-//         }
-//       }
-//     });
-
-//     complainsToDelete.forEach(complain => {
-//       setTimeout(async () => {
-//         try {
-//           await Complain.destroy({ where: { id: complain.complainId } });
-//           console.log(complain.complainId)
-//           console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
-//         } catch (error) {
-//           console.error('문의 삭제 중 오류 발생:', error);
-//         }
-//       }, 60 * 60 * 1000); // 2분 후
-//     });
-//   } catch (error) {
-//     console.error('문의 삭제 중 오류 발생:', error);
-//   }
-// });
 
 
 // 컴플레인 삭제
@@ -1196,3 +1170,95 @@ app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) =
 
 
 
+app.post('/send-sms', async (req,res)=>{
+  const {phone} = req.body;
+  const from = '010-5119-3483'
+  const resetCode = Math.random().toString(36).substring(2, 15);
+
+  const user =  await User.findOne({where : {phone: phone}})
+  if(user){
+  bcrypt.hash(resetCode, 10, async function(err, hash) {
+    if (err) {
+      console.error('Hashing error:', err);
+    } else {
+      // DB에 해시화된 코드 저장 로직 (여기서는 생략)
+        console.log(user.password)
+        user.password = hash;
+        await user.save();
+
+      // 메세지로 비밀번호 초기화 코드 발송
+      let smsOptions = {
+        from: from,
+        to: phone,
+        subject: '비밀번호 초기화 코드',
+        text: `귀하의 비밀번호 초기화 코드는 ${resetCode} 입니다.`
+      };
+      console.log(smsOptions); // mailOptions 객체 로그 출력
+
+      try {
+        const response = await messageService.sendOne({
+          to : phone,
+          from : from,
+          text : `Your verification code is: ${resetCode}`
+        });
+        res.json({ success: true, message: 'SMS sent'});
+      } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to send SMS', error: error.message });
+      }
+    }
+  });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // 자정에 삭제되게 설정
+// cron.schedule('0 0 * * *', async () => {
+//   console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
+
+//   try {
+//     const now = new Date();
+//     const complainsToDelete = await Complain.findAll({
+//       where: {
+//         status: '처리 완료',
+//         views: {
+//           [Op.gte]: 1  // views가 1 이상인 경우
+//         },
+//         createdAt: {
+//           [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
+//         }
+//       }
+//     });
+
+//     complainsToDelete.forEach(complain => {
+//       setTimeout(async () => {
+//         try {
+//           await Complain.destroy({ where: { id: complain.complainId } });
+//           console.log(complain.complainId)
+//           console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
+//         } catch (error) {
+//           console.error('문의 삭제 중 오류 발생:', error);
+//         }
+//       }, 60 * 60 * 1000); // 2분 후
+//     });
+//   } catch (error) {
+//     console.error('문의 삭제 중 오류 발생:', error);
+//   }
+// });
