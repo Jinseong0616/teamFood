@@ -1168,7 +1168,7 @@ app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) =
 });
 
 
-
+// 휴대전화 sms 전송
 app.post('/send-sms', async (req,res)=>{
   const {phone} = req.body;
   const from = '010-5119-3483'
@@ -1208,22 +1208,6 @@ app.post('/send-sms', async (req,res)=>{
   });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
