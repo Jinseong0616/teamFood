@@ -26,7 +26,7 @@ const uploadReview = multer({ dest: "uploads/reviews" }); // 리뷰
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/test"); // 파일이 저장될 경로
+    cb(null, "uploads/store"); // 파일이 저장될 경로
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`); // 파일명 설정
@@ -533,7 +533,7 @@ app.get("/search", async function (req, res) {
     console.error(error);
     res.status(500).json({ message: "검색 실패" });
   }
-});
+});``
 
 // 조회수 증가
 app.post('/increaseViews/:restaurantId', async (req, res) => {
