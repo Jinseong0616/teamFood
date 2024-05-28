@@ -509,7 +509,7 @@ app.get("/search", async function (req, res) {
     if (region && searchKeyword) {
       query += ` WHERE Stores.restaurantAddress LIKE :region AND (Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword)`;
     } else if (searchKeyword) {
-      query += ` WHERE Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword`;
+      query += ` WHERE Stores.restaurantName LIKE :keyword OR Stores.category LIKE :keyword OR Stores.restaurantAddress LIKE :keyword`;
     } else if (region) {
       query += ` WHERE Stores.restaurantAddress LIKE :region`;
     }
