@@ -38,6 +38,7 @@ const upload = multer({ storage: storage });
 // db
 const db = require("./models");
 const { default: axios } = require('axios');
+const { parse } = require('dotenv');
 const { User, Store, Image, Favorite, Review, region,Category, Complain, Response } = db;
 // Store.hasMany(Image, { foreignKey: 'restaurantId' })
 // Image.belongsTo(Store, { foreignKey: 'restaurantId' });
@@ -1133,19 +1134,20 @@ app.get('/shopInfo/:restaurantId', async (req, res)=>{
 
 })
 
-app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) => {
+app.put('/shopInfo/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) => {
   const { restaurantId } = req.params;
-  const {storeInfo, storeImg, storeImgId} = req.body;
+  const storeInfo = JSON.parse(req.body.storeInfo);
+  const {storeImg, storeImgId} = req.body;
   const newFiles = req.files;
-  console.log('vkdlf', newFiles)
-  console.log('스토어', storeInfo)
-  console.log('스토어사진', storeImg)
+  console.log('vkdlf',newFiles)
+  console.log('스토어',storeInfo)
   console.log('아이디', storeImgId)
   try {
     const updatedStore = await Store.update(
       storeInfo, {
       where: { restaurantId: restaurantId }
     });
+
     if(storeImgId != undefined){
       const deletedImg = await Image.destroy({where : {imgId : storeImgId}})
     }
