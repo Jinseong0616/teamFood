@@ -1212,6 +1212,20 @@ app.post('/send-sms', async (req,res)=>{
   }
 });
 
+// 가게 삭제
+app.delete('/searchPage/delete/:restaurantId', async function(req, res){
+  const {restaurantId} = req.params;
+  console.log(restaurantId)
+
+  try {
+    await Store.destroy({where : {restaurantId : restaurantId}})
+    res.json('가게 삭제 완료')
+  } catch (error) {
+    res.status(500).json({error : '가게 삭제 실패'})
+  }
+
+})
+
 
 
 
