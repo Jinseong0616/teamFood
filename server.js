@@ -1137,12 +1137,13 @@ app.put('/shopEdit/:restaurantId', upload.array("imgUrl", 2), async (req, res) =
   const { restaurantId } = req.params;
   const {storeInfo, storeImg, storeImgId} = req.body;
   const newFiles = req.files;
-  console.log('vkdlf',newFiles)
-  console.log('스토어',storeInfo)
+  console.log('vkdlf', newFiles)
+  console.log('스토어', storeInfo)
   console.log('스토어사진', storeImg)
   console.log('아이디', storeImgId)
   try {
-    const updatedStore = await Store.update(storeInfo, {
+    const updatedStore = await Store.update(
+      storeInfo, {
       where: { restaurantId: restaurantId }
     });
     if(storeImgId != undefined){
