@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const multer = require('multer')
-const {Op, Sequelize} = require('sequelize')
+const {Op, Sequelize, where} = require('sequelize')
 const nodemailer = require("nodemailer");
 const cron = require('node-cron');
 
@@ -1218,6 +1218,12 @@ app.delete('/searchPage/delete/:restaurantId', async function(req, res){
 
   try {
     await Store.destroy({where : {restaurantId : restaurantId}})
+    await Image.destroy({
+      where : {
+        restaurantId : restaurantId, 
+        userId : null, 
+        reviewId : null
+      }});
     res.json('가게 삭제 완료')
   } catch (error) {
     res.status(500).json({error : '가게 삭제 실패'})
