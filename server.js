@@ -58,6 +58,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 app.use(bodyParser.json());
+
 // React
 app.use(express.static('path/to/react-team/public'))
 app.use(cors())
@@ -78,9 +79,7 @@ app.use(
   })
 );
 
-
-
-
+// cool SMS api키와 secret키
 const coolsms = require("coolsms-node-sdk").default;
 const messageService = new coolsms("NCSBJU8AXDTQTXVV", "FOVJMTVQGRWCJTD2TEKVBYGA6EIJFVUC");
 
@@ -1231,7 +1230,6 @@ app.delete('/searchPage/delete/:restaurantId', async function(req, res){
   }
 
 })
-
 
 
 
