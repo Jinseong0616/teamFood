@@ -1231,38 +1231,3 @@ app.delete('/searchPage/delete/:restaurantId', async function(req, res){
 
 })
 
-
-
-// // 자정에 삭제되게 설정
-// cron.schedule('0 0 * * *', async () => {
-//   console.log('처리 완료된 문의를 삭제하는 작업을 시작합니다.');
-
-//   try {
-//     const now = new Date();
-//     const complainsToDelete = await Complain.findAll({
-//       where: {
-//         status: '처리 완료',
-//         views: {
-//           [Op.gte]: 1  // views가 1 이상인 경우
-//         },
-//         createdAt: {
-//           [Op.lt]: new Date(now.getTime() - 60*60*1000)  // 1시간 이전
-//         }
-//       }
-//     });
-
-//     complainsToDelete.forEach(complain => {
-//       setTimeout(async () => {
-//         try {
-//           await Complain.destroy({ where: { id: complain.complainId } });
-//           console.log(complain.complainId)
-//           console.log(`ID ${complain.complainId}의 문의가 삭제되었습니다.`);
-//         } catch (error) {
-//           console.error('문의 삭제 중 오류 발생:', error);
-//         }
-//       }, 60 * 60 * 1000); // 2분 후
-//     });
-//   } catch (error) {
-//     console.error('문의 삭제 중 오류 발생:', error);
-//   }
-// });
